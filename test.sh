@@ -1,19 +1,3 @@
-Interruptus
-================
-
-A framework for scalable monitoring.
-
-Authors
-=======
-
-Mark Steele <mark@control-alt-del.org>
-Fabio "Fantastico" B. Silva <fabio.bat.silva@gmail.com>
-
-
-API USAGE
-=========
-
-```
 ## CREATE/LIST/START/STARTALL/STOP/STOPALL/DESTROY/DESTROYALL STATEMENTS
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/interruptus/api/type <<EOF | python -m json.tool
@@ -111,41 +95,4 @@ curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" -
 EOF
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/interruptus/api/flow
-```
 
-
-More to come...
-
-
-<pre>
-            _.---._
-        .-'         '-.
-     .'                 '.
-    '       '.   .'       '
-   / /        \ /        \ \
-  '  |         :         |  '
- /   |         .         |   \
- |   \         |         /   |
- '. . \        |        / . .'
-  |   .\      .'.      /.   |
-  \  .  `-           -'  .  /
-   '.      .. ... ..      .'
-    |  `` ` .     . ` ``  |
-    | .-_-.  '. .'  .-_-. |
-   .'( (O) )|  :  |( (O) )'.
-    \.'---'/   :   \'---'./
-      \_ .'  . ' .  '. _/
-     .' /             \ '.
-     './ / /  / \ \  \ \.'
-      : | | /|  : |  | :
-      | : | \\  | '  : |
-      | /\ \/ \ | : /\ :
-      ' :/\ \ : ' ||  \ \
-      / | /\ \| : ' \  \ \
-     / / /  \/ /| :  |  \ \
-    / / :   / /\ \ \ /   \ \
-   ' /\ \  | /\ :.\ \    / |
-   \ \ \ \ \/ / || \ \   \/
-    \/  \|    \/ \/ |/
-    
-</pre>

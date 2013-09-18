@@ -1,0 +1,3 @@
+- Test out compatibility of collectd amqp udp plugin (after I add snappy compression to it that is)
+- Build out query pattern library
+- Put together a UI for applying patterns to data streams
