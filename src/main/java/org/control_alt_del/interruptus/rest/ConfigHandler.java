@@ -113,6 +113,6 @@ public class ConfigHandler
             String eventName    = eventType.getName();
             config.removeEventType(eventName, true);
         }
-	// @TODO Transform inbound hashmap into a set of configs...
+	// @TODO Transform inbound hashmap into a set of config entities, push the config to the engine, persist the config (zookeeper would probably be a good idea to get engine synched across fail-over nodes) 
     }
 }
