@@ -7,11 +7,6 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esperio.amqp.AMQPSource;
 import com.espertech.esper.client.dataflow.EPDataFlowInstantiationException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
 
