@@ -3,11 +3,44 @@ Interruptus
 
 A framework for scalable monitoring.
 
+<pre>
+            _.---._
+        .-'         '-.
+     .'                 '.
+    '       '.   .'       '
+   / /        \ /        \ \
+  '  |         :         |  '
+ /   |         .         |   \
+ |   \         |         /   |
+ '. . \        |        / . .'
+  |   .\      .'.      /.   |
+  \  .  `-           -'  .  /
+   '.      .. ... ..      .'
+    |  `` ` .     . ` ``  |
+    | .-_-.  '. .'  .-_-. |
+   .'( (O) )|  :  |( (O) )'.
+    \.'---'/   :   \'---'./
+      \_ .'  . ' .  '. _/
+     .' /             \ '.
+     './ / /  / \ \  \ \.'
+      : | | /|  : |  | :
+      | : | \\  | '  : |
+      | /\ \/ \ | : /\ :
+      ' :/\ \ : ' ||  \ \
+      / | /\ \| : ' \  \ \
+     / / /  \/ /| :  |  \ \
+    / / :   / /\ \ \ /   \ \
+   ' /\ \  | /\ :.\ \    / |
+   \ \ \ \ \/ / || \ \   \/
+    \/  \|    \/ \/ |/
+    
+</pre>
+
 Authors
 =======
 
-Mark Steele <mark@control-alt-del.org>
-Fabio "Fantastico" B. Silva <fabio.bat.silva@gmail.com>
+ Mark Steele <mark@control-alt-del.org>
+ Fabio "Fantastico" B. Silva <fabio.bat.silva@gmail.com>
 
 
 API USAGE
@@ -111,41 +144,8 @@ curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" -
 EOF
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/interruptus/api/flow
+
+# Manage config (updating/saving incomplete)
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/interruptus/api/config | python -m json.tool
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d "{}" http://localhost:8080/interruptus/api/config | python -m json.tool
 ```
-
-
-More to come...
-
-
-<pre>
-            _.---._
-        .-'         '-.
-     .'                 '.
-    '       '.   .'       '
-   / /        \ /        \ \
-  '  |         :         |  '
- /   |         .         |   \
- |   \         |         /   |
- '. . \        |        / . .'
-  |   .\      .'.      /.   |
-  \  .  `-           -'  .  /
-   '.      .. ... ..      .'
-    |  `` ` .     . ` ``  |
-    | .-_-.  '. .'  .-_-. |
-   .'( (O) )|  :  |( (O) )'.
-    \.'---'/   :   \'---'./
-      \_ .'  . ' .  '. _/
-     .' /             \ '.
-     './ / /  / \ \  \ \.'
-      : | | /|  : |  | :
-      | : | \\  | '  : |
-      | /\ \/ \ | : /\ :
-      ' :/\ \ : ' ||  \ \
-      / | /\ \| : ' \  \ \
-     / / /  \/ /| :  |  \ \
-    / / :   / /\ \ \ /   \ \
-   ' /\ \  | /\ :.\ \    / |
-   \ \ \ \ \/ / || \ \   \/
-    \/  \|    \/ \/ |/
-    
-</pre>
