@@ -63,7 +63,7 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
         String delimiter            = "\n";
         EPDataFlowEmitter emmiter   = context.getEmitter();
         StringTokenizer tokenizer   = new StringTokenizer(json, delimiter);
-
+log.info("json: " +json);
         while (tokenizer.hasMoreTokens()) {
             try {
                 String newline  = tokenizer.nextToken();
