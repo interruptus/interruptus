@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Interruptus : Infrastructure for scalable monitoring" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Interruptus</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/marksteele/interruptus">View on GitHub</a>
+
+          <h1 id="project_title">Interruptus</h1>
+          <h2 id="project_tagline">Infrastructure for scalable monitoring</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/marksteele/interruptus/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/marksteele/interruptus/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="interruptus" class="anchor" href="#interruptus"><span class="octicon octicon-link"></span></a>Interruptus</h1>
+
+<p>A framework for scalable monitoring.</p>
+
+<pre>
+            _.---._
+        .-'         '-.
+     .'                 '.
+    '       '.   .'       '
+   / /        \ /        \ \
+  '  |         :         |  '
+ /   |         .         |   \
+ |   \         |         /   |
+ '. . \        |        / . .'
+  |   .\      .'.      /.   |
+  \  .  `-           -'  .  /
+   '.      .. ... ..      .'
+    |  `` ` .     . ` ``  |
+    | .-_-.  '. .'  .-_-. |
+   .'( (O) )|  :  |( (O) )'.
+    \.'---'/   :   \'---'./
+      \_ .'  . ' .  '. _/
+     .' /             \ '.
+     './ / /  / \ \  \ \.'
+      : | | /|  : |  | :
+      | : | \\  | '  : |
+      | /\ \/ \ | : /\ :
+      ' :/\ \ : ' ||  \ \
+      / | /\ \| : ' \  \ \
+     / / /  \/ /| :  |  \ \
+    / / :   / /\ \ \ /   \ \
+   ' /\ \  | /\ :.\ \    / |
+   \ \ \ \ \/ / || \ \   \/
+    \/  \|    \/ \/ |/
+    
+</pre>
+
+<h1>
+<a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h1>
+
+<p>Mark Steele <a href="mailto:mark@control-alt-del.org">mark@control-alt-del.org</a></p>
+
+<p>Fabio "Fantastico" B. Silva <a href="mailto:fabio.bat.silva@gmail.com">fabio.bat.silva@gmail.com</a></p>
+
+<h1>
+<a name="api-usage" class="anchor" href="#api-usage"><span class="octicon octicon-link"></span></a>API USAGE</h1>
+
+<pre><code>## CREATE/LIST/START/STARTALL/STOP/STOPALL/DESTROY/DESTROYALL STATEMENTS
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool 
+{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/stop &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/start &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/stopAll | python -m json.tool
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/startAll | python -m json.tool
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement/destroy &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug"}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement &lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/destroyAll | python -m json.tool
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+
+
+## CREATE/DELETE/LIST TYPES
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
+{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/type | python -m json.tool
+
+curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
+{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/type | python -m json.tool
+
+
+## CREATE/CANCEL/LIST FLOWS
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
+{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
+{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;EventLog&gt; {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
+{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -&gt; outstream&lt;EventLog&gt; {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.control_alt_del.interruptus.EventToAMQP'},logMessages: true}"}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/flow
+
+curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
+{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;EventLog&gt; {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+EOF
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/flow
+
+# Manage config (updating/saving incomplete)
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/config | python -m json.tool
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d "{}" http://localhost:8080/interruptus/api/config | python -m json.tool
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Interruptus maintained by <a href="https://github.com/marksteele">marksteele</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
