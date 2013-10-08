@@ -77,128 +77,69 @@
 <p>Fabio "Fantastico" B. Silva <a href="mailto:fabio.bat.silva@gmail.com">fabio.bat.silva@gmail.com</a></p>
 
 <h1>
-<a name="api-usage" class="anchor" href="#api-usage"><span class="octicon octicon-link"></span></a>API USAGE</h1>
+<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h1>
 
-<pre><code>## CREATE/LIST/START/STARTALL/STOP/STOPALL/DESTROY/DESTROYALL STATEMENTS
+<h2>
+<a name="scalability" class="anchor" href="#scalability"><span class="octicon octicon-link"></span></a>Scalability</h2>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool 
-{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
-EOF
+<p>A monitoring system should scale to fit the size of the systems you wish to monitor. Interruptus is designed to target the high end of the spectrum here as it requires multiple nodes and roles in an optimal deployment. </p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true}
-EOF
+<p>Guestimated initial performance targets for this system should be able to process at least tens of thousands of data points per second. Benchmarks to follow.</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+<h2>
+<a name="efficiency" class="anchor" href="#efficiency"><span class="octicon octicon-link"></span></a>Efficiency</h2>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>In order to achieve effective monitoring in large environments, a single data polling instance (eg: nagios) becomes a bottleneck and dangerous single point of failure.</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/stop &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>The monitoring approach I would therefore propose is to use efficient node based polling software (for example collectd deployed to each node) to push data to Interruptus. There is of course nothing stopping you from using Nagios to poll all your nodes and push data to Interruptus.</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>I'm also a fan of not reinventing the wheel. That's why Interruptus leverages a best of breed software stack to focus on the core of the solution (monitoring!).</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/start &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>For data transport, the excellent <a href="http://www.rabbitmq.com">RabbitMQ</a> middleware is used with some extra extensions. The data transport mechanism for pushing data from polling devices can be one of STOMP, AMQP, or raw UDP packets (recommended).</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>Interruptus implements it's monitoring rules using the <a href="http://esper.codehaus.org">Esper</a> complex event processing engine.</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/stopAll | python -m json.tool
+<h2>
+<a name="fault-tolerance" class="anchor" href="#fault-tolerance"><span class="octicon octicon-link"></span></a>Fault tolerance</h2>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>The plan here is to use <a href="http://zookeeper.apache.org">Apache Zookeeper</a> and the <a href="http://curator.incubator.apache.org">Curator</a> library to implement master/standby nodes, where each node contains the current CEP engine state and configuration.</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/startAll | python -m json.tool
+<p>Failures in a master node are automatically detected and standby nodes can immediately continue processing data without dropping any data. This is accomplished by ensuring that all nodes in the cluster receive all data updates via AMQP topic routing.</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/state &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<h2>
+<a name="powerful-visualization" class="anchor" href="#powerful-visualization"><span class="octicon octicon-link"></span></a>Powerful visualization</h2>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement/destroy &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+<p>Interruptus integrates with <a href="http://www.opentsdb.net">OpenTSDB</a> a powerful time series database and graphing engine. Because OpenTSDB stores data at native resolution, you can always go back and drill-down to event details right down to a single data point.</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+<h2>
+<a name="ease-of-use" class="anchor" href="#ease-of-use"><span class="octicon octicon-link"></span></a>Ease of use</h2>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/statement &lt;&lt;EOF | python -m json.tool
-{"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true}
-EOF
+<p>Setting up monitoring rules should be easy. Once the aforementioned core functionality is built, the plan is to create a web UI that consumes the REST API to configure the CEP engine using a pre-built pattern library. Sample patterns might include:</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+<ul>
+<li>Alert when value over X</li>
+<li>Alert when N consecutive values over X</li>
+<li>Alert when N consecutive rising values over X, with last value Y times greater than first</li>
+<li>Find outlier in group of servers having metricX &lt; or &gt; avg(metricX) in cluster (hot/cold spots)</li>
+<li>Alert when value &gt; X * stddev</li>
+<li>Alert when current values - previous value &gt; X</li>
+</ul><p>It should be possible to combine patterns (tell me when the average load on my web server cluster is over X AND my database queries per second &gt; Y). </p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement/destroyAll | python -m json.tool
+<p>The state of the configuration is fully exposed via a REST API, any UI's which consume it will be 'dumb' in the sense that they are simply access pre-built functions (eg: think static HTML page with jQuery wizardry).</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/statement | python -m json.tool
+<h2>
+<a name="power-user-features" class="anchor" href="#power-user-features"><span class="octicon octicon-link"></span></a>Power user features</h2>
 
+<p>Outside of pre-canned patterns, Interruptus can expose a method of adding custom EQL to fully utilize the power of the processing engine to express complex scenarios.</p>
 
-## CREATE/DELETE/LIST TYPES
+<p>Predictive modelling and forecasting is another planned feature (eg: Holt-Winters modelling), to know when things are going to break!</p>
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
-{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
-EOF
+<p>To accomplish this possible <a href="http://github.com/antonioalegria/esper-ext">Esper-ext</a>, or <a href="http://www.stevengould.org/software/openforecast/index.shtml">Openforecast</a>.</p>
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/type | python -m json.tool
+<h1>
+<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h1>
 
-curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
-{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
-EOF
-
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/type | python -m json.tool
-
-
-## CREATE/CANCEL/LIST FLOWS
-
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/type &lt;&lt;EOF | python -m json.tool
-{"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]}
-EOF
-
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;EventLog&gt; {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
-EOF
-
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
-{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -&gt; outstream&lt;EventLog&gt; {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.control_alt_del.interruptus.EventToAMQP'},logMessages: true}"}
-EOF
-
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/flow
-
-curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" \
--d @- http://localhost:8080/interruptus/api/flow &lt;&lt;EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;EventLog&gt; {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
-EOF
-
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/flow
-
-# Manage config (updating/saving incomplete)
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" \ http://localhost:8080/interruptus/api/config | python -m json.tool
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
--d "{}" http://localhost:8080/interruptus/api/config | python -m json.tool
-</code></pre>
+<p>Initial CEP engine and REST API are complete and working. Next steps are clustering and development of the pattern library.</p>
       </section>
     </div>
 
