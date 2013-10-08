@@ -55,9 +55,6 @@ public class ZookeeperConfiguration
         this.isLeader.set(isLeader);
     }
 
-    /**
-     * @TODO - lock it before write
-     */
     private synchronized Boolean saveNode(Object object , String path) throws IOException, Exception
     {
         byte[] bytes    = mapper.writeValueAsBytes(object);
@@ -84,9 +81,6 @@ public class ZookeeperConfiguration
           return ret;
     }
 
-    /**
-     * @TODO - lock it before remove
-     */
     private synchronized Boolean removeNode(String path) throws IOException, Exception
     {
         Boolean ret = false;
