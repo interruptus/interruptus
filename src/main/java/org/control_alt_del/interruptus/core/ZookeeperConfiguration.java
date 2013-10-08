@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.data.Stat;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.control_alt_del.interruptus.core.esper.FlowConfiguration;
 import org.control_alt_del.interruptus.core.esper.TypeConfiguration;
@@ -62,20 +63,25 @@ public class ZookeeperConfiguration
         byte[] bytes    = mapper.writeValueAsBytes(object);
         String fullPath = configPath + "/" + path;
         String json     = new String(bytes);
+        InterProcessMutex mutex = new InterProcessMutex(client, fullPath);
+        Boolean ret = false;
+        try {
+          log.info(String.format("Save configuration %s : %s", fullPath, json));
+          mutex.acquire();
+          if (client.checkExists().forPath(fullPath) != null) {
+              client.setData().forPath(fullPath, bytes);
+          } else {
+            client.create()
+                .creatingParentsIfNeeded()
+                .forPath(fullPath, bytes);
+          }
+          ret = true;
+         } finally
+         {
+           mutex.release();
+         }
 
-        log.info(String.format("Save configuration %s : %s", fullPath, json));
-
-        if (client.checkExists().forPath(fullPath) != null) {
-            client.setData().forPath(fullPath, bytes);
-
-            return true;
-        }
-
-        client.create()
-            .creatingParentsIfNeeded()
-            .forPath(fullPath, bytes);
-
-        return true;
+          return ret;
     }
 
     /**
@@ -83,15 +89,20 @@ public class ZookeeperConfiguration
      */
     private synchronized Boolean removeNode(String path) throws IOException, Exception
     {
+        Boolean ret = false;
         String fullPath = configPath + "/" + path;
-
-        if (client.checkExists().forPath(fullPath) != null) {
-            client.delete().forPath(fullPath);
-
-            return true;
+        InterProcessMutex mutex = new InterProcessMutex(client, fullPath);
+        try {
+          mutex.acquire();
+          if (client.checkExists().forPath(fullPath) != null) {
+              client.delete().forPath(fullPath);
+              ret = true;
+          }
+        } finally
+        {
+          mutex.release();
         }
-
-        return false;
+        return ret;
     }
 
     public Boolean save(Flow flow) throws IOException, Exception
