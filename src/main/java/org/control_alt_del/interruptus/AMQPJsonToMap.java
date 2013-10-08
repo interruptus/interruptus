@@ -7,9 +7,9 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.dataflow.interfaces.EPDataFlowEmitter;
 import com.espertech.esper.event.map.MapEventBean;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.StringTokenizer;
-import org.xerial.snappy.Snappy;
+
+import java.util.zip.Inflater;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 
 import com.espertech.esperio.amqp.AMQPToObjectCollector;
 import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
+
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
@@ -63,7 +64,7 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
         String delimiter            = "\n";
         EPDataFlowEmitter emmiter   = context.getEmitter();
         StringTokenizer tokenizer   = new StringTokenizer(json, delimiter);
-log.info("json: " +json);
+        log.info("json: " +json);
         while (tokenizer.hasMoreTokens()) {
             try {
                 String newline  = tokenizer.nextToken();
@@ -77,24 +78,28 @@ log.info("json: " +json);
 
     private String getJsonString(byte[] input)
     {
-        // Super sophisticated compression algorithm detection: If string starts with 's', input is compressed. 
-	if ((char) input[0] == 's') {
-	        try {
-        	    return Snappy.uncompress(Arrays.copyOfRange(input, 1,input.length)).toString();
-	        } catch (Exception e) {
-        	    log.error(e.getMessage(), e);
-	            return null;
-        	}
-	} else {
+	if ((char) input[0] != '{') { // Very cheezy....
+          byte[] restored = new byte[65507];  // Max UDP packet size
+          try {
+              Inflater decompresser = new Inflater();
+              decompresser.setInput(input,0,input.length);
+              int resultLength = decompresser.inflate(restored);
+              decompresser.end();
+              String outputString = new String(restored, 0, resultLength, "UTF-8");
+              return outputString;
+          } catch (Exception e) {
+              log.error(e.getMessage(), e);
+	       return null;
+          }
+        } else {
             return new String(input);
 	}
-
     }
 
     private EventBean parseLine(String json) throws ParseException
     {
         JSONObject values               = (JSONObject) parser.parse(json);
-        String eventTypeName            = (String) values.get("eventType");
+        String eventTypeName            = (String) values.get("event_type");
         EventType eventType             = config.getEventType(eventTypeName);
         EventBean eventBean             = new MapEventBean(values, eventType);
         return eventBean;
