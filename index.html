@@ -194,15 +194,14 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
 &lt;&lt;EOF | python -m json.tool
 {"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;CollectdMetric&gt; {  host: 'localhost',  exchange: 'collectd-metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
 EOF
-&lt;/code&gt;
-
-I have written some [Collectd](http://www.collectd.org) plugins to send data to RabbitMQ. [Plugins here](https://github.com/marksteele/collectd-plugins). My plugin is using a UDP transport to push messages into RabbitMQ using the [RabbitMQ UDP exchange plugin](https://github.com/tonyg/udp-exchange) (Poke tonyg to update his binary plugin build to latest RabbitMQ version, and maybe add some links for previous versions).
-
-Status
-==================
-
-Initial CEP engine and REST API is complete and working. Next steps are clustering and development of the pattern library.
 </code></pre>
+
+<p>I have written some <a href="http://www.collectd.org">Collectd</a> plugins to send data to RabbitMQ. <a href="https://github.com/marksteele/collectd-plugins">Plugins here</a>. My plugin is using a UDP transport to push messages into RabbitMQ using the <a href="https://github.com/tonyg/udp-exchange">RabbitMQ UDP exchange plugin</a> (Poke tonyg to update his binary plugin build to latest RabbitMQ version, and maybe add some links for previous versions).</p>
+
+<h1>
+<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h1>
+
+<p>Initial CEP engine and REST API is complete and working. Next steps are clustering and development of the pattern library.</p>
       </section>
     </div>
 
