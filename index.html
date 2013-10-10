@@ -137,9 +137,72 @@
 <p>To accomplish this possible <a href="http://github.com/antonioalegria/esper-ext">Esper-ext</a>, or <a href="http://www.stevengould.org/software/openforecast/index.shtml">Openforecast</a>.</p>
 
 <h1>
-<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h1>
+<a name="communication-protocol-specifications" class="anchor" href="#communication-protocol-specifications"><span class="octicon octicon-link"></span></a>Communication protocol specifications</h1>
 
-<p>Initial CEP engine and REST API are complete and working. Next steps are clustering and development of the pattern library.</p>
+<p>The CEP engine expects input as JSON objects. For efficiency, a single AMQP message can contain multiple JSON objects seperated by a newline '\n' character. Optionally, the payload can be compressed using the zlib compression algorithm.</p>
+
+<p>Here's an example payload:</p>
+
+<pre lang='"plugin":"rabbitmq","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":2022,"name":"messages","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"'><code>{"plugin":"rabbitmq","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":0,"name":"messages_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}
+{"plugin":"rabbitmq","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":0,"name":"messages_unacknolwedged","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}
+{"plugin":"rabbitmq","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":0,"name":"messages_unacknowledged_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}
+{"plugin":"rabbitmq","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":2022,"name":"messages_ready","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}
+{"plugin":"interface","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":219589727,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_octets"}
+{"plugin":"interface","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":18433612,"name":"tx","host":"darkstar","type_instance":"eth0","type":"if_octets"}
+{"plugin":"interface","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":281652,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_packets"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":539471872,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":1653339136,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":20687,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":78754,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":13,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_time"}
+{"plugin":"disk","datacenter":"datacenter","event_type":"CollectdMetric","time":1381216257,"value":231,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_time"}
+</code></pre>
+
+<p>Each input line in the AMQP payload is parsed as a JSON object, and an EventBean is automatically created to represent the object in the CEP stream processing engine. The event type is specified in the "event_type" property of the JSON object, and MUST be defined before you start submitting events to the engine. This can be accomplished via the REST API.</p>
+
+<h1>
+<a name="configuration-example" class="anchor" href="#configuration-example"><span class="octicon octicon-link"></span></a>Configuration example</h1>
+
+<p>The following example configures an event type in Interruptus and uses an AMQP inbound data flow to read AMQP messages.</p>
+
+<pre><code>curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/type \
+&lt;&lt;EOF | python -m json.tool
+{
+  "name":"CollectdMetric",
+  "properties":[
+    {"name":"plugin","type":"string"},
+    {"name":"plugin_instance","type":"string"},
+    {"name":"type","type":"string"},
+    {"name":"type_instance","type":"string"},
+    {"name":"datacenter","type":"string"},
+    {"name":"time","type":"long"},
+    {"name":"value","type":"double"},
+    {"name":"name","type":"string"},
+    {"name":"host","type":"string"}
+  ]
+}
+EOF
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/statement \
+&lt;&lt;EOF | python -m json.tool
+{"name": "eventlogdebug", "query":"SELECT * FROM CollectdMetric", "debug": true}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
+-d @- http://localhost:8080/interruptus/api/flow \
+&lt;&lt;EOF | python -m json.tool
+{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;CollectdMetric&gt; {  host: 'localhost',  exchange: 'collectd-metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+EOF
+&lt;/code&gt;
+
+I have written some [Collectd](http://www.collectd.org) plugins to send data to RabbitMQ. [Plugins here](https://github.com/marksteele/collectd-plugins). My plugin is using a UDP transport to push messages into RabbitMQ using the [RabbitMQ UDP exchange plugin](https://github.com/tonyg/udp-exchange) (Poke tonyg to update his binary plugin build to latest RabbitMQ version, and maybe add some links for previous versions).
+
+Status
+==================
+
+Initial CEP engine and REST API is complete and working. Next steps are clustering and development of the pattern library.
+</code></pre>
       </section>
     </div>
 
