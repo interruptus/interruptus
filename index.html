@@ -125,7 +125,7 @@
 <li>Alert when current values - previous value &gt; X</li>
 </ul><p>It should be possible to combine patterns (tell me when the average load on my web server cluster is over X AND my database queries per second &gt; Y). </p>
 
-<p>The state of the configuration is fully exposed via a REST API, any UI's which consume it will be 'dumb' in the sense that they are simply access pre-built functions (eg: think static HTML page with jQuery wizardry).</p>
+<p>The state of the configuration is fully exposed via a REST API, any UI's which consume it will be 'dumb' in the sense that they are simply accessing pre-built functions (eg: think static HTML page with jQuery wizardry).</p>
 
 <h2>
 <a name="power-user-features" class="anchor" href="#power-user-features"><span class="octicon octicon-link"></span></a>Power user features</h2>
@@ -134,7 +134,7 @@
 
 <p>Predictive modelling and forecasting is another planned feature (eg: Holt-Winters modelling), to know when things are going to break!</p>
 
-<p>To accomplish this possible <a href="http://github.com/antonioalegria/esper-ext">Esper-ext</a>, or <a href="http://www.stevengould.org/software/openforecast/index.shtml">Openforecast</a>.</p>
+<p>To accomplish this we may integrate <a href="http://github.com/antonioalegria/esper-ext">Esper-ext</a>, or <a href="http://www.stevengould.org/software/openforecast/index.shtml">Openforecast</a>.</p>
 
 <h1>
 <a name="communication-protocol-specifications" class="anchor" href="#communication-protocol-specifications"><span class="octicon octicon-link"></span></a>Communication protocol specifications</h1>
@@ -179,7 +179,8 @@
     {"name":"time","type":"long"},
     {"name":"value","type":"double"},
     {"name":"name","type":"string"},
-    {"name":"host","type":"string"}
+    {"name":"host","type":"string"},
+    {"name":"event_type","type":"string"}
   ]
 }
 EOF
@@ -192,7 +193,21 @@ EOF
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
 -d @- http://localhost:8080/interruptus/api/flow \
 &lt;&lt;EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;CollectdMetric&gt; {  host: 'localhost',  exchange: 'collectd-metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+{
+  "name": "EventsIn", 
+  "query":"
+    create dataflow EventsIn AMQPSource -&gt; EventsIn&lt;CollectdMetric&gt; { 
+      host: 'localhost',  
+      exchange: 'collectd-metrics', 
+      port: 5672, 
+      username: 'guest', 
+      password: 'guest',
+      routingKey: '#', 
+      collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, 
+      logMessages: true  
+  } EventBusSink(EventsIn){}
+"
+}
 EOF
 </code></pre>
 
