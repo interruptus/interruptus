@@ -9,8 +9,19 @@
         <esper.version>4.9.0</esper.version>
         <json-simple.version>1.1.1</json-simple.version>
         <spring.version>3.2.4.RELEASE</spring.version>
+        <curator.version>2.2.0-incubating</curator.version>
     </properties>
     <dependencies>
+       <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper</artifactId>
@@ -31,7 +42,6 @@
             <artifactId>jetty-servlet</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
         <!-- Jersey -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -87,7 +97,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
