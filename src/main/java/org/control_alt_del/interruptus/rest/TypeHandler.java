@@ -22,21 +22,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TypeHandler
 {
     @Autowired
-    private ZookeeperConfiguration interruptus;
-
-    @Autowired
-    private TypeConfiguration configuration;
+    private ZookeeperConfiguration zookeeper;
 
     @GET
-    public List<Type> listEventTypes()
+    public List<Type> listEventTypes() throws Exception
     {
-        return configuration.list();
+        return zookeeper.list(Type.class);
     }
 
     @POST
     public Type create(Type type) throws Exception
     {
-        interruptus.save(type);
+        zookeeper.save(type);
 
         return type;
     }
@@ -44,6 +41,6 @@ public class TypeHandler
     @DELETE
     public Boolean destroy(Type type) throws ConfigurationException, Exception
     {
-        return interruptus.remove(type);
+        return zookeeper.remove(type);
     }
 }

@@ -33,12 +33,10 @@ public class StatementHandler
     @Autowired
     private StatementConfiguration configuration;
 
-    // @TODO: Would be nice if statement state was pulled and pushed into the entity.... hrmmmm.....
-
     @GET
-    public List<Statement> listStatements()
+    public List<Statement> listStatements() throws Exception
     {
-        return configuration.list();
+        return zookeeper.list(Statement.class);
     }
 
     @POST

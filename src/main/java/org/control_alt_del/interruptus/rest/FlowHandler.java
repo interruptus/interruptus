@@ -28,9 +28,9 @@ public class FlowHandler
     private FlowConfiguration configuration;
 
     @GET
-    public List<Flow> list()
+    public List<Flow> list() throws Exception
     {
-        return configuration.list();
+        return zookeeper.list(Flow.class);
     }
 
     @POST
@@ -39,6 +39,13 @@ public class FlowHandler
         zookeeper.save(flow);
 
         return flow;
+    }
+
+    @POST
+    @Path("/start")
+    public Boolean start(Flow flow) throws Exception
+    {
+        return configuration.start(flow);
     }
 
     @DELETE

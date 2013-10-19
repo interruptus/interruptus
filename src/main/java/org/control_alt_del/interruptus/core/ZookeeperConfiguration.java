@@ -1,7 +1,13 @@
 package org.control_alt_del.interruptus.core;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +30,13 @@ public class ZookeeperConfiguration
     private FlowConfiguration flowConfiguration;
     private CuratorFramework client;
     private String configPath;
+
+    private static Map<String, String> paths = new HashMap<String, String>();
+    {
+        paths.put(Flow.class.getName(), Flow.class.getSimpleName().toLowerCase());
+        paths.put(Type.class.getName(), Type.class.getSimpleName().toLowerCase());
+        paths.put(Statement.class.getName(), Statement.class.getSimpleName().toLowerCase());
+    }
 
     public ZookeeperConfiguration(String configPath)
     {
@@ -55,130 +68,126 @@ public class ZookeeperConfiguration
         this.isLeader.set(isLeader);
     }
 
-    private synchronized Boolean saveNode(Object object , String path) throws IOException, Exception
+    private String getNodePath(Class clazz)
     {
-        byte[] bytes    = mapper.writeValueAsBytes(object);
-        String fullPath = configPath + "/" + path;
-        String json     = new String(bytes);
-        InterProcessMutex mutex = new InterProcessMutex(client, fullPath);
-        Boolean ret = false;
-        try {
-          log.info(String.format("Save configuration %s : %s", fullPath, json));
-          mutex.acquire();
-          if (client.checkExists().forPath(fullPath) != null) {
-              client.setData().forPath(fullPath, bytes);
-          } else {
-            client.create()
-                .creatingParentsIfNeeded()
-                .forPath(fullPath, bytes);
-          }
-          ret = true;
-         } finally
-         {
-           mutex.release();
-         }
+        if ( ! paths.containsKey(clazz.getName())) {
+            throw new RuntimeException("Unable to find path for class : " + clazz.getName());
+        }
 
-          return ret;
+        return configPath + "/" + paths.get(clazz.getName());
     }
 
-    private synchronized Boolean removeNode(String path) throws IOException, Exception
+    private synchronized Boolean mutexCall(String path, Callable<Boolean> callable) throws Exception
     {
-        Boolean ret = false;
-        String fullPath = configPath + "/" + path;
-        InterProcessMutex mutex = new InterProcessMutex(client, fullPath);
+        InterProcessMutex mutex = new InterProcessMutex(client, path);
+
         try {
-          mutex.acquire();
-          if (client.checkExists().forPath(fullPath) != null) {
-              client.delete().forPath(fullPath);
-              ret = true;
-          }
-        } finally
-        {
-          mutex.release();
+            mutex.acquire();
+
+            return callable.call();
+        } finally {
+            mutex.release();
         }
-        return ret;
+    }
+
+    private synchronized Boolean saveNode(Object object, String name) throws IOException, Exception
+    {
+        final byte[] bytes    = mapper.writeValueAsBytes(object);
+        final String fullPath = getNodePath(object.getClass()) + "/" + name;
+
+        return mutexCall(fullPath, new Callable() {
+            @Override
+            public Object call() throws Exception
+            {
+                Stat stat = client.checkExists().forPath(fullPath);
+
+                if (stat != null) {
+                    client.setData()
+                        .forPath(fullPath, bytes);
+                } else {
+                  client.create()
+                      .creatingParentsIfNeeded()
+                      .forPath(fullPath, bytes);
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private synchronized Boolean removeNode(Class clazz, String name) throws IOException, Exception
+    {
+        final String fullPath = getNodePath(clazz) + "/" + name;
+
+        return mutexCall(fullPath, new Callable() {
+            @Override
+            public Object call() throws Exception
+            {
+                if (client.checkExists().forPath(fullPath) != null) {
+                    client.delete().forPath(fullPath);
+
+                    return false;
+                }
+
+                return true;
+            }
+        });
     }
 
     public Boolean save(Flow flow) throws IOException, Exception
     {
-        return saveNode(flow, "flow/" + flow.getName());
+        return saveNode(Flow.class, flow.getName());
     }
 
     public Boolean remove(Flow flow) throws IOException, Exception
     {
-        return removeNode("flow/" + flow.getName());
+        return removeNode(Flow.class, flow.getName());
     }
 
     public Boolean save(Type type) throws IOException, Exception
     {
-        return saveNode(type, "type/" + type.getName());
+        return saveNode(Type.class, type.getName());
     }
 
     public Boolean remove(Type type) throws IOException, Exception
     {
-        return removeNode("type/" + type.getName());
+        return removeNode(Type.class, type.getName());
     }
 
     public Boolean save(Statement statement) throws IOException, Exception
     {
-        return saveNode(statement, "statement/" + statement.getName());
+        return saveNode(Statement.class, statement.getName());
     }
 
     public Boolean remove(Statement statement) throws IOException, Exception
     {
-        return removeNode("statement/" + statement.getName());
+        return removeNode(Statement.class, statement.getName());
+    }
+
+    public <T> List<T> list(Class<? extends T> clazz) throws Exception
+    {
+        List<T> result  = new ArrayList<T>();
+        String rootPath = getNodePath(clazz);
+    
+        if (client.checkExists().forPath(rootPath) == null) {
+            return result;
+        }
+
+        for (String name : client.getChildren().forPath(rootPath)) {
+
+            String path = rootPath + "/" + name;
+            byte[] data = client.getData().forPath(path);
+            T item      = mapper.readValue(new String(data), clazz);
+
+            result.add(item);
+        }
+
+        return result;
     }
 
     public synchronized void start() throws IOException, Exception
     {
-        startType();
-        startFlow();
-    }
-
-    private synchronized void startFlow() throws IOException, Exception
-    {
-        String path = configPath + "/flow";
-        Stat stat   = client.checkExists().forPath(path);
-
-        if ( stat == null) {
-            return;
-        }
-
-        List<String> pathList = client.getChildren().forPath(path);
-
-        for (String childPath : pathList) {
-            byte[] data = client.getData().forPath(path + "/" + childPath);
-            String json = new String(data);
-            Flow flow   = mapper.readValue(json, Flow.class);
-
-            if (flowConfiguration.exists(flow)) {
-                continue;
-            }
-
-            flowConfiguration.create(flow);
-            log.info(String.format("Flow %s created", flow.getName()));
-        }
-    }
-
-    private synchronized void startType() throws IOException, Exception
-    {
-        String path = configPath + "/type";
-        Stat stat   = client.checkExists().forPath(path);
-
-        if ( stat == null) {
-            return;
-        }
-
-        List<String> pathList = client.getChildren().forPath(path);
-
-        for (String childPath : pathList) {
-            byte[] data = client.getData().forPath(path + "/" + childPath);
-            String json = new String(data);
-            Type type   = mapper.readValue(json, Type.class);
-
-            typeConfiguration.create(type);
-            log.info(String.format("Type %s created", type.getName()));
-        }
+        
     }
 
     public synchronized void destroy() throws IOException, Exception

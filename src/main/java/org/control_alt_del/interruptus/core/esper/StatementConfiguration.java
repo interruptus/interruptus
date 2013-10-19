@@ -16,13 +16,14 @@ import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 
 @Service("statementConfiguration")
-public class StatementConfiguration
+public class StatementConfiguration implements EsperConfiguration<Statement>
 {
     final private static Log log = LogFactory.getLog(StatementConfiguration.class);
 
     @Autowired
     private EPAdministrator epAdministrator;
 
+    @Override
     public List<Statement> list()
     {
         String[] statementNames    = epAdministrator.getStatementNames();
@@ -36,6 +37,7 @@ public class StatementConfiguration
         return statements;
     }
 
+    @Override
     public Statement create(Statement statement) throws EPStatementException
     {
         EPStatement epStatement = epAdministrator.createEPL(statement.getQuery(), statement.getName());
@@ -48,6 +50,7 @@ public class StatementConfiguration
         if (statement.getDebug()) {
             epStatement.addListener(new UpdateListener()
             {
+                @Override
                 public void update(EventBean[] newEvents, EventBean[] oldEvents)
                 {
                     for (int i = 0; i < newEvents.length; i++) {
@@ -141,6 +144,7 @@ public class StatementConfiguration
         return null;
     }
 
+    @Override
     public Boolean destroy(Statement statement)
     {
         try {
@@ -158,6 +162,7 @@ public class StatementConfiguration
         }
     }
 
+    @Override
     public Boolean exists(Statement statement)
     {
         return epAdministrator.getStatement(statement.getName()) != null;

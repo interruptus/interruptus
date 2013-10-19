@@ -1,20 +1,20 @@
 package org.control_alt_del.interruptus.core.esper;
 
-import com.espertech.esper.client.EPAdministrator;
+import java.util.List;
+import java.util.ArrayList;
 import com.espertech.esper.client.EPRuntime;
+import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import java.util.ArrayList;
-import java.util.List;
 import org.control_alt_del.interruptus.entity.Flow;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service("flowConfiguration")
-public class FlowConfiguration
+public class FlowConfiguration implements EsperConfiguration<Flow>
 {
     @Autowired
     private EPServiceProvider epService;
@@ -22,6 +22,7 @@ public class FlowConfiguration
     @Autowired
     private EPAdministrator epAdministrator;
 
+    @Override
     public List<Flow> list()
     {
         EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
@@ -38,6 +39,7 @@ public class FlowConfiguration
 
     }
 
+    @Override
     public Flow create(Flow flow)
     {
         epAdministrator.createEPL(flow.getQuery(), flow.getName());
@@ -51,17 +53,41 @@ public class FlowConfiguration
         return flow;
     }
 
-    public Boolean destroy(Flow flow)
+    public Boolean start(Flow flow)
     {
-        epService.getEPRuntime().getDataFlowRuntime().instantiate(flow.getName()).cancel();
+        EPRuntime epRuntime             = epService.getEPRuntime();
+        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+
+        if (instance == null) {
+            return false;
+        }
+
+        instance.start();
 
         return true;
     }
 
+    // @TODO - FIX IT !! Does not remove the flow definition
+    @Override
+    public Boolean destroy(Flow flow)
+    {
+        EPRuntime epRuntime             = epService.getEPRuntime();
+        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+
+        instance.cancel();
+
+        return true;
+    }
+
+    @Override
     public Boolean exists(Flow flow)
     {
-        return epService.getEPRuntime()
-            .getDataFlowRuntime()
-            .getDataFlow(flow.getName()) != null;
+        EPRuntime epRuntime             = epService.getEPRuntime();
+        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        EPDataFlowDescriptor dataFlow   = flowRuntime.getDataFlow(flow.getName());
+
+        return dataFlow != null;
     }
 }
