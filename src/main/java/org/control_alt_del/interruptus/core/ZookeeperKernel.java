@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
@@ -31,7 +33,8 @@ public class ZookeeperKernel implements Kernel
     private ZookeeperConfiguration zookeeperConfiguration;
     private List<ZookeeperConfigurationListener> listeners;
     private String leaderSelectorPath = "/ELECTION";
-    private CuratorFramework curatorFramework;
+    private Boolean isInitialized = false;
+    private CuratorFramework client;
 
     private static final EnumMap<PathChildrenCacheEvent.Type, ZookeeperConfigurationListener.EventType> allowedEvents = new EnumMap<PathChildrenCacheEvent.Type, ZookeeperConfigurationListener.EventType>(PathChildrenCacheEvent.Type.class);
 
@@ -58,7 +61,7 @@ public class ZookeeperKernel implements Kernel
 
     public void setCuratorFramework(CuratorFramework curatorFramework)
     {
-        this.curatorFramework = curatorFramework;
+        this.client = curatorFramework;
     }
 
     public void setZookeeperConfiguration(ZookeeperConfiguration zookeeperConfiguration)
@@ -71,10 +74,8 @@ public class ZookeeperKernel implements Kernel
     {
         logger.info("Start interruptus zookeeper");
 
-        zookeeperConfiguration.setCuratorFramework(curatorFramework);
-        curatorFramework.start();
-
-        dispatchInitEvent();
+        zookeeperConfiguration.setCuratorFramework(client);
+        client.start();
 
         registerListeners();
         registerLeaderSelector();
@@ -83,7 +84,7 @@ public class ZookeeperKernel implements Kernel
     @Override
     public void stop() throws IOException
     {
-        curatorFramework.close();
+        client.close();
 
         for (PathChildrenCache child : pathConfigList) {
             child.close();
@@ -92,48 +93,58 @@ public class ZookeeperKernel implements Kernel
 
     private void registerLeaderSelector()
     {
-        LeaderSelector selector = new LeaderSelector(curatorFramework, leaderSelectorPath, leaderSelectorListener);
+        LeaderSelector selector = new LeaderSelector(client, leaderSelectorPath, leaderSelectorListener);
         selector.autoRequeue();
         selector.start();
     }
 
     private void dispatchInitEvent() throws Exception
     {
+        logger.info("Init event listeners");
+
         for (ZookeeperConfigurationListener listener : listeners) {
 
-            if (curatorFramework.checkExists().forPath(listener.getPath()) == null) {
+            String rootPath = listener.getPath();
+            Stat rootStat   = client.checkExists().forPath(rootPath);
+
+            if (rootStat == null) {
                 return;
             }
 
-            List<String> pathList = curatorFramework
-                .getChildren()
-                .forPath(listener.getPath());
+            for (String name : client.getChildren().forPath(rootPath)) {
 
-            for (String name : pathList) {
+                String path = rootPath + "/" + name;
+                byte[] data = client.getData().forPath(path);
+                Stat stat   = client.checkExists().forPath(path);
 
-                String path = listener.getPath() + "/" + name;
-                byte[] data = curatorFramework.getData()
-                    .forPath(path);
-
-                Stat stat = curatorFramework
-                    .checkExists()
-                    .forPath(path);
-
-                listener.invoke(curatorFramework, ZookeeperConfigurationListener.EventType.INITIALIZED, stat, path, data);
+                listener.invoke(client, ZookeeperConfigurationListener.EventType.INITIALIZED, stat, path, data);
             }
         }
     }
 
     private void registerListeners() throws Exception
     {
-        curatorFramework.getConnectionStateListenable().addListener(new ConnectionStateListener() {
+        client.getConnectionStateListenable().addListener(new ConnectionStateListener() {
             @Override
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
                 logger.info(String.format("CuratorFramework state changed: %s", newState));
+
+                if (isInitialized) {
+                    return;
+                }
+
+                if (newState == ConnectionState.CONNECTED) {
+                    try {
+                        dispatchInitEvent();
+                        isInitialized = true;
+                    } catch (Exception ex) {
+                        logger.fatal(ex);
+                    }
+                }
             }
         });
 
-        curatorFramework.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
+        client.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
             @Override
             public void unhandledError(String message, Throwable e) {
                 logger.error("CuratorFramework  : " + message, e);
@@ -149,9 +160,9 @@ public class ZookeeperKernel implements Kernel
     {
 
         EnsurePath ensurePath       = new EnsurePath(listener.getPath());
-        PathChildrenCache pathCache = new PathChildrenCache(curatorFramework, listener.getPath(), true);
+        PathChildrenCache pathCache = new PathChildrenCache(client, listener.getPath(), true);
 
-        ensurePath.ensure(curatorFramework.getZookeeperClient());
+        ensurePath.ensure(client.getZookeeperClient());
 
         pathCache.getListenable().addListener(new PathChildrenCacheListener() {
             @Override

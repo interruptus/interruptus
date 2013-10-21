@@ -185,13 +185,23 @@ public class ZookeeperConfiguration
         return result;
     }
 
-    public synchronized void start() throws IOException, Exception
+    /**
+     * @TODO - Start flows
+     *
+     * @throws IOException
+     * @throws Exception
+     */
+    public synchronized void startLeadership() throws Exception
     {
-        
     }
 
-    public synchronized void destroy() throws IOException, Exception
+    /**
+     * @TODO - Stop flows
+     *
+     * @throws IOException
+     * @throws Exception
+     */
+    public synchronized void stopLeadership() throws Exception
     {
-        //@TODO - Stop AMQP Sinks
     }
 }

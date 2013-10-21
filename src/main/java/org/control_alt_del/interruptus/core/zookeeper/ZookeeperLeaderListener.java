@@ -27,18 +27,18 @@ public class ZookeeperLeaderListener implements LeaderSelectorListener
         config.setLeader(Boolean.TRUE);
         
         try{
-            config.start();
+            config.startLeadership();
 
             // hold while is the leader
             while (config.isLeader()) {
                 // @TODO - lame !!!
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
 
         }catch(Exception e){
             logger.error(this, e);
         }finally{
-            config.destroy();
+            config.stopLeadership();
         }
 
         // this callback will get called when you are the leader
