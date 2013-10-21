@@ -2,8 +2,6 @@ package org.control_alt_del.interruptus.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +134,7 @@ public class ZookeeperConfiguration
 
     public Boolean save(Flow flow) throws IOException, Exception
     {
-        return saveNode(Flow.class, flow.getName());
+        return saveNode(flow, flow.getName());
     }
 
     public Boolean remove(Flow flow) throws IOException, Exception
@@ -146,7 +144,7 @@ public class ZookeeperConfiguration
 
     public Boolean save(Type type) throws IOException, Exception
     {
-        return saveNode(Type.class, type.getName());
+        return saveNode(type, type.getName());
     }
 
     public Boolean remove(Type type) throws IOException, Exception
@@ -156,7 +154,7 @@ public class ZookeeperConfiguration
 
     public Boolean save(Statement statement) throws IOException, Exception
     {
-        return saveNode(Statement.class, statement.getName());
+        return saveNode(statement, statement.getName());
     }
 
     public Boolean remove(Statement statement) throws IOException, Exception

@@ -24,6 +24,7 @@ import org.control_alt_del.interruptus.entity.Type;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.control_alt_del.interruptus.core.ZookeeperConfiguration;
 import org.control_alt_del.interruptus.core.esper.FlowConfiguration;
 import org.control_alt_del.interruptus.core.esper.StatementConfiguration;
 import org.control_alt_del.interruptus.core.esper.TypeConfiguration;
@@ -40,21 +41,15 @@ public class ConfigHandler
     private EPServiceProvider epService;
 
     @Autowired
-    private FlowConfiguration flowConfig;
-
-    @Autowired
-    private StatementConfiguration statementConfig;
-
-    @Autowired
-    private TypeConfiguration typeConfig;
+    private ZookeeperConfiguration config;
 
     @GET
-    public HashMap getConfig()
+    public HashMap getConfig() throws Exception
     {
         HashMap configMap           = new HashMap();
-        List<Statement> statements  = statementConfig.list();
-        List<Type> types            = typeConfig.list();
-        List<Flow> flows            = flowConfig.list();
+        List<Statement> statements  = config.list(Statement.class);
+        List<Type> types            = config.list(Type.class);
+        List<Flow> flows            = config.list(Flow.class);
 
         configMap.put("statements", statements);
         configMap.put("types", types);

@@ -36,7 +36,13 @@ abstract class AbstractConfigurationListener<T> implements ZookeeperConfiguratio
     public void invoke(CuratorFramework client, EventType eventType, Stat stat, String path, byte[] data) throws IOException
     {
         logger.info(String.format("Event \"%s\" for node \"%s\"", eventType, path));
-        
+
+        if (data == null || data.length == 0){
+            logger.info("Ignoring empty event data");
+
+            return;
+        }
+
         int version = stat.getVersion();
         String json = new String(data);
         T flow      = mapper.readValue(json, this.targetClass);
@@ -46,7 +52,7 @@ abstract class AbstractConfigurationListener<T> implements ZookeeperConfiguratio
         }
 
         if (EventType.REMOVED != eventType && childVersion.get(path).equals(version)) {
-            logger.info("Ignore change");
+            logger.info("Ignoring duplicated event");
 
             return;
         }
