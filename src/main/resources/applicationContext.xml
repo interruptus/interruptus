@@ -7,6 +7,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:component-scan base-package="org.control_alt_del.interruptus.rest" />
+    <context:component-scan base-package="org.control_alt_del.interruptus.core.esper" />
+
+    <context:property-placeholder location="classpath:configuration.properties" />
 
     <bean id="jsonObjectMapper"     class="org.codehaus.jackson.map.ObjectMapper" scope="singleton"/>
     <bean id="esperConfiguration"   class="com.espertech.esper.client.Configuration" scope="singleton" />
@@ -28,6 +31,11 @@
         <property name="arguments"      ref="esperConfiguration"/>
     </bean>
 
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
+        <property name="targetMethod"   value="initialize"/>
+        <property name="targetObject"   ref="esperDefaultProvider"/>
+    </bean>
+
     <bean id="esperDefaultProviderAdministrator"
           class="com.espertech.esper.client.EPAdministrator"
           factory-bean="esperDefaultProvider"
@@ -45,21 +53,50 @@
         <property name="arguments"      ref="esperDefaultProvider"/>
     </bean>
 
-<!--
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetMethod"   value="addEventType"/>
-        <property name="targetObject"   ref="esperConfiguration"/>
-        <property name="arguments">
+    <bean id="zookeeperConfiguration" class="org.control_alt_del.interruptus.core.ZookeeperConfiguration" scope="singleton">
+        <constructor-arg value="${zookeeper.configuration.path}"/>
+        <property name="typeConfiguration" ref="typeConfiguration"/>
+        <property name="flowConfiguration" ref="flowConfiguration"/>
+    </bean>
+
+    <bean id="zookeeperLeaderListener" class="org.control_alt_del.interruptus.core.zookeeper.ZookeeperLeaderListener">
+        <constructor-arg ref="zookeeperConfiguration"/>
+    </bean>
+
+    <bean id="curatorFramework" class="org.control_alt_del.interruptus.core.zookeeper.ZookeeperFactoryBean">
+        <property name="connectionString" value="${zookeeper.connection}"/>
+    </bean>
+
+    <bean id="zookeeperKernel" class="org.control_alt_del.interruptus.core.ZookeeperKernel">
+        <property name="leaderSelectorPath"     value="${zookeeper.leader.path}"/>
+        <property name="leaderSelectorListener" ref="zookeeperLeaderListener"/>
+        <property name="zookeeperConfiguration" ref="zookeeperConfiguration"/>
+        <property name="curatorFramework"       ref="curatorFramework"/>
+        <property name="listeners">
             <list>
-                <value>map</value>
-                <ref bean="esperProperties" />
+                <!-- The order matters,  flows and statements depends on types-->
+                <bean class="org.control_alt_del.interruptus.core.zookeeper.TypeConfigurationListener">
+                    <constructor-arg value="${zookeeper.configuration.path}/type" index="0"/>
+                    <constructor-arg ref="typeConfiguration" index="1"/>
+                </bean>
+                <bean class="org.control_alt_del.interruptus.core.zookeeper.StatementConfigurationListener">
+                    <constructor-arg value="${zookeeper.configuration.path}/statement" index="0"/>
+                    <constructor-arg ref="statementConfiguration" index="1"/>
+                </bean>
+                <bean class="org.control_alt_del.interruptus.core.zookeeper.FlowConfigurationListener">
+                    <constructor-arg value="${zookeeper.configuration.path}/flow" index="0"/>
+                    <constructor-arg ref="flowConfiguration" index="1"/>
+                </bean>
             </list>
         </property>
     </bean>
--->
 
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
-        <property name="targetMethod"   value="initialize"/>
-        <property name="targetObject"   ref="esperDefaultProvider"/>
+    <bean class="org.control_alt_del.interruptus.core.ApplicationStartListener">
+        <constructor-arg ref="zookeeperKernel"/>
     </bean>
+
+    <bean class="org.control_alt_del.interruptus.core.ApplicationStopListener">
+        <constructor-arg ref="zookeeperKernel"/>
+    </bean>
+
 </beans>

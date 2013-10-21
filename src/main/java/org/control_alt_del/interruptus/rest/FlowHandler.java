@@ -1,14 +1,5 @@
 package org.control_alt_del.interruptus.rest;
 
-import com.espertech.esper.client.Configuration;
-import com.espertech.esper.client.EPAdministrator;
-import com.espertech.esper.client.EPException;
-import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
-import com.espertech.esper.client.dataflow.EPDataFlowInstance;
-import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,6 +8,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.control_alt_del.interruptus.core.ZookeeperConfiguration;
+import org.control_alt_del.interruptus.core.esper.FlowConfiguration;
 import org.control_alt_del.interruptus.entity.Flow;
 
 import org.springframework.stereotype.Component;
@@ -29,49 +22,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class FlowHandler
 {
     @Autowired
-    private Configuration config;
+    private ZookeeperConfiguration zookeeper;
 
     @Autowired
-    private EPServiceProvider epService;
-
-    @Autowired
-    private EPAdministrator epAdministrator;
-
-// @TODO:  It would be nice if the flow state was retrieved and pushed into the entity. Hrmmm....
+    private FlowConfiguration configuration;
 
     @GET
-    public List<Flow> listFlows()
+    public List<Flow> list() throws Exception
     {
-        EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
-        String[] dataFlowsNames       = flowRuntime.getDataFlows();
-        List<Flow> list               = new ArrayList<Flow>();
-
-        for (String name : dataFlowsNames) {
-            EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
-
-            list.add(new Flow(name, descriptor.getStatementName()));
-        }
-
-        return list;
+        return zookeeper.list(Flow.class);
     }
 
     @POST
-    public Flow createFlow(Flow flow)
+    public Flow create(Flow flow) throws Exception
     {
-        epAdministrator.createEPL(flow.getQuery(), flow.getName());
+        zookeeper.save(flow);
 
-        EPRuntime epRuntime             = epService.getEPRuntime();
-        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
-        instance.start();
         return flow;
     }
 
-// @TODO Kind of lame here... did it work? who knows!
-    @DELETE
-    public Boolean cancelFlow(Flow flow)
+    @POST
+    @Path("/start")
+    public Boolean start(Flow flow) throws Exception
     {
-        epService.getEPRuntime().getDataFlowRuntime().instantiate(flow.getName()).cancel();
+        return configuration.start(flow);
+    }
+
+    @DELETE
+    public Boolean destroy(Flow flow) throws Exception
+    {
+        zookeeper.remove(flow);
+
         return true;
     }
     
