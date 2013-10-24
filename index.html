@@ -216,13 +216,25 @@ EOF
 <h1>
 <a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h1>
 
-<p>Initial CEP engine and REST API is complete and working. </p>
-
-<p>Clustering is currently in progress: distributed configuration, master election, and master transitions.</p>
-
-<p>Once this is complete, the next items on the hit-list are</p>
+<p>Features that have been completed:</p>
 
 <ul>
+<li>Initial CEP engine and REST API integration</li>
+<li>AMQP flow integration</li>
+<li>Automagic AMQP message to Java bean integration</li>
+<li>Compressed messages</li>
+<li>Clustered operation
+
+<ul>
+<li>Master election</li>
+<li>Distributed configuration</li>
+</ul>
+</li>
+</ul><p>In progress/to-do</p>
+
+<ul>
+<li>Master/standby transitions (having only the master start outbound flows)</li>
+<li>Event inventory API: Ability to view at runtime the list of types that the system has seen along with the properties. To be used for building event patterns. First pass could store this in memory, future iterations to hold this in zookeeper.</li>
 <li>building up a pattern library and example code to showcase various integration scenarios</li>
 <li>start work on a user-interface</li>
 <li>integrate predictive models</li>
