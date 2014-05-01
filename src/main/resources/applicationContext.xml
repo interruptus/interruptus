@@ -6,12 +6,17 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:component-scan base-package="org.control_alt_del.interruptus.rest" />
-    <context:component-scan base-package="org.control_alt_del.interruptus.core.esper" />
+    <context:component-scan base-package="org.cad.interruptus.rest" />
+    <context:component-scan base-package="org.cad.interruptus.core.esper" />
 
     <context:property-placeholder location="classpath:configuration.properties" />
 
-    <bean id="jsonObjectMapper"     class="org.codehaus.jackson.map.ObjectMapper" scope="singleton"/>
+    <bean id="gsonBuilder" class="com.google.gson.GsonBuilder">
+        <property name="dateFormat" value="yyyy-MM-dd HH:mm:ss"/>
+    </bean>
+
+    <bean id="gson" class="com.google.gson.Gson" factory-bean="gsonBuilder" factory-method="create"/>
+
     <bean id="esperConfiguration"   class="com.espertech.esper.client.Configuration" scope="singleton" />
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
@@ -49,25 +54,38 @@
           scope="singleton"/>
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" lazy-init="false" scope="singleton">
-        <property name="staticMethod"   value="org.control_alt_del.interruptus.AMQPJsonToMap.setEPServiceProvider"/>
+        <property name="staticMethod"   value="org.cad.interruptus.AMQPJsonToMap.setEPServiceProvider"/>
         <property name="arguments"      ref="esperDefaultProvider"/>
     </bean>
 
-    <bean id="zookeeperConfiguration" class="org.control_alt_del.interruptus.core.ZookeeperConfiguration" scope="singleton">
-        <constructor-arg value="${zookeeper.configuration.path}"/>
-        <property name="typeConfiguration" ref="typeConfiguration"/>
-        <property name="flowConfiguration" ref="flowConfiguration"/>
+    <bean id="zookeeperConfiguration" class="org.cad.interruptus.core.ZookeeperConfiguration" scope="singleton">
+        <constructor-arg index="0" value="${zookeeper.configuration.path}"/>
+        <constructor-arg index="1" ref="gson"/>
     </bean>
 
-    <bean id="zookeeperLeaderListener" class="org.control_alt_del.interruptus.core.zookeeper.ZookeeperLeaderListener">
+    <!-- esper configuration -->
+    <bean id="flowConfiguration" class="org.cad.interruptus.core.esper.FlowConfiguration">
+        <constructor-arg index="0" ref="esperDefaultProvider"/>
+        <constructor-arg index="1" ref="esperDefaultProviderAdministrator"/>
+    </bean>
+    
+    <bean id="statementConfiguration" class="org.cad.interruptus.core.esper.StatementConfiguration">
+        <constructor-arg index="0" ref="esperDefaultProviderAdministrator"/>
+    </bean>
+    
+    <bean id="typeConfiguration" class="org.cad.interruptus.core.esper.TypeConfiguration">
+        <constructor-arg index="0" ref="esperDefaultProvider"/>
+    </bean>
+
+    <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener">
         <constructor-arg ref="zookeeperConfiguration"/>
     </bean>
 
-    <bean id="curatorFramework" class="org.control_alt_del.interruptus.core.zookeeper.ZookeeperFactoryBean">
+    <bean id="curatorFramework" class="org.cad.interruptus.core.zookeeper.ZookeeperFactoryBean">
         <property name="connectionString" value="${zookeeper.connection}"/>
     </bean>
 
-    <bean id="zookeeperKernel" class="org.control_alt_del.interruptus.core.ZookeeperKernel">
+    <bean id="zookeeperKernel" class="org.cad.interruptus.core.ZookeeperKernel">
         <property name="leaderSelectorPath"     value="${zookeeper.leader.path}"/>
         <property name="leaderSelectorListener" ref="zookeeperLeaderListener"/>
         <property name="zookeeperConfiguration" ref="zookeeperConfiguration"/>
@@ -75,27 +93,30 @@
         <property name="listeners">
             <list>
                 <!-- The order matters,  flows and statements depends on types-->
-                <bean class="org.control_alt_del.interruptus.core.zookeeper.TypeConfigurationListener">
+                <bean class="org.cad.interruptus.core.zookeeper.TypeConfigurationListener">
                     <constructor-arg value="${zookeeper.configuration.path}/type" index="0"/>
                     <constructor-arg ref="typeConfiguration" index="1"/>
+                    <constructor-arg ref="gson" index="2"/>
                 </bean>
-                <bean class="org.control_alt_del.interruptus.core.zookeeper.StatementConfigurationListener">
+                <bean class="org.cad.interruptus.core.zookeeper.StatementConfigurationListener">
                     <constructor-arg value="${zookeeper.configuration.path}/statement" index="0"/>
                     <constructor-arg ref="statementConfiguration" index="1"/>
+                    <constructor-arg ref="gson" index="2"/>
                 </bean>
-                <bean class="org.control_alt_del.interruptus.core.zookeeper.FlowConfigurationListener">
+                <bean class="org.cad.interruptus.core.zookeeper.FlowConfigurationListener">
                     <constructor-arg value="${zookeeper.configuration.path}/flow" index="0"/>
                     <constructor-arg ref="flowConfiguration" index="1"/>
+                    <constructor-arg ref="gson" index="2"/>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <bean class="org.control_alt_del.interruptus.core.ApplicationStartListener">
+    <bean class="org.cad.interruptus.core.ApplicationStartListener">
         <constructor-arg ref="zookeeperKernel"/>
     </bean>
 
-    <bean class="org.control_alt_del.interruptus.core.ApplicationStopListener">
+    <bean class="org.cad.interruptus.core.ApplicationStopListener">
         <constructor-arg ref="zookeeperKernel"/>
     </bean>
 

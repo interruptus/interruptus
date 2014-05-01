@@ -3,16 +3,36 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dnet.monitor</groupId>
     <artifactId>interruptus</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
+
     <properties>
-        <jetty.version>8.1.12.v20130726</jetty.version>
-        <esper.version>4.9.0</esper.version>
+        <cucumber.options>--format pretty</cucumber.options>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <json-simple.version>1.1.1</json-simple.version>
-        <spring.version>3.2.4.RELEASE</spring.version>
-        <curator.version>2.2.0-incubating</curator.version>
+        <jetty.version>9.1.4.v20140401</jetty.version>
+        <spring.version>3.2.6.RELEASE</spring.version>
+        <curator.version>2.3.0</curator.version>
+        <jersey.version>2.4.1</jersey.version>
+        <esper.version>4.9.0</esper.version>
+        <gson.version>2.2.4</gson.version>
+        <lyra.version>0.3.2</lyra.version>
+        <skipTests>false</skipTests>
     </properties>
+
     <dependencies>
        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        <!-- Zookeeper dependencies -->
+        <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
             <version>${curator.version}</version>
@@ -22,6 +42,7 @@
             <artifactId>curator-recipes</artifactId>
             <version>${curator.version}</version>
         </dependency>
+        <!-- Esper dependecies -->
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper</artifactId>
@@ -32,28 +53,7 @@
             <artifactId>esperio-amqp</artifactId>
             <version>${esper.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>${json-simple.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <!-- Jersey -->
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <!-- Spring 3 dependencies -->
+        <!-- Spring dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -64,81 +64,230 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <!-- jersey dependencies -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jersey.ext</groupId>
+          <artifactId>jersey-spring3</artifactId>
+          <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>1.1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>1.1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>1.1.6</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
-        <!-- Jersey + Spring -->
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-spring</artifactId>
-            <version>1.8</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-inmemory</artifactId>
+            <version>${jersey.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <version>1.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>br.com.six2six</groupId>
+            <artifactId>fixture-factory</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.2.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.10</version>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopKey>foo</stopKey>
-                    <stopPort>9999</stopPort>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start-jetty</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
-                            <daemon>true</daemon>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-jetty</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>integration-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <cucumber.options>--format html:target/cucumber</cucumber.options>     
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>add-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/it/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-resource</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/it/resources</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- block unit tests execution -->
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.16</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.16</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <cucumber.options>${cucumber.options}</cucumber.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>9.1.0.v20131115</version>
+                        <configuration>
+                            <stopKey>Youllneverwalkalone</stopKey>
+                            <stopPort>9995</stopPort> 
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <daemon>true</daemon>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>info.cukes</groupId>
+                    <artifactId>cucumber-picocontainer</artifactId>
+                    <version>1.1.6</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>info.cukes</groupId>
+                    <artifactId>cucumber-junit</artifactId>
+                    <version>1.1.6</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-java</artifactId>
+                    <version>2.40.0</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.picocontainer</groupId>
+                    <artifactId>picocontainer</artifactId>
+                    <version>2.14.3</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
