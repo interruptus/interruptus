@@ -1,17 +1,10 @@
 Feature: Configure types
 
-  Scenario: Create and list types
-    Given I have these types configured:
-      | {"name":"type1","properties":[{"name":"name","type":"string"},{"name":"value","type":"double"}]} |
-      | {"name":"type2","properties":[{"name":"key","type":"string"},{"name":"value","type":"string"}]} |
+Scenario Outline: Type CRUD
 
-    When I list all types
-    Then the list response should contain:
-      | {"name":"type1","properties":[{"name":"name","type":"string"},{"name":"value","type":"double"}]} |
-      | {"name":"type2","properties":[{"name":"key","type":"string"},{"name":"value","type":"string"}]} |
-
-Scenario Outline: Reading
-
+  Given I have the type "<json>" configured
+  When I list all types
+  Then the list response should contain "<json>"
   When I get the type configuration for "<name>"
   Then the get response should be "<json>"
 

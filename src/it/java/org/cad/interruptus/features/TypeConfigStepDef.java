@@ -15,12 +15,10 @@ public class TypeConfigStepDef extends BaseResourceSteps
     ClientResponse listResponse;
     ClientResponse getResponse;
 
-    @Given("^I have these types configured:$")
-    public void i_have_these_types_configured(DataTable table) throws Throwable
+    @Given("^I have the type \"(.*?)\" configured$")
+    public void i_have_the_type_configured$(String data) throws Throwable
     {
-        for (String input : table.asList(String.class)) {
-            this.post("type", input);
-        }
+        this.post("type", data);
     }
 
     @When("^I list all types$")
@@ -29,8 +27,8 @@ public class TypeConfigStepDef extends BaseResourceSteps
         listResponse = this.get("type");
     }
 
-    @Then("^the list response should contain:$")
-    public void the_list_response_should_contain(DataTable table) throws Throwable
+    @Then("^the list response should contain \"(.*?)\"$")
+    public void the_list_response_should_contain(String data) throws Throwable
     {
         final String response                   = listResponse.getEntity(String.class);
         final JSONArray jsonArray               = new JSONArray(response);
@@ -43,13 +41,11 @@ public class TypeConfigStepDef extends BaseResourceSteps
             actualMap.put(name, object);
         }
 
-        for (String data : table.asList(String.class)) {
-            final JSONObject expectedJson = new JSONObject(data);
-            final String  name            = String.valueOf(expectedJson.get("name"));
-            final JSONObject actualJson   = actualMap.containsKey(name) ? actualMap.get(name): null;
+        final JSONObject expectedJson = new JSONObject(data);
+        final String  name            = String.valueOf(expectedJson.get("name"));
+        final JSONObject actualJson   = actualMap.containsKey(name) ? actualMap.get(name): null;
 
-            JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        }
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
     @When("^I get the type configuration for \"(.*?)\"$")
