@@ -5,8 +5,7 @@ Scenario Outline: Type CRUD
     Given I have the type "<json>" configured
     When I list all types
     Then the list response should contain "<json>"
-    When I get the type configuration for "<name>"
-    Then the get response should be "<json>"
+    When I get the type configuration for "<name>" the response should be "<json>"
 
     Examples:
         | name  | json 																							   |

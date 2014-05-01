@@ -48,15 +48,11 @@ public class TypeConfigStepDef extends BaseResourceSteps
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
-    @When("^I get the type configuration for \"(.*?)\"$")
-    public void i_get_the_type_configuration_for(String name) throws Throwable
+    @When("^I get the type configuration for \"(.*?)\" the response should be \"(.*?)\"$$")
+    public void i_get_the_type_configuration_for(String name, String data) throws Throwable
     {
         getResponse = this.get("type/" + name);
-    }
 
-    @Then("^the get response should be \"(.*?)\"$")
-    public void the_get_response_should_be(String data) throws Throwable
-    {
         final JSONObject expectedJson = new JSONObject(data);
         final JSONObject actualJson   = new JSONObject(getResponse.getEntity(String.class));
 
