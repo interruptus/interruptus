@@ -1,7 +1,6 @@
-package org.cad.interruptus.features;
+package org.cad.interruptus.features.steps;
 
 import com.sun.jersey.api.client.ClientResponse;
-import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
 import java.util.HashMap;
 import java.util.Map;

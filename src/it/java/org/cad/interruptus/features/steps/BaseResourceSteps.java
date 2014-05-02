@@ -1,4 +1,4 @@
-package org.cad.interruptus.features;
+package org.cad.interruptus.features.steps;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -6,10 +6,22 @@ import com.sun.jersey.api.client.WebResource;
 
 public abstract class BaseResourceSteps
 {
+    final String baseUrl;
+
+    public BaseResourceSteps(String baseUrl)
+    {
+        this.baseUrl = baseUrl;
+    }
+
+    public BaseResourceSteps()
+    {
+        this("http://localhost:8080/api/");
+    }
+
     public ClientResponse post(final String name, final String body) throws Throwable
     {
         final Client client             = Client.create();
-        final String url                = "http://localhost:8080/api/" + name;
+        final String url                = baseUrl + name;
         final WebResource webResource   = client.resource(url);
         ClientResponse response         = webResource
             .type("application/json")
@@ -25,7 +37,7 @@ public abstract class BaseResourceSteps
     public ClientResponse get(final String path) throws Throwable
     {
         final Client client           = Client.create();
-        final String url                = "http://localhost:8080/api/" + path;
+        final String url              = baseUrl + path;
         final WebResource webResource = client.resource(url);
         final ClientResponse response = webResource
             .accept("application/json")
