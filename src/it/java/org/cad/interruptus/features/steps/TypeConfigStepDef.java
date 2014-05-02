@@ -19,20 +19,20 @@ public class TypeConfigStepDef extends BaseResourceSteps
     public void the_following_types_exist(DataTable table) throws Throwable 
     {
         for (String data : table.asList(String.class)) {
-            this.post("type", data);
+            this.postResource("type", data);
         }
     }
 
     @Given("^I have the type \"(.*?)\" configured$")
     public void i_have_the_type_configured$(String data) throws Throwable
     {
-        this.post("type", data);
+        this.postResource("type", data);
     }
 
     @When("^I list all types$")
     public void i_list_all_types() throws Throwable
     {
-        listResponse = this.get("type");
+        listResponse = this.getResource("type");
     }
 
     @Then("^the list response should contain \"(.*?)\"$")
@@ -59,7 +59,7 @@ public class TypeConfigStepDef extends BaseResourceSteps
     @When("^I get the type configuration for \"(.*?)\" the response should be \"(.*?)\"$$")
     public void i_get_the_type_configuration_for(String name, String data) throws Throwable
     {
-        getResponse = this.get("type/" + name);
+        getResponse = this.getResource("type/" + name);
 
         final JSONObject expectedJson = new JSONObject(data);
         final JSONObject actualJson   = new JSONObject(getResponse.getEntity(String.class));

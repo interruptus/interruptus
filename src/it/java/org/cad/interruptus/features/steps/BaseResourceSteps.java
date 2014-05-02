@@ -18,7 +18,7 @@ public abstract class BaseResourceSteps
         this("http://localhost:8080/api/");
     }
 
-    public ClientResponse post(final String name, final String body) throws Throwable
+    public ClientResponse postResource(final String name, final String body) throws Throwable
     {
         final Client client             = Client.create();
         final String url                = baseUrl + name;
@@ -34,7 +34,7 @@ public abstract class BaseResourceSteps
         return response;
     }
 
-    public ClientResponse get(final String path) throws Throwable
+    public ClientResponse getResource(final String path) throws Throwable
     {
         final Client client           = Client.create();
         final String url              = baseUrl + path;
@@ -42,6 +42,22 @@ public abstract class BaseResourceSteps
         final ClientResponse response = webResource
             .accept("application/json")
             .get(ClientResponse.class);
+
+        if (response.getStatus() != 200) {
+            throw new RuntimeException(String.format("[%s] - Failed to get from '%s'", response.getStatus(), url));
+        }
+
+        return response;
+    }
+
+    public ClientResponse deleteResource(final String path) throws Throwable
+    {
+        final Client client           = Client.create();
+        final String url              = baseUrl + path;
+        final WebResource webResource = client.resource(url);
+        final ClientResponse response = webResource
+            .accept("application/json")
+            .delete(ClientResponse.class);
 
         if (response.getStatus() != 200) {
             throw new RuntimeException(String.format("[%s] - Failed to get from '%s'", response.getStatus(), url));
