@@ -3,9 +3,6 @@ package org.cad.interruptus.entity;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
- */
 @XmlRootElement
 public class Type
 {
@@ -18,7 +15,7 @@ public class Type
 
     public Type(String name, List<TypeProperty> properties)
     {
-        this.name       = name;
+        this.name = name;
         this.properties = properties;
     }
 

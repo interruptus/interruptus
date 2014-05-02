@@ -10,33 +10,34 @@ import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-public class TypeConfigStepDef extends BaseResourceSteps
+public class StatementConfigStepDef extends BaseResourceSteps
 {
     ClientResponse listResponse;
     ClientResponse getResponse;
-    
-    @Given("^the following types exist:$")
-    public void the_following_types_exist(DataTable table) throws Throwable 
+    ClientResponse statusResponse;
+
+    @Given("^the following statements exist:$")
+    public void the_following_statements_exist(DataTable table) throws Throwable 
     {
         for (String data : table.asList(String.class)) {
-            this.post("type", data);
+            this.post("statement", data);
         }
     }
 
-    @Given("^I have the type \"(.*?)\" configured$")
-    public void i_have_the_type_configured$(String data) throws Throwable
+    @Given("^I have the statement \"(.*?)\" configured$")
+    public void i_have_the_statement_configured$(String data) throws Throwable
     {
-        this.post("type", data);
+        this.post("statement", data);
     }
 
-    @When("^I list all types$")
-    public void i_list_all_types() throws Throwable
+    @When("^I list all statements$")
+    public void i_list_all_statements() throws Throwable
     {
-        listResponse = this.get("type");
+        listResponse = this.get("statement");
     }
 
-    @Then("^the list response should contain \"(.*?)\"$")
-    public void the_list_response_should_contain(String data) throws Throwable
+    @Then("^the statement list should contain \"(.*?)\"$")
+    public void the_statement_list_should_contain(String data) throws Throwable
     {
         final String response                   = listResponse.getEntity(String.class);
         final JSONArray jsonArray               = new JSONArray(response);
@@ -56,10 +57,21 @@ public class TypeConfigStepDef extends BaseResourceSteps
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
-    @When("^I get the type configuration for \"(.*?)\" the response should be \"(.*?)\"$$")
-    public void i_get_the_type_configuration_for(String name, String data) throws Throwable
+    @When("^I get the statement configuration for \"(.*?)\" the response should be \"(.*?)\"$$")
+    public void i_get_the_statement_configuration_for(String name, String data) throws Throwable
     {
-        getResponse = this.get("type/" + name);
+        getResponse = this.get("statement/" + name);
+
+        final JSONObject expectedJson = new JSONObject(data);
+        final JSONObject actualJson   = new JSONObject(getResponse.getEntity(String.class));
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+    }
+    
+    @When("^I check the statement status for \"(.*?)\" the response should be:$")
+    public void i_check_the_statement_status_for_the_response_should_be(String name, String data) throws Throwable 
+    {
+        statusResponse = this.get("statement/" + name + "/status");
 
         final JSONObject expectedJson = new JSONObject(data);
         final JSONObject actualJson   = new JSONObject(getResponse.getEntity(String.class));

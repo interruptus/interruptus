@@ -1,76 +1,41 @@
 package org.cad.interruptus.rest;
 
 import com.espertech.esper.client.EPException;
-import com.espertech.esper.client.EPStatementException;
 import com.espertech.esper.client.EPStatementState;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.MediaType;
-import org.springframework.stereotype.Component;
-import org.cad.interruptus.entity.Statement;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.cad.interruptus.core.ZookeeperConfiguration;
+import org.cad.interruptus.core.EntityNotFoundException;
 import org.cad.interruptus.core.esper.StatementConfiguration;
+import org.cad.interruptus.entity.Statement;
+import org.cad.interruptus.repository.EntityRepository;
+import org.cad.interruptus.repository.StatementRepository;
 
-@Component
+@Singleton
 @Path("/statement")
-@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-public class StatementResource
+@Produces({MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_JSON})
+public class StatementResource extends AbstractResource<String, Statement>
 {
-    final private static Log log = LogFactory.getLog(StatementResource.class);
+    @Inject
+    private StatementRepository repository;
 
-    @Autowired
-    private ZookeeperConfiguration zookeeper;
-
-    @Autowired
+    @Inject
     private StatementConfiguration configuration;
 
-    @GET
-    public List<Statement> listStatements() throws Exception
+    @Override
+    protected EntityRepository<String, Statement> getRepository()
     {
-        return zookeeper.list(Statement.class);
-    }
-
-    @GET
-    @Path("/{name}")
-    public Statement get(@PathParam("name") String name) throws Exception
-    {
-        return zookeeper.get(Statement.class, name);
-    }
-
-    @POST
-    public Statement createStatement(Statement statement) throws EPStatementException, Exception
-    {
-        configuration.create(statement);
-        zookeeper.save(statement);
-
-        return statement;
-    }
-
-    @DELETE
-    public Statement remoteStatement(Statement statement) throws EPStatementException, Exception
-    {
-        configuration.create(statement);
-        zookeeper.remove(statement);
-
-        return statement;
-    }
-
-
-    @POST
-    @Path("/start")
-    public Boolean startStatement(Statement statement)
-    {
-	return configuration.start(statement);
+        return repository;
     }
 
     @GET
@@ -79,39 +44,56 @@ public class StatementResource
     {
 	return configuration.startAll();
     }
-
+    
     @POST
-    @Path("/stop")
-    public Boolean stopStatement(Statement statement)
+    @Path("/{name}/start")
+    public Boolean startStatement(@PathParam("name") String name) throws Exception
     {
-	return configuration.stop(statement);
+	return configuration.start(repository.findById(name));
     }
 
-    @GET
+    @POST
+    @Path("/{name}/stop")
+    public Boolean stopStatement(@PathParam("name") String name) throws Exception
+    {
+	return configuration.stop(repository.findById(name));
+    }
+
+    @POST
     @Path("/stopAll")
     public Boolean stopAllStatements()
     {
 	return configuration.stopAll();
     }
 
+    @POST
     @Path("/destroyAll")
-    @GET
     public Boolean destroyAllStatements() throws EPException
     {
 	return configuration.destroyAll();
     }
 
-    @POST
-    @Path("/state")
-    public EPStatementState getStatementState(Statement statement) throws EPStatementException
+    @GET
+    @Path("/{name}/state")
+    public Map<String, String> getStatementState(@PathParam("name") String name) throws Exception
     {
-	return configuration.getStatementState(statement);
+        final Map<String, String> map = new HashMap<>();
+        final EPStatementState state  = configuration.getStatementState(name);
+
+        if (state == null) {
+            throw new EntityNotFoundException(name);
+        }
+
+        map.put("name", name);
+        map.put("status", state.toString());
+
+	return map;
     }
 
     @POST
-    @Path("/destroy")
-    public Boolean destroyStatement(Statement statement)
+    @Path("/{name}/destroy")
+    public Boolean destroyStatement(@PathParam("name") String name) throws Exception
     {
-        return configuration.destroy(statement);
+        return configuration.remove(repository.findById(name));
     }
 }

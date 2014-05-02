@@ -6,9 +6,9 @@ public interface EsperConfiguration<T>
 {
     public List<T> list();
 
-    public T create(T flow);
+    public void save(T e);
 
-    public Boolean destroy(T flow);
+    public Boolean remove(T e);
 
-    public Boolean exists(T flow);
+    public Boolean exists(T e);
 }

@@ -130,17 +130,17 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d 
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/interruptus/api/flow <<EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/interruptus/api/flow <<EOF | python -m json.tool
-{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -> outstream<EventLog> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.control_alt_del.interruptus.EventToAMQP'},logMessages: true}"}
+{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -> outstream<EventLog> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
 EOF
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/interruptus/api/flow
 
 curl -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/interruptus/api/flow <<EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.control_alt_del.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
 EOF
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/interruptus/api/flow

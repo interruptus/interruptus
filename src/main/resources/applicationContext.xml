@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
@@ -58,9 +60,65 @@
         <property name="arguments"      ref="esperDefaultProvider"/>
     </bean>
 
-    <bean id="zookeeperConfiguration" class="org.cad.interruptus.core.ZookeeperConfiguration" scope="singleton">
-        <constructor-arg index="0" value="${zookeeper.configuration.path}"/>
-        <constructor-arg index="1" ref="gson"/>
+    <!-- zookeeper configuration -->
+    <util:set id="typePathListenersSet">
+        <ref bean="typeZookeeperListener"/>
+    </util:set>
+
+    <util:set id="flowPathListenersSet">
+        <ref bean="flowZookeeperListener"/>
+    </util:set>
+
+    <util:set id="statementPathListenersSet">
+        <ref bean="statementZookeeperListener"/>
+    </util:set>
+
+    <bean id="statementZookeeperListener" class="org.cad.interruptus.repository.zookeeper.listener.StatementZookeeperListener">
+        <constructor-arg index="0" value="{zookeeper.configuration.statement.path}" />
+        <constructor-arg index="1" ref="typeEntityCache" />
+        <constructor-arg index="2" ref="gson" />
+        <constructor-arg index="3" ref="statementConfiguration" />
+    </bean>
+
+    <bean id="flowZookeeperListener" class="org.cad.interruptus.repository.zookeeper.listener.FlowZookeeperListener">
+        <constructor-arg index="0" value="{zookeeper.configuration.flow.path}" />
+        <constructor-arg index="1" ref="typeEntityCache" />
+        <constructor-arg index="2" ref="gson" />
+        <constructor-arg index="3" ref="flowConfiguration" />
+    </bean>
+
+    <bean id="typeZookeeperListener" class="org.cad.interruptus.repository.zookeeper.listener.TypeZookeeperListener">
+        <constructor-arg index="0" value="{zookeeper.configuration.type.path}" />
+        <constructor-arg index="1" ref="typeEntityCache" />
+        <constructor-arg index="2" ref="gson" />
+        <constructor-arg index="3" ref="typeConfiguration" />
+    </bean>
+
+    <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener"/>
+
+    <util:map id="pathListeners" key-type="java.lang.String" >
+        <entry key="${zookeeper.configuration.type.path}"       value-ref="typePathListenersSet"/>
+        <entry key="${zookeeper.configuration.flow.path}"       value-ref="flowPathListenersSet"/>
+        <entry key="${zookeeper.configuration.statement.path}"  value-ref="statementPathListenersSet"/>
+    </util:map>
+
+    <bean id="attachPathListener" class="org.cad.interruptus.core.zookeeper.AttachPathListener">
+        <property name="listeners" ref="pathListeners"/>
+    </bean>
+
+    <bean id="attachLeaderSelectorListener" class="org.cad.interruptus.core.zookeeper.AttachLeaderSelectorListener">
+        <constructor-arg index="0" ref="zookeeperLeaderListener"/>
+        <constructor-arg index="1" value="${zookeeper.leader.path}"/>
+    </bean>
+
+    <bean id="zookeeperClient" class="org.cad.interruptus.core.ZookeeperFactoryBean" lazy-init="false">
+        <property name="connection" value="${zookeeper.connection}"/>
+        <property name="lifecycleListeners">
+            <list>
+                <ref bean="attachPathListener"/>
+                <ref bean="attachLeaderSelectorListener"/>
+            </list>
+        </property>
     </bean>
 
     <!-- esper configuration -->
@@ -77,47 +135,32 @@
         <constructor-arg index="0" ref="esperDefaultProvider"/>
     </bean>
 
-    <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener">
-        <constructor-arg ref="zookeeperConfiguration"/>
+    <!-- Entity cache -->
+    <bean id="typeEntityCache" class="org.cad.interruptus.core.CacheFactoryBean" />
+    <bean id="flowEntityCache" class="org.cad.interruptus.core.CacheFactoryBean" />
+    <bean id="statementEntityCache" class="org.cad.interruptus.core.CacheFactoryBean" />
+
+    <!-- Repository -->
+    <bean id="typeRepositoryZookeeper" class="org.cad.interruptus.repository.zookeeper.TypeRepositoryZookeeper">
+        <constructor-arg index="0" ref="zookeeperClient"/>
+        <constructor-arg index="1" ref="typeEntityCache"/>
+        <constructor-arg index="2" ref="gson"/>
+        <constructor-arg index="3" value="${zookeeper.configuration.type.path}"/>
     </bean>
 
-    <bean id="curatorFramework" class="org.cad.interruptus.core.zookeeper.ZookeeperFactoryBean">
-        <property name="connectionString" value="${zookeeper.connection}"/>
+    <bean id="flowRepositoryZookeeper" class="org.cad.interruptus.repository.zookeeper.FlowRepositoryZookeeper">
+        <constructor-arg index="0" ref="zookeeperClient"/>
+        <constructor-arg index="1" ref="flowEntityCache"/>
+        <constructor-arg index="2" ref="gson"/>
+        <constructor-arg index="3" value="${zookeeper.configuration.flow.path}"/>
     </bean>
 
-    <bean id="zookeeperKernel" class="org.cad.interruptus.core.ZookeeperKernel">
-        <property name="leaderSelectorPath"     value="${zookeeper.leader.path}"/>
-        <property name="leaderSelectorListener" ref="zookeeperLeaderListener"/>
-        <property name="zookeeperConfiguration" ref="zookeeperConfiguration"/>
-        <property name="curatorFramework"       ref="curatorFramework"/>
-        <property name="listeners">
-            <list>
-                <!-- The order matters,  flows and statements depends on types-->
-                <bean class="org.cad.interruptus.core.zookeeper.TypeConfigurationListener">
-                    <constructor-arg value="${zookeeper.configuration.path}/type" index="0"/>
-                    <constructor-arg ref="typeConfiguration" index="1"/>
-                    <constructor-arg ref="gson" index="2"/>
-                </bean>
-                <bean class="org.cad.interruptus.core.zookeeper.StatementConfigurationListener">
-                    <constructor-arg value="${zookeeper.configuration.path}/statement" index="0"/>
-                    <constructor-arg ref="statementConfiguration" index="1"/>
-                    <constructor-arg ref="gson" index="2"/>
-                </bean>
-                <bean class="org.cad.interruptus.core.zookeeper.FlowConfigurationListener">
-                    <constructor-arg value="${zookeeper.configuration.path}/flow" index="0"/>
-                    <constructor-arg ref="flowConfiguration" index="1"/>
-                    <constructor-arg ref="gson" index="2"/>
-                </bean>
-            </list>
-        </property>
+    <bean id="statementRepositoryZookeeper" class="org.cad.interruptus.repository.zookeeper.StatementRepositoryZookeeper">
+        <constructor-arg index="0" ref="zookeeperClient"/>
+        <constructor-arg index="1" ref="statementEntityCache"/>
+        <constructor-arg index="2" ref="gson"/>
+        <constructor-arg index="3" value="${zookeeper.configuration.statement.path}"/>
     </bean>
 
-    <bean class="org.cad.interruptus.core.ApplicationStartListener">
-        <constructor-arg ref="zookeeperKernel"/>
-    </bean>
-
-    <bean class="org.cad.interruptus.core.ApplicationStopListener">
-        <constructor-arg ref="zookeeperKernel"/>
-    </bean>
-
+    
 </beans>

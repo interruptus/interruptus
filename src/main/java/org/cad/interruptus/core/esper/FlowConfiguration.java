@@ -39,7 +39,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
     }
 
     @Override
-    public Flow create(Flow flow)
+    public void save(Flow flow)
     {
         epAdministrator.createEPL(flow.getQuery(), flow.getName());
 
@@ -48,8 +48,6 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
         EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
 
         instance.start();
-
-        return flow;
     }
 
     public Boolean start(Flow flow)
@@ -69,7 +67,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
 
     // @TODO - FIX IT !! Does not remove the flow definition
     @Override
-    public Boolean destroy(Flow flow)
+    public Boolean remove(Flow flow)
     {
         EPRuntime epRuntime             = epService.getEPRuntime();
         EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();

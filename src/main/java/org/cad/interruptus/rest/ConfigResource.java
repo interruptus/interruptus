@@ -5,8 +5,8 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EventType;
 
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.cad.interruptus.entity.Statement;
 import org.cad.interruptus.entity.Flow;
@@ -24,7 +23,9 @@ import org.cad.interruptus.entity.Type;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.cad.interruptus.core.ZookeeperConfiguration;
+import org.cad.interruptus.repository.TypeRepository;
+import org.cad.interruptus.repository.FlowRepository;
+import org.cad.interruptus.repository.StatementRepository;
 
 @Component
 @Path("/config")
@@ -34,19 +35,25 @@ public class ConfigResource
 {
     final private static Log log = LogFactory.getLog(ConfigResource.class);
 
-    @Autowired
+    @Inject
     private EPServiceProvider epService;
 
-    @Autowired
-    private ZookeeperConfiguration config;
+    @Inject
+    private TypeRepository typeRepository;
+    
+    @Inject
+    private FlowRepository flowRepository;
+
+    @Inject
+    private StatementRepository statementRepository;
 
     @GET
     public HashMap getConfig() throws Exception
     {
         HashMap configMap           = new HashMap();
-        List<Statement> statements  = config.list(Statement.class);
-        List<Type> types            = config.list(Type.class);
-        List<Flow> flows            = config.list(Flow.class);
+        List<Statement> statements  = statementRepository.findAll();
+        List<Type> types            = typeRepository.findAll();
+        List<Flow> flows            = flowRepository.findAll();
 
         configMap.put("statements", statements);
         configMap.put("types", types);
@@ -56,10 +63,11 @@ public class ConfigResource
     }
 
     @POST
-    public Boolean applyConfig (HashMap newConfig) {
+    public Boolean applyConfig (HashMap newConfig) 
+    {
         epService.getEPAdministrator().destroyAllStatements();
+
         ConfigurationOperations config = epService.getEPAdministrator().getConfiguration();
-        List<Type> typeList            = new ArrayList<Type>();
         EventType[] eventTypes         = config.getEventTypes();
 
         for (EventType eventType : eventTypes) {

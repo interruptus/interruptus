@@ -50,7 +50,7 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     }
 
     @Override
-    public Type create(Type type)
+    public void save(Type type)
     {
         ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
         Map<String, Object> map         = new HashMap<>();
@@ -60,12 +60,10 @@ public class TypeConfiguration implements EsperConfiguration<Type>
         }
 
         config.addEventType(type.getName(), map);
-
-        return type;
     }
 
     @Override
-    public Boolean destroy(Type type) throws ConfigurationException
+    public Boolean remove(Type type) throws ConfigurationException
     {
         ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
 

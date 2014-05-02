@@ -2,9 +2,6 @@ package org.cad.interruptus.entity;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
- */
 @XmlRootElement
 public class Statement
 {
@@ -19,7 +16,7 @@ public class Statement
 
     public Statement(String name, String query, boolean debug)
     {
-        this.name  = name;
+        this.name = name;
         this.query = query;
         this.debug = debug;
     }

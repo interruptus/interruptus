@@ -38,7 +38,7 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
     }
 
     @Override
-    public Statement create(Statement statement) throws EPStatementException
+    public void save(Statement statement) throws EPStatementException
     {
         final EPStatement sttm = epAdministrator.createEPL(statement.getQuery(), statement.getName());
 
@@ -48,7 +48,7 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
         log.info("Statement debug  : " + statement.getDebug());
 
         if ( ! statement.getDebug()) {
-            return statement;
+            return;
         }
 
         sttm.addListener(new UpdateListener() {
@@ -60,8 +60,6 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
                 }
             }
         });
-
-        return statement;
     }
 
     public Boolean start(Statement statement)
@@ -127,10 +125,10 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
         }
     }
 
-    public EPStatementState getStatementState(Statement statement) throws EPStatementException
+    public EPStatementState getStatementState(final String statementName) throws EPStatementException
     {
         try {
-            EPStatement epStatement = epAdministrator.getStatement(statement.getName());
+            final EPStatement epStatement = epAdministrator.getStatement(statementName);
 
             if (epStatement != null) {
                 return epStatement.getState();
@@ -140,13 +138,13 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             log.info(e.getMessage());
         }
 
-        log.info("Statement: " + statement.getName() + " not found");
+        log.info("Statement: " + statementName + " not found");
 
         return null;
     }
 
     @Override
-    public Boolean destroy(Statement statement)
+    public Boolean remove(final Statement statement)
     {
         try {
             EPStatement epStatement = epAdministrator.getStatement(statement.getName());

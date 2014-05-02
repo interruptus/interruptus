@@ -10,41 +10,27 @@ EOF
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/state <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/stop <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/state <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/stop | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/start <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/state <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/start | python -m json.tool
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/stopAll | python -m json.tool
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/state <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/stopAll | python -m json.tool
 
-curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/startAll | python -m json.tool
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/state <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
 
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement/destroy <<EOF | python -m json.tool
-{"name": "eventlogdebug"}
-EOF
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/startAll | python -m json.tool
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/destroy | python -m json.tool
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement | python -m json.tool
 
