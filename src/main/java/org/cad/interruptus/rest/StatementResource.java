@@ -80,14 +80,18 @@ public class StatementResource extends AbstractResource<String, Statement>
         final Map<String, String> map = new HashMap<>();
         final EPStatementState state  = configuration.getStatementState(name);
 
-        if (state == null) {
+        map.put("name", name);
+        map.put("name", EPStatementState.STOPPED.toString());
+
+        if (state != null) {
+            map.put("status", state.toString());
+        }
+
+        if (repository.findById(name) == null) {
             throw new EntityNotFoundException(name);
         }
 
-        map.put("name", name);
-        map.put("status", state.toString());
-
-	return map;
+        return map;
     }
 
     @POST
