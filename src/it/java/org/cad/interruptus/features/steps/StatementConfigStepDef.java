@@ -41,8 +41,6 @@ public class StatementConfigStepDef extends BaseResourceSteps
         final String response                   = listResponse.getEntity(String.class);
         final JSONArray jsonArray               = new JSONArray(response);
         final Map<String, JSONObject> actualMap = new HashMap<>();
-        
-        System.out.println("\n\n\n " + response);
 
         for (int i = 0; i < jsonArray.length(); i++) {
             final JSONObject object = jsonArray.getJSONObject(i);
