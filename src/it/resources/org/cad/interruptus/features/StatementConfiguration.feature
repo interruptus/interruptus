@@ -1,5 +1,8 @@
 Feature: Configure statements
 
+Background:
+    Given I clear all data in zookeeper
+
 Scenario Outline: Configure a simple statement
 
 	Given the following types exist:
@@ -12,7 +15,7 @@ Scenario Outline: Configure a simple statement
 
     When I check the statement status for "eventlog" the response should be:
         """
-        {"name": "eventlog", "status":"STOPED"}
+        {"name": "eventlog", "status":"STOPPED"}
         """
 
     Examples:

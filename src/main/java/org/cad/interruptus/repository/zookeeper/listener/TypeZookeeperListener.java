@@ -6,9 +6,9 @@ import org.cad.interruptus.core.GsonSerializer;
 import org.cad.interruptus.core.esper.EsperConfiguration;
 import org.cad.interruptus.entity.Type;
 
-public class TypeZookeeperListener extends AbstractZookeeperListener<Type>
+public class TypeZookeeperListener extends AbstractZookeeperListener<String, Type>
 {
-    public TypeZookeeperListener(final String path, final Cache<String, Type> entities, final Gson gson, final EsperConfiguration<Type> configuration)
+    public TypeZookeeperListener(final String path, final Cache<String, Type> entities, final Gson gson, final EsperConfiguration<String, Type> configuration)
     {
         super(path, entities, new GsonSerializer<>(Type.class, gson), configuration);
     }

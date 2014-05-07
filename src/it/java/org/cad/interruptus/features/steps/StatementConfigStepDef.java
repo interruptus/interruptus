@@ -14,7 +14,6 @@ public class StatementConfigStepDef extends BaseResourceSteps
 {
     ClientResponse listResponse;
     ClientResponse getResponse;
-    ClientResponse statusResponse;
 
     @Given("^the following statements exist:$")
     public void the_following_statements_exist(DataTable table) throws Throwable 
@@ -42,6 +41,8 @@ public class StatementConfigStepDef extends BaseResourceSteps
         final String response                   = listResponse.getEntity(String.class);
         final JSONArray jsonArray               = new JSONArray(response);
         final Map<String, JSONObject> actualMap = new HashMap<>();
+        
+        System.out.println("\n\n\n " + response);
 
         for (int i = 0; i < jsonArray.length(); i++) {
             final JSONObject object = jsonArray.getJSONObject(i);
@@ -71,10 +72,11 @@ public class StatementConfigStepDef extends BaseResourceSteps
     @When("^I check the statement status for \"(.*?)\" the response should be:$")
     public void i_check_the_statement_status_for_the_response_should_be(String name, String data) throws Throwable 
     {
-        statusResponse = this.getResource("statement/" + name + "/status");
+        final ClientResponse response = this.getResource("statement/" + name + "/state");
+        final String actualResponse   = response.getEntity(String.class);
 
         final JSONObject expectedJson = new JSONObject(data);
-        final JSONObject actualJson   = new JSONObject(getResponse.getEntity(String.class));
+        final JSONObject actualJson   = new JSONObject(actualResponse);
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }

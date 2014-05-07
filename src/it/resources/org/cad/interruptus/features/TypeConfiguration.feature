@@ -1,5 +1,8 @@
 Feature: Configure types
 
+Background:
+    Given I clear all data in zookeeper
+
 Scenario Outline: Type CRUD
 
     Given I have the type "<json>" configured

@@ -2,6 +2,7 @@ package org.cad.interruptus.repository.zookeeper.listener;
 
 import java.util.EnumSet;
 import com.google.common.cache.Cache;
+import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
@@ -11,10 +12,10 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.cad.interruptus.core.GsonSerializer;
 import org.cad.interruptus.core.esper.EsperConfiguration;
 
-abstract public class AbstractZookeeperListener<E> implements PathChildrenCacheListener
+abstract public class AbstractZookeeperListener<ID extends Serializable, E> implements PathChildrenCacheListener
 {
     final Log logger = LogFactory.getLog(getClass());
-    final EsperConfiguration<E> configuration;
+    final EsperConfiguration<ID, E> configuration;
     final GsonSerializer<E> serializer;
     final Cache<String, E> cache;
     final String rootPath;
@@ -25,7 +26,7 @@ abstract public class AbstractZookeeperListener<E> implements PathChildrenCacheL
         PathChildrenCacheEvent.Type.CHILD_REMOVED
     );
 
-    public AbstractZookeeperListener(final String path, final Cache<String, E> cache, final GsonSerializer<E> serializer, final EsperConfiguration<E> configuration)
+    public AbstractZookeeperListener(final String path, final Cache<String, E> cache, final GsonSerializer<E> serializer, final EsperConfiguration<ID, E> configuration)
     {
         this.rootPath      = path;
         this.cache         = cache;
@@ -33,31 +34,35 @@ abstract public class AbstractZookeeperListener<E> implements PathChildrenCacheL
         this.configuration = configuration;
     }
 
-    protected boolean isValid(E c)
-    {
-        return true;
-    }
-
     @Override
-    public void childEvent(CuratorFramework cf, PathChildrenCacheEvent pcce) throws Exception
+    public void childEvent(final CuratorFramework curator, final PathChildrenCacheEvent event) throws Exception
     {
-        if ( ! allowedEvents.contains(pcce.getType())) {
-            logger.debug("Ignoring event : " + pcce.getType());
+        if ( ! allowedEvents.contains(event.getType())) {
+            logger.debug("Ignoring event : " + event.getType());
 
             return;
         }
 
-        final ChildData eData = pcce.getData();
+        final ChildData eData = event.getData();
         final String path     = eData.getPath();
 
-        logger.debug(String.format("%s : %s",  pcce.getType(), eData.getPath()));
+        logger.debug(String.format("%s : %s",  event.getType(), eData.getPath()));
 
-        if (PathChildrenCacheEvent.Type.CHILD_REMOVED == pcce.getType()) {
+        if (PathChildrenCacheEvent.Type.CHILD_REMOVED == event.getType()) {
+            
+            final String data = new String(eData.getData());
+            final E item      = serializer.fromJson(data);
 
             logger.debug("Removing entity : " + path);
-
             cache.invalidate(path);
-            //configuration.remove(e);
+
+            if (item == null) {
+                logger.warn(String.format("Ignoring entity configuration for path '%s'", path));
+
+                return;
+            }
+
+            configuration.remove(item);
 
             return;
         }
@@ -67,14 +72,6 @@ abstract public class AbstractZookeeperListener<E> implements PathChildrenCacheL
 
         if (item == null) {
             logger.warn(String.format("Ignoring entity for path '%s', It cannot be NULL", path));
-
-            return;
-        }
-
-        if ( ! isValid(item)) {
-            logger.warn("Ignoring entity invalid entity : " + item);
-            cache.invalidate(path);
-            configuration.remove(item);
 
             return;
         }

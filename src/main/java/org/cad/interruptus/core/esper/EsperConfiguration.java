@@ -1,14 +1,17 @@
 package org.cad.interruptus.core.esper;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface EsperConfiguration<T>
+public interface EsperConfiguration<ID extends Serializable, T>
 {
     public List<T> list();
 
     public void save(T e);
 
+    public Boolean remove(ID id);
+
     public Boolean remove(T e);
 
-    public Boolean exists(T e);
+    public Boolean exists(ID id);
 }

@@ -4,6 +4,6 @@ import org.apache.curator.framework.CuratorFramework;
 
 public interface ZookeeperLifecycleListener
 {
-    public void onStart(CuratorFramework curator);
-    public void onStop(CuratorFramework curator);
+    public void onStart(CuratorFramework curator) throws Exception;
+    public void onStop(CuratorFramework curator) throws Exception;
 }

@@ -13,7 +13,7 @@ import org.cad.interruptus.entity.Statement;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
-public class StatementConfiguration implements EsperConfiguration<Statement>
+public class StatementConfiguration implements EsperConfiguration<String, Statement>
 {
     final private static Log log = LogFactory.getLog(StatementConfiguration.class);
     private final EPAdministrator epAdministrator;
@@ -65,10 +65,12 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
     public Boolean start(Statement statement)
     {
         try {
-            EPStatement epStatement = epAdministrator.getStatement(statement.getName());
+            final EPStatement epStatement = epAdministrator.getStatement(statement.getName());
+
             if (epStatement != null) {
                 epStatement.start();
             }
+
             return true;
         } catch (EPStatementException e) {
             log.info(e.getMessage());
@@ -144,10 +146,10 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
     }
 
     @Override
-    public Boolean remove(final Statement statement)
+    public Boolean remove(final String name)
     {
         try {
-            EPStatement epStatement = epAdministrator.getStatement(statement.getName());
+            final EPStatement epStatement = epAdministrator.getStatement(name);
 
             if (epStatement != null) {
                 epStatement.destroy();
@@ -160,10 +162,16 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             return false;
         }
     }
+    
+    @Override
+    public Boolean remove(Statement e)
+    {
+        return this.remove(e.getName());
+    }
 
     @Override
-    public Boolean exists(Statement statement)
+    public Boolean exists(final String name)
     {
-        return epAdministrator.getStatement(statement.getName()) != null;
+        return epAdministrator.getStatement(name) != null;
     }
 }

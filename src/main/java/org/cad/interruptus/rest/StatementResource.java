@@ -81,7 +81,7 @@ public class StatementResource extends AbstractResource<String, Statement>
         final EPStatementState state  = configuration.getStatementState(name);
 
         map.put("name", name);
-        map.put("name", EPStatementState.STOPPED.toString());
+        map.put("status", EPStatementState.STOPPED.toString());
 
         if (state != null) {
             map.put("status", state.toString());
@@ -98,6 +98,6 @@ public class StatementResource extends AbstractResource<String, Statement>
     @Path("/{name}/destroy")
     public Boolean destroyStatement(@PathParam("name") String name) throws Exception
     {
-        return configuration.remove(repository.findById(name));
+        return configuration.remove(name);
     }
 }

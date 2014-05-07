@@ -96,6 +96,11 @@
 
     <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener"/>
 
+    <bean id="attachLeaderSelectorListener" class="org.cad.interruptus.core.zookeeper.AttachLeaderSelectorListener">
+        <constructor-arg index="0" ref="zookeeperLeaderListener"/>
+        <constructor-arg index="1" value="${zookeeper.leader.path}"/>
+    </bean>
+
     <util:map id="pathListeners" key-type="java.lang.String" >
         <entry key="${zookeeper.configuration.type.path}"       value-ref="typePathListenersSet"/>
         <entry key="${zookeeper.configuration.flow.path}"       value-ref="flowPathListenersSet"/>
@@ -108,10 +113,10 @@
 
     <bean id="zookeeperClient" class="org.cad.interruptus.core.ZookeeperFactoryBean" lazy-init="false">
         <property name="connection" value="${zookeeper.connection}"/>
-        <property name="leaderPath" value="${zookeeper.leader.path}"/>
         <property name="lifecycleListeners">
             <list>
                 <ref bean="attachPathListener"/>
+                <ref bean="attachLeaderSelectorListener"/>
             </list>
         </property>
     </bean>

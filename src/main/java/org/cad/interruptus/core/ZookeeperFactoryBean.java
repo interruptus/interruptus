@@ -20,19 +20,12 @@ public class ZookeeperFactoryBean implements FactoryBean<CuratorFramework>, Init
     RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
     LeaderLatchListener latchListener;
     CuratorFramework curator;
-    LeaderLatch leaderLatch;
-    String leaderPath;
     String connection;
 
     private int connectionTimeout = 2000;
     private int sessionTimeout = 10000;
 
     private List<ZookeeperLifecycleListener> lifecycleListeners = Collections.EMPTY_LIST;
-
-    public void setLeaderPath(String leaderPath)
-    {
-        this.leaderPath = leaderPath;
-    }
 
     public void setRetryPolicy(RetryPolicy retryPolicy)
     {
@@ -71,12 +64,6 @@ public class ZookeeperFactoryBean implements FactoryBean<CuratorFramework>, Init
             for (ZookeeperLifecycleListener listener : lifecycleListeners) {
                 listener.onStart(curator);
             }
-
-            leaderLatch   = new LeaderLatch(curator, leaderPath);
-            latchListener = new ZookeeperLeaderListener();
-
-            leaderLatch.start();
-            leaderLatch.addListener(latchListener);
         }
 
         return curator;
@@ -93,14 +80,10 @@ public class ZookeeperFactoryBean implements FactoryBean<CuratorFramework>, Init
     }
 
     @Override
-    public void destroy() throws IOException {
+    public void destroy() throws IOException, Exception {
 
         if (curator == null) {
             return;
-        }
-
-        if (leaderLatch != null) {
-            leaderLatch.close();
         }
 
         for (ZookeeperLifecycleListener listener : lifecycleListeners) {

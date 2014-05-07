@@ -10,7 +10,7 @@ import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import org.cad.interruptus.entity.Flow;
 
-public class FlowConfiguration implements EsperConfiguration<Flow>
+public class FlowConfiguration implements EsperConfiguration<String, Flow>
 {
     private final EPServiceProvider epService;
     private final EPAdministrator epAdministrator;
@@ -24,18 +24,18 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
     @Override
     public List<Flow> list()
     {
-        EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
-        String[] dataFlowsNames       = flowRuntime.getDataFlows();
-        List<Flow> list               = new ArrayList<>();
+        final EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
+        final String[] dataFlowsNames       = flowRuntime.getDataFlows();
+        final List<Flow> list               = new ArrayList<>();
 
         for (String name : dataFlowsNames) {
-            EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
+            final EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
+            final Flow flow                       = new Flow(name, descriptor.getStatementName());
 
-            list.add(new Flow(name, descriptor.getStatementName()));
+            list.add(flow);
         }
 
         return list;
-
     }
 
     @Override
@@ -43,18 +43,18 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
     {
         epAdministrator.createEPL(flow.getQuery(), flow.getName());
 
-        EPRuntime epRuntime             = epService.getEPRuntime();
-        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
 
         instance.start();
     }
 
     public Boolean start(Flow flow)
     {
-        EPRuntime epRuntime             = epService.getEPRuntime();
-        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
 
         if (instance == null) {
             return false;
@@ -67,11 +67,11 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
 
     // @TODO - FIX IT !! Does not remove the flow definition
     @Override
-    public Boolean remove(Flow flow)
+    public Boolean remove(final String name)
     {
-        EPRuntime epRuntime             = epService.getEPRuntime();
-        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
 
         instance.cancel();
 
@@ -79,11 +79,17 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
     }
 
     @Override
-    public Boolean exists(Flow flow)
+    public Boolean remove(Flow e)
     {
-        EPRuntime epRuntime             = epService.getEPRuntime();
-        EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        EPDataFlowDescriptor dataFlow   = flowRuntime.getDataFlow(flow.getName());
+        return remove(e.getName());
+    }
+    
+    @Override
+    public Boolean exists(final String name)
+    {
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowDescriptor dataFlow   = flowRuntime.getDataFlow(name);
 
         return dataFlow != null;
     }

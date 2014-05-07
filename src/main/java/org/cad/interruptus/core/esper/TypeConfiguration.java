@@ -1,7 +1,6 @@
 package org.cad.interruptus.core.esper;
 
 import com.espertech.esper.client.ConfigurationOperations;
-import com.espertech.esper.client.ConfigurationException;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EventType;
@@ -12,7 +11,7 @@ import java.util.Map;
 import org.cad.interruptus.entity.Type;
 import org.cad.interruptus.entity.TypeProperty;
 
-public class TypeConfiguration implements EsperConfiguration<Type>
+public class TypeConfiguration implements EsperConfiguration<String, Type>
 {
     private final EPServiceProvider epService;
 
@@ -24,17 +23,16 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     @Override
     public List<Type> list()
     {
-        ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
-        List<Type> list                 = new ArrayList<>();
-        EventType[] eventTypes          = config.getEventTypes();
+        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
+        final List<Type> list                 = new ArrayList<>();
+        final EventType[] eventTypes          = config.getEventTypes();
 
 
         for (EventType eventType : eventTypes) {
 
-            String eventName    = eventType.getName();
-            String[] properties = eventType.getPropertyNames();
-
-            Type type = new Type(eventName, new ArrayList<TypeProperty>());
+            final String eventName    = eventType.getName();
+            final String[] properties = eventType.getPropertyNames();
+            final Type type           = new Type(eventName, new ArrayList<TypeProperty>());
 
             for (String propertyName : properties) {
                 String propertyType = eventType.getPropertyType(propertyName).getName();
@@ -52,8 +50,8 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     @Override
     public void save(Type type)
     {
-        ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
-        Map<String, Object> map         = new HashMap<>();
+        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
+        final Map<String, Object> map         = new HashMap<>();
 
         for (TypeProperty property : type.getProperties()) {
             map.put(property.getName(), property.getType());
@@ -63,19 +61,25 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     }
 
     @Override
-    public Boolean remove(Type type) throws ConfigurationException
+    public Boolean remove(final String name)
     {
-        ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
+        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
 
-        return config.removeEventType(type.getName(), true);
+        return config.removeEventType(name, true);
+    }
+    
+    @Override
+    public Boolean remove(final Type e)
+    {
+        return remove(e.getName());
     }
 
     @Override
-    public Boolean exists(Type flow)
+    public Boolean exists(final String name)
     {
-        EPAdministrator administrator         = epService.getEPAdministrator();
-        ConfigurationOperations configuration = administrator.getConfiguration();
-        EventType eventType = configuration.getEventType(flow.getName());
+        final EPAdministrator administrator         = epService.getEPAdministrator();
+        final ConfigurationOperations configuration = administrator.getConfiguration();
+        final EventType eventType                   = configuration.getEventType(name);
 
         return eventType != null;
     }
