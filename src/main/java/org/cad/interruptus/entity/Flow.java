@@ -37,4 +37,10 @@ public class Flow
     {
         this.name = name;
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("{name:'%s', query:'%s'}", name, query);
+    }
 }

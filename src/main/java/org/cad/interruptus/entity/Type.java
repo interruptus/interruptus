@@ -43,4 +43,10 @@ public class Type
     {
         this.properties.add(property);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("{name:'%s', properties:%s}", name, properties);
+    }
 }

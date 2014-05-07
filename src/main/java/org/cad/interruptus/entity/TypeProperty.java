@@ -37,4 +37,10 @@ public class TypeProperty
     {
         this.type = type;
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("{name:'%s', type:'%s'}", name, type);
+    }
 }

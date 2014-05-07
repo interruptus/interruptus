@@ -51,4 +51,9 @@ public class Statement
         this.debug = debug;
     }
 
+    @Override
+    public String toString()
+    {
+        return String.format("{name:'%s', query:'%s'}", name, query);
+    }
 }
