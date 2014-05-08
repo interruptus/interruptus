@@ -15,7 +15,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     private final EPServiceProvider epService;
     private final EPAdministrator epAdministrator;
 
-    public FlowConfiguration(EPServiceProvider epService, EPAdministrator epAdministrator)
+    public FlowConfiguration(final EPServiceProvider epService, final EPAdministrator epAdministrator)
     {
         this.epService       = epService;
         this.epAdministrator = epAdministrator;

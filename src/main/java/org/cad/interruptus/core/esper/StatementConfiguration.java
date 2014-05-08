@@ -18,7 +18,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
     final private static Log log = LogFactory.getLog(StatementConfiguration.class);
     private final EPAdministrator epAdministrator;
 
-    public StatementConfiguration(EPAdministrator epAdministrator)
+    public StatementConfiguration(final EPAdministrator epAdministrator)
     {
         this.epAdministrator = epAdministrator;
     }

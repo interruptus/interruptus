@@ -15,7 +15,7 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
 {
     private final EPServiceProvider epService;
 
-    public TypeConfiguration(EPServiceProvider epService)
+    public TypeConfiguration(final EPServiceProvider epService)
     {
         this.epService = epService;
     }

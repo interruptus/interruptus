@@ -13,7 +13,7 @@
         <spring.version>3.2.6.RELEASE</spring.version>
         <curator.version>2.3.0</curator.version>
         <jersey.version>2.4.1</jersey.version>
-        <esper.version>4.9.0</esper.version>
+        <esper.version>4.11.0</esper.version>
         <gson.version>2.2.4</gson.version>
         <lyra.version>0.3.2</lyra.version>
         <skipTests>false</skipTests>
