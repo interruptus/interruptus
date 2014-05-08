@@ -94,7 +94,9 @@
         <constructor-arg index="3" ref="typeConfiguration" />
     </bean>
 
-    <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener"/>
+    <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener">
+        <constructor-arg index="0" ref="flowConfiguration"/>
+    </bean>
 
     <bean id="attachLeaderSelectorListener" class="org.cad.interruptus.core.zookeeper.AttachLeaderSelectorListener">
         <constructor-arg index="0" ref="zookeeperLeaderListener"/>

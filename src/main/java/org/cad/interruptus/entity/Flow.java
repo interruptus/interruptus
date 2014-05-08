@@ -7,15 +7,22 @@ public class Flow
 {
     protected String query;
     protected String name;
+    protected boolean masterOnly = true;
 
     public Flow()
     {
     }
 
-    public Flow(String name, String query)
+    public Flow(final String name, final String query)
     {
-        this.name = name;
-        this.query = query;
+        this(name, query, true);
+    }
+
+    public Flow(final String name, final String query, final boolean masterOnly)
+    {
+        this.name       = name;
+        this.query      = query;
+        this.masterOnly = masterOnly;
     }
 
     public String getQuery()
@@ -36,6 +43,16 @@ public class Flow
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public void setMasterOnly(boolean masterOnly)
+    {
+        this.masterOnly = masterOnly;
+    }
+
+    public boolean isMasterOnly()
+    {
+        return masterOnly;
     }
 
     @Override

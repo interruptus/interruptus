@@ -48,7 +48,7 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     }
 
     @Override
-    public void save(Type type)
+    public void save(final Type type)
     {
         final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
         final Map<String, Object> map         = new HashMap<>();

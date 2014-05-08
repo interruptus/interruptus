@@ -33,6 +33,11 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E> impl
         this.serializer    = serializer;
         this.configuration = configuration;
     }
+    
+    protected void postSave(final E item) throws Exception
+    {
+
+    }
 
     @Override
     public void childEvent(final CuratorFramework curator, final PathChildrenCacheEvent event) throws Exception
@@ -80,5 +85,6 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E> impl
 
         cache.put(path, item);
         configuration.save(item);
+        postSave(item);
     }
 }

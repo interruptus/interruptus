@@ -39,18 +39,14 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     }
 
     @Override
-    public void save(Flow flow)
+    public void save(final Flow flow)
     {
         epAdministrator.createEPL(flow.getQuery(), flow.getName());
 
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
-
-        instance.start();
+        start(flow);
     }
 
-    public Boolean start(Flow flow)
+    public Boolean start(final Flow flow)
     {
         final EPRuntime epRuntime             = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
@@ -61,6 +57,21 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         }
 
         instance.start();
+
+        return true;
+    }
+    
+    public Boolean stop(final String name)
+    {
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
+
+        if (instance == null) {
+            return false;
+        }
+
+        instance.cancel();
 
         return true;
     }
@@ -79,7 +90,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     }
 
     @Override
-    public Boolean remove(Flow e)
+    public Boolean remove(final Flow e)
     {
         return remove(e.getName());
     }

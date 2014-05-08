@@ -38,7 +38,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
     }
 
     @Override
-    public void save(Statement statement) throws EPStatementException
+    public void save(final Statement statement) throws EPStatementException
     {
         final EPStatement sttm = epAdministrator.createEPL(statement.getQuery(), statement.getName());
 
@@ -62,7 +62,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
         });
     }
 
-    public Boolean start(Statement statement)
+    public Boolean start(final Statement statement)
     {
         try {
             final EPStatement epStatement = epAdministrator.getStatement(statement.getName());
@@ -89,7 +89,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
         }
     }
 
-    public Boolean stop(Statement statement)
+    public Boolean stop(final Statement statement)
     {
         try {
             EPStatement epStatement = epAdministrator.getStatement(statement.getName());
@@ -164,7 +164,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
     }
     
     @Override
-    public Boolean remove(Statement e)
+    public Boolean remove(final Statement e)
     {
         return this.remove(e.getName());
     }
