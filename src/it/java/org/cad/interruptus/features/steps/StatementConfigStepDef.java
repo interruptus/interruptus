@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import static org.junit.Assert.fail;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -48,12 +49,18 @@ public class StatementConfigStepDef extends BaseResourceSteps
 
             actualMap.put(name, object);
         }
-
+        
         final JSONObject expectedJson = new JSONObject(data);
         final String  name            = String.valueOf(expectedJson.get("name"));
         final JSONObject actualJson   = actualMap.containsKey(name) ? actualMap.get(name): null;
 
-        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+        if (actualJson == null) {
+            fail(String.format("Failed to assert that statement '%s' exists", expectedJson.get("name")));
+
+            return;
+        }
+
+        JSONAssert.assertEquals(expectedJson, actualMap.get(name), JSONCompareMode.LENIENT);
     }
 
     @When("^I get the statement configuration for \"(.*?)\" the response should be \"(.*?)\"$$")

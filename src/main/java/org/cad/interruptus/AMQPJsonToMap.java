@@ -28,6 +28,7 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
     //@TODO - make it configurable
     final private static Log log            = LogFactory.getLog(AMQPJsonToMap.class);
     final private static Gson parser        = new GsonBuilder().create();
+    final private static String DELIMITER   = "\n";
 
     private static EPServiceProvider epService;
 
@@ -50,7 +51,7 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
 
     public AMQPJsonToMap()
     {
-        config  = epService.getEPAdministrator().getConfiguration();
+        config = epService.getEPAdministrator().getConfiguration();
     }
 
     @Override
@@ -77,9 +78,8 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
             return;
         }
 
-        String delimiter            = "\n";
-        EPDataFlowEmitter emmiter   = context.getEmitter();
-        StringTokenizer tokenizer   = new StringTokenizer(json, delimiter);
+        final EPDataFlowEmitter emmiter = context.getEmitter();
+        final StringTokenizer tokenizer = new StringTokenizer(json, DELIMITER);
 
         log.debug("json: " +json);
 
@@ -110,10 +110,10 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
 
     private EventBean parseLine(String json)
     {
-        Map<String,Object> values = parser.fromJson(json, HashMap.class);
-        String eventTypeName      = (String) values.get("event_type");
-        EventType eventType       = config.getEventType(eventTypeName);
-        EventBean eventBean       = new MapEventBean(values, eventType);
+        final Map<String,Object> values = parser.fromJson(json, HashMap.class);
+        final String eventTypeName      = (String) values.get("event_type");
+        final EventType eventType       = config.getEventType(eventTypeName);
+        final EventBean eventBean       = new MapEventBean(values, eventType);
 
         return eventBean;
     }
