@@ -15,8 +15,14 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d 
 }
 EOF
 
+# {"event_type":"CollectdMetric","plugin":"disk","plugin_instance":"disk_sdd1","datacenter":"east_coast","time":"1399577466","host":"mqo1.ss","name":"usage","value":"1234591"}
+
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement <<EOF | python -m json.tool
 {"name": "eventlogdebug", "query":"SELECT * FROM CollectdMetric", "debug": true}
+EOF
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool
+{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -> outstream<CollectdMetric> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool
