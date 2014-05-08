@@ -79,6 +79,8 @@ abstract public class AbstractZookeeperRepository<ID extends Serializable, E> im
             @Override
             public Boolean call() throws Exception
             {
+                lastCacheHashCode = -1;
+
                 if (client.checkExists().forPath(path) != null) {
                     client.setData()
                         .forPath(path, json.getBytes());
@@ -112,6 +114,8 @@ abstract public class AbstractZookeeperRepository<ID extends Serializable, E> im
                     .guaranteed()
                     .deletingChildrenIfNeeded()
                     .forPath(path);
+
+                lastCacheHashCode = -1;
 
                 return true;
             }
