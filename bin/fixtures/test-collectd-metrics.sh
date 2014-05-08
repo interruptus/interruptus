@@ -29,4 +29,12 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d 
 {"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<CollectdMetric> {  host: 'localhost',  exchange: 'collectd-metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
 EOF
 
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsIn/start | python -m json.tool
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsOut/start | python -m json.tool
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/start | python -m json.tool
+
+
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsIn/state | python -m json.tool
+curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsOut/state | python -m json.tool
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/state | python -m json.tool

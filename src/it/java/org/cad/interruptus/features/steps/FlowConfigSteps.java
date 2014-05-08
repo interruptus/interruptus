@@ -73,4 +73,16 @@ public class FlowConfigSteps extends BaseResourceSteps
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
+
+    @When("^I check the flow status for \"(.*?)\" the response should be:$")
+    public void i_check_the_flow_status_for_the_response_should_be(final String name, final String data) throws Throwable 
+    {
+        final ClientResponse response = this.getResource("flow/" + name + "/state");
+        final String actualResponse   = response.getEntity(String.class);
+
+        final JSONObject expectedJson = new JSONObject(data);
+        final JSONObject actualJson   = new JSONObject(actualResponse);
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+    }
 }

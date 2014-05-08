@@ -14,6 +14,11 @@ Scenario Outline: Configure a simple flow
     Then the flow list response should contain "<json>"
     When I get the flow configuration for "<name>" the response should be "<json>"
 
+    When I check the flow status for "<name>" the response should be:
+        """
+        {"name": "<name>", "status":"STOPPED"}
+        """
+
     Examples:
         | name  | json                                                                                             |
         | EventsIn | {"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'collectd-metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"} |

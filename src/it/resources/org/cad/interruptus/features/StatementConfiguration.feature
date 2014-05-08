@@ -13,9 +13,9 @@ Scenario Outline: Configure a simple statement
     Then the statement list should contain "<json>"
     When I get the statement configuration for "<name>" the response should be "<json>"
 
-    When I check the statement status for "eventlog" the response should be:
+    When I check the statement status for "<name>" the response should be:
         """
-        {"name": "eventlog", "status":"STOPPED"}
+        {"name": "<name>", "status":"STOPPED"}
         """
 
     Examples:

@@ -24,7 +24,7 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
 
         for (final Flow flow : flowConfiguration.list()) {
             if (flow.isMasterOnly()) {
-                flowConfiguration.start(flow);
+                flowConfiguration.start(flow.getName());
             }
         }
     }

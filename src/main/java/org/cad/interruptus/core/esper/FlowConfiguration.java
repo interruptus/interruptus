@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
+import com.espertech.esper.client.dataflow.EPDataFlowState;
 import org.cad.interruptus.entity.Flow;
 
 public class FlowConfiguration implements EsperConfiguration<String, Flow>
@@ -41,19 +43,29 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     @Override
     public void save(final Flow flow)
     {
-        epAdministrator.createEPL(flow.getQuery(), flow.getName());
+        final String name      = flow.getName();
+        final String query     = flow.getQuery();
+        final EPStatement sttm = epAdministrator.getStatement(name);
+        
+        if (sttm != null) {
+            remove(name);
+        }
 
-        start(flow);
+        epAdministrator.createEPL(query, name);
     }
 
-    public Boolean start(final Flow flow)
+    public Boolean start(final String name)
     {
         final EPRuntime epRuntime             = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(flow.getName());
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
 
         if (instance == null) {
             return false;
+        }
+        
+        if (instance.getState() == EPDataFlowState.RUNNING) {
+            return true;
         }
 
         instance.start();
@@ -70,21 +82,35 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         if (instance == null) {
             return false;
         }
-
+        
         instance.cancel();
 
         return true;
     }
+    
+    public EPDataFlowState getFlowState(final String name)
+    {
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
 
-    // @TODO - FIX IT !! Does not remove the flow definition
+        if (instance == null) {
+            return null;
+        }
+
+        return instance.getState();
+    }
+
     @Override
     public Boolean remove(final String name)
     {
         final EPRuntime epRuntime             = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
         final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
+        final EPStatement sttm                = epAdministrator.getStatement(name);
 
         instance.cancel();
+        sttm.destroy();
 
         return true;
     }
