@@ -3,7 +3,7 @@ Feature: Configure types
 Background:
     Given I clear all data in zookeeper
 
-Scenario Outline: Type CRUD
+Scenario Outline: Configure types
 
     Given I have the type "<json>" configured
     When I list all types

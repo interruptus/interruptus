@@ -5,8 +5,8 @@ Background:
 
 Scenario Outline: Configure a simple statement
 
-	Given the following types exist:
-	    | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
+    Given the following types exist:
+        | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
 
     Given I have the statement "<json>" configured
     When I list all statements
