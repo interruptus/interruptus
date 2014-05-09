@@ -51,7 +51,7 @@ public class FlowResource extends AbstractResource<String, Flow>
     public Map<String, String> state(@PathParam("name") String name) throws Exception
     {
         final Map<String, String> map = new HashMap<>();
-        final EPDataFlowState state   = configuration.getFlowState(name);
+        final EPStatementState state  = configuration.getFlowState(name);
 
         map.put("name", name);
         map.put("status", EPStatementState.STOPPED.toString());

@@ -6,6 +6,7 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.client.EPStatementState;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
@@ -75,39 +76,39 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     
     public Boolean stop(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
 
         if (instance == null) {
             return false;
         }
-        
+
         instance.cancel();
 
         return true;
     }
     
-    public EPDataFlowState getFlowState(final String name)
+    public EPStatementState getFlowState(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
+        final EPRuntime epRuntime            = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime  = epRuntime.getDataFlowRuntime();
+        final EPDataFlowDescriptor descripto = flowRuntime.getDataFlow(name);
 
-        if (instance == null) {
+        if (descripto == null) {
             return null;
         }
 
-        return instance.getState();
+        return descripto.getStatementState();
     }
 
     @Override
     public Boolean remove(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
-        final EPStatement sttm                = epAdministrator.getStatement(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
+        final EPStatement sttm              = epAdministrator.getStatement(name);
 
         instance.cancel();
         sttm.destroy();
@@ -124,9 +125,9 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     @Override
     public Boolean exists(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowDescriptor dataFlow   = flowRuntime.getDataFlow(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPDataFlowDescriptor dataFlow = flowRuntime.getDataFlow(name);
 
         return dataFlow != null;
     }
