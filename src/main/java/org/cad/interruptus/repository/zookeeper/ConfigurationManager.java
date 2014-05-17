@@ -27,7 +27,6 @@ public class ConfigurationManager
     final AtomicReference<Configuration> reference;
     final CuratorFramework client;
     final String path;
-    final String lock;
 
     public ConfigurationManager(final CuratorFramework client, final AtomicReference<Configuration> reference, final Gson gson, final String path)
     {
@@ -39,11 +38,10 @@ public class ConfigurationManager
         this.client      = client;
         this.reference   = reference;
         this.serializer  = serializer;
-        this.path        = path + "config.json";
-        this.lock        = path + "config.lock";
+        this.path        = path ;
     }
 
-    protected <R> R mutex(final Callable<R> callable, InterProcessLock mutex) throws Exception
+    protected <R> R mutex(final Callable<R> callable, final InterProcessLock mutex) throws Exception
     {
         try {
             mutex.acquire();
@@ -54,14 +52,14 @@ public class ConfigurationManager
         }
     }
 
-    protected <R> R mutex(final String path, final Callable<R> callable) throws Exception
+    protected <R> R mutex(final Callable<R> callable) throws Exception
     {
-        return mutex(callable, new InterProcessMutex(client, lock));
+        return mutex(callable, new InterProcessMutex(client, "/lock"));
     }
 
     protected void flush() throws Exception
     {
-        mutex(path, new Callable<Boolean>()
+        mutex(new Callable<Boolean>()
         {
             @Override
             public Boolean call() throws Exception
@@ -71,12 +69,14 @@ public class ConfigurationManager
 
                 if (status != null) {
                     client.setData()
+                        .compressed()
                         .forPath(path, json.getBytes());
 
                     return true;
                 }
 
                 client.create()
+                    .compressed()
                     .creatingParentsIfNeeded()
                     .forPath(path, json.getBytes());
 

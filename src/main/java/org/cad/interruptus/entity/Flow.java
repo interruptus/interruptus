@@ -1,7 +1,5 @@
 package org.cad.interruptus.entity;
 
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
