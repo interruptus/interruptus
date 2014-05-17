@@ -63,7 +63,9 @@ public abstract class AbstractResource<ID extends Serializable, E>
     public Boolean removeAction(@PathParam("id") ID id)
     {
         try {
-            return getRepository().remove(id);
+            getRepository().remove(id);
+
+            return true;
         } catch (EntityNotFoundException ex) {
             throw new ResourceException(ex);
         } catch (Exception ex) {

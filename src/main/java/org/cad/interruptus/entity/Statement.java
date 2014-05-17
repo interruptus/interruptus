@@ -1,9 +1,10 @@
 package org.cad.interruptus.entity;
 
+import com.google.common.hash.Hashing;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Statement
+public class Statement implements Entity
 {
     protected String query;
     protected String name;
@@ -21,6 +22,12 @@ public class Statement
         this.debug = debug;
     }
 
+    @Override
+    public String getId()
+    {
+        return name;
+    }
+    
     public String getName()
     {
         return name;

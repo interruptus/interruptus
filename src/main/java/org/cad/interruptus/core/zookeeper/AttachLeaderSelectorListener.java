@@ -21,7 +21,7 @@ public class AttachLeaderSelectorListener implements ZookeeperLifecycleListener
     public void onStart(CuratorFramework curator) throws Exception
     {
         leaderLatch = new LeaderLatch(curator, path);
-
+        
         leaderLatch.start();
         leaderLatch.addListener(listener);
     }

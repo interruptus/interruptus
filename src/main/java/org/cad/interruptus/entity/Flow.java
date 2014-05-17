@@ -1,9 +1,11 @@
 package org.cad.interruptus.entity;
 
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Flow
+public class Flow implements Entity
 {
     protected String query;
     protected String name;
@@ -23,6 +25,12 @@ public class Flow
         this.name       = name;
         this.query      = query;
         this.masterOnly = masterOnly;
+    }
+
+    @Override
+    public String getId()
+    {
+        return name;
     }
 
     public String getQuery()

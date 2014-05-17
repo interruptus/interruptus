@@ -1,10 +1,11 @@
 package org.cad.interruptus.entity;
 
+import com.google.common.hash.Hashing;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Type
+public class Type implements Entity
 {
     protected List<TypeProperty> properties;
     protected String name;
@@ -15,10 +16,16 @@ public class Type
 
     public Type(String name, List<TypeProperty> properties)
     {
-        this.name = name;
+        this.name       = name;
         this.properties = properties;
     }
-
+    
+    @Override
+    public String getId()
+    {
+        return name;
+    }
+ 
     public String getName()
     {
         return name;

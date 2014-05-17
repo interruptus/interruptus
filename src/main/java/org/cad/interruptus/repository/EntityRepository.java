@@ -11,5 +11,5 @@ public interface EntityRepository<ID extends Serializable, E>
 
     public void save(E entity) throws Exception;
 
-    public Boolean remove(ID entity) throws Exception;
+    public void remove(ID entity) throws Exception;
 }
