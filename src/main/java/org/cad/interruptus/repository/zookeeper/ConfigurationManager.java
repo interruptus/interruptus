@@ -85,15 +85,6 @@ public class ConfigurationManager
         });
     }
 
-    public Configuration get() throws Exception
-    {
-        if (reference.get() == null) {
-            return load();
-        }
-
-        return reference.get();
-    }
-    
     public synchronized void save(final Entity entity) throws Exception
     {
         if (entity == null) {
@@ -134,6 +125,15 @@ public class ConfigurationManager
         if (Statement.class.equals(clazz)) {
             get().getStatements().remove(id);
         }
+    }
+
+    public Configuration get() throws Exception
+    {
+        if (reference.get() == null) {
+            return load();
+        }
+
+        return reference.get();
     }
 
     protected synchronized Configuration load() throws Exception

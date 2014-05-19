@@ -14,6 +14,8 @@ import org.cad.interruptus.core.GsonSerializer;
 import org.cad.interruptus.entity.Configuration;
 import org.cad.interruptus.entity.Entity;
 import org.cad.interruptus.entity.Flow;
+import org.cad.interruptus.entity.Statement;
+import org.cad.interruptus.entity.Type;
 import org.cad.interruptus.repository.ConfigDiffTool;
 
 public class ConfigurationZookeeperListener implements ZookeeperConfigurationListener
@@ -37,6 +39,8 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
 
     public void dispatchInsert(final String type, final Collection<Entity> collection)
     {
+        logger.debug("dispatchInsert : " + type + " - " + collection);
+
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -51,6 +55,8 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
     
     public void dispatchUpdate(final String type, final Collection<Entity> collection)
     {
+        logger.debug("dispatchUpdate : " + type + " - " + collection);
+
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -65,6 +71,8 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
     
     public void dispatchDelete(final String type, final Collection<Entity> collection)
     {
+        logger.debug("dispatchDelete : " + type + " - " + collection);
+
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -77,6 +85,26 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
         }
     }
 
+    public void dispatchEvents(final Configuration newConfig, final Configuration oldConfig)
+    {
+        final ConfigDiffTool diffTool   = new ConfigDiffTool(oldConfig, newConfig);
+        final String typeKey            = Type.class.getSimpleName().toLowerCase();
+        final String flowKey            = Flow.class.getSimpleName().toLowerCase();
+        final String statementKey       = Statement.class.getSimpleName().toLowerCase();
+
+        dispatchInsert(typeKey, diffTool.computeInsertMap(Type.class).values());
+        dispatchUpdate(typeKey, diffTool.computeUpdateMap(Type.class).values());
+        dispatchDelete(typeKey, diffTool.computeDeleteMap(Type.class).values());
+
+        dispatchInsert(flowKey, diffTool.computeInsertMap(Flow.class).values());
+        dispatchUpdate(flowKey, diffTool.computeUpdateMap(Flow.class).values());
+        dispatchDelete(flowKey, diffTool.computeDeleteMap(Flow.class).values());
+
+        dispatchInsert(statementKey, diffTool.computeInsertMap(Statement.class).values());
+        dispatchUpdate(statementKey, diffTool.computeUpdateMap(Statement.class).values());
+        dispatchDelete(statementKey, diffTool.computeDeleteMap(Statement.class).values());
+    }
+    
     @Override
     public void onChange(final CuratorFramework curator, final NodeCache cache, final String path)
     {
@@ -90,7 +118,7 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
         final ChildData eData         = cache.getCurrentData();
         final String data             = new String(eData.getData());
         final Configuration newConfig = serializer.fromJson(data);
-        final Configuration oldConfig = reference.get();
+        final Configuration oldConfig = reference.get() != null ? reference.get() : new Configuration();
 
         if (newConfig == null) {
             logger.warn(String.format("Ignoring entity for path '%s', It cannot be NULL", path));
@@ -98,25 +126,18 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
             return;
         }
         
-        if (oldConfig != null) {
-            ConfigDiffTool diffTool = new ConfigDiffTool(oldConfig, newConfig);
-            
-            // dispatchInsert("flow", diffTool.getFlowsScheduledToInsert().values());
+        logger.info("newConfig : " + newConfig);
+        logger.info("oldConfig : " + oldConfig);
+        
+        if (newConfig.equals(oldConfig)) {
+            logger.warn(String.format("Configuration remains the same."));
 
-            for (Flow flow : diffTool.getFlowsScheduledToInsert().values()) {
-                logger.debug("insert flow : " + flow);
-            }
-            
-            for (Flow flow : diffTool.getFlowsScheduledToUpdate().values()) {
-                logger.debug("update flow : " + flow);
-            }
-            
-            for (Flow flow : diffTool.getFlowsScheduledToDelete().values()) {
-                logger.debug("delete flow : " + flow);
-            }
+            return;
         }
 
         logger.debug("Storing entity : " + newConfig);
+
         reference.set(newConfig);
+        dispatchEvents(newConfig, oldConfig);
     }
 }

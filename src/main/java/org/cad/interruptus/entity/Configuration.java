@@ -2,6 +2,7 @@ package org.cad.interruptus.entity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -52,9 +53,61 @@ public class Configuration
         this.statements = statements;
     }
 
+    public Map<String, Entity> mapOf(Class<? extends Entity> clazz)
+    {
+        if (Statement.class.equals(clazz)) {
+            return new HashMap<String, Entity>(this.statements);
+        }
+
+        if (Flow.class.equals(clazz)) {
+            return new HashMap<String, Entity>(this.flows);
+        }
+
+        if (Type.class.equals(clazz)) {
+            return new HashMap<String, Entity>(this.types);
+        }
+
+        throw new RuntimeException("Unknow class : " + clazz);
+    }
+
     @Override
     public String toString()
     {
         return String.format("{types:%s, flows:%s, statements:%s}", types, flows, statements);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash    = 67 * hash + Objects.hashCode(this.types);
+        hash    = 67 * hash + Objects.hashCode(this.flows);
+        hash    = 67 * hash + Objects.hashCode(this.statements);
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) {
+            return false;
+        }
+
+        if ( ! getClass().equals(obj.getClass())) {
+            return false;
+        }
+
+        final Configuration other = (Configuration) obj;
+
+        if ( ! Objects.equals(this.types, other.types)) {
+            return false;
+        }
+
+        if (!Objects.equals(this.flows, other.flows)) {
+            return false;
+        }
+
+        return Objects.equals(this.statements, other.statements);
     }
 }

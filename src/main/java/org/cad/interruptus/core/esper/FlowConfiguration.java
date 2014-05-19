@@ -110,7 +110,14 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
         final EPStatement sttm              = epAdministrator.getStatement(name);
 
-        instance.cancel();
+        if (instance != null) {
+            instance.cancel();
+        }
+
+        if (sttm == null) {
+            return false;
+        }
+
         sttm.destroy();
 
         return true;

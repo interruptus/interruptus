@@ -65,7 +65,27 @@
     </bean>
     
     <util:map id="entityConfigurationListenerMap">
-        
+        <entry key="type">
+            <set>
+                <bean class="org.cad.interruptus.repository.zookeeper.listener.TypeConfigurationListener">
+                    <constructor-arg ref="typeConfiguration" />
+                </bean>
+            </set>
+        </entry>
+        <entry key="flow">
+            <set>
+                <bean class="org.cad.interruptus.repository.zookeeper.listener.FlowConfigurationListener">
+                    <constructor-arg ref="flowConfiguration" />
+                </bean>
+            </set>
+        </entry>
+        <entry key="statement">
+            <set>
+                <bean class="org.cad.interruptus.repository.zookeeper.listener.StatementConfigurationListener">
+                    <constructor-arg ref="statementConfiguration" />
+                </bean>
+            </set>
+        </entry>
     </util:map>
 
     <!-- zookeeper configuration -->

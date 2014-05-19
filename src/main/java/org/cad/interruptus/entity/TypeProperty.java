@@ -1,5 +1,6 @@
 package org.cad.interruptus.entity;
 
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -42,5 +43,35 @@ public class TypeProperty
     public String toString()
     {
         return String.format("{name:'%s', type:'%s'}", name, type);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash     = 97 * hash + Objects.hashCode(this.type);
+        hash     = 97 * hash + Objects.hashCode(this.name);
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == null) {
+            return false;
+        }
+
+        if ( ! getClass().equals(obj.getClass())) {
+            return false;
+        }
+
+        final TypeProperty other = (TypeProperty) obj;
+
+        if ( ! Objects.equals(this.name, other.name)) {
+            return false;
+        }
+
+        return Objects.equals(this.type, other.type);
     }
 }
