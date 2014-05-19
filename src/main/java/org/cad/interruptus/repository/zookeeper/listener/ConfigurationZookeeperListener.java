@@ -39,8 +39,6 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
 
     public void dispatchInsert(final String type, final Collection<Entity> collection)
     {
-        logger.debug("dispatchInsert : " + type + " - " + collection);
-
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -55,8 +53,6 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
     
     public void dispatchUpdate(final String type, final Collection<Entity> collection)
     {
-        logger.debug("dispatchUpdate : " + type + " - " + collection);
-
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -71,8 +67,6 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
     
     public void dispatchDelete(final String type, final Collection<Entity> collection)
     {
-        logger.debug("dispatchDelete : " + type + " - " + collection);
-
         if ( ! listeners.containsKey(type)) {
             return;
         }
@@ -125,12 +119,9 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
 
             return;
         }
-        
-        logger.info("newConfig : " + newConfig);
-        logger.info("oldConfig : " + oldConfig);
-        
+
         if (newConfig.equals(oldConfig)) {
-            logger.warn(String.format("Configuration remains the same."));
+            logger.debug(String.format("No changes detected..."));
 
             return;
         }
