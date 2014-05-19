@@ -16,8 +16,6 @@ import com.espertech.esperio.amqp.AMQPToObjectCollector;
 import com.espertech.esperio.amqp.AMQPToObjectCollectorContext;
 import com.google.gson.GsonBuilder;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.zip.DataFormatException;
 
 import org.apache.commons.logging.LogFactory;
@@ -81,18 +79,17 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
         final EPDataFlowEmitter emmiter = context.getEmitter();
         final StringTokenizer tokenizer = new StringTokenizer(json, DELIMITER);
 
-        log.debug("json: " +json);
-
         while (tokenizer.hasMoreTokens()) {
-            String newline  = tokenizer.nextToken();
-            EventBean event = parseLine(newline);
+            final String newline  = tokenizer.nextToken();
+            final EventBean event = parseEventBean(newline);
+
             emmiter.submit(event);
         }
     }
 
     private String getJsonString(byte[] input) throws DataFormatException, UnsupportedEncodingException
     {
-	if ((char) input[0] == '{') { // Very cheezy....
+	if ((char) input[0] == '{') { // Very cheezy ...
             return new String(input);
         }
 
@@ -108,12 +105,11 @@ public class AMQPJsonToMap implements AMQPToObjectCollector
         return new String(restored, 0, resultLength, "UTF-8");
     }
 
-    private EventBean parseLine(String json)
+    private EventBean parseEventBean(final String json)
     {
-        final Map<String,Object> values = parser.fromJson(json, HashMap.class);
-        final String eventTypeName      = (String) values.get("event_type");
-        final EventType eventType       = config.getEventType(eventTypeName);
-        final EventBean eventBean       = new MapEventBean(values, eventType);
+        final Message message     = parser.fromJson(json, Message.class);
+        final EventType eventType = config.getEventType(message.getType());
+        final EventBean eventBean = new MapEventBean(message.getBody(), eventType);
 
         return eventBean;
     }
