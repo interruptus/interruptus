@@ -16,7 +16,7 @@ Scenario Outline: Configure a simple flow
 
     When I check the flow status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STOPPED"}
+        {"name": "<name>", "status":"STARTED"}
         """
 
     Examples:

@@ -44,9 +44,6 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
 
         statement.setName(sttm.getName());
 
-        log.info("Create statement : " + statement.getName());
-        log.info("Statement debug  : " + statement.getDebug());
-
         if ( ! statement.getDebug()) {
             return;
         }
@@ -88,11 +85,11 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
             return false;
         }
     }
-
-    public Boolean stop(final Statement statement)
+    
+    public Boolean stop(final String name)
     {
         try {
-            EPStatement epStatement = epAdministrator.getStatement(statement.getName());
+            EPStatement epStatement = epAdministrator.getStatement(name);
 
             if (epStatement != null) {
                 epStatement.stop();
@@ -103,6 +100,11 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
             log.info(e.getMessage());
             return false;
         }
+    }
+
+    public Boolean stop(final Statement statement)
+    {
+        return stop(statement.getName());
     }
 
     public Boolean stopAll()

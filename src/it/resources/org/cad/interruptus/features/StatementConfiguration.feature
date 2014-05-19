@@ -15,7 +15,7 @@ Scenario Outline: Configure a simple statement
 
     When I check the statement status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STOPPED"}
+        {"name": "<name>", "status":"STARTED"}
         """
 
     Examples:
