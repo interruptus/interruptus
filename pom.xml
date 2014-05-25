@@ -214,7 +214,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
