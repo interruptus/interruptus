@@ -3,6 +3,9 @@ Interruptus
 
 A framework for scalable monitoring.
 
+
+[![Build Status](https://travis-ci.org/marksteele/interruptus.svg?branch=refactoring)](https://travis-ci.org/marksteele/interruptus)
+
 <pre>
             _.---._
         .-'         '-.
