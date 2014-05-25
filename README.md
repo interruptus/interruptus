@@ -45,4 +45,4 @@ Authors
 API USAGE
 =========
 
-[View the HTML rest API DOC](http://htmlpreview.github.io/?https://raw.github.com/marksteele/interruptus/master/generated/strapdown.html)
+[View the HTML rest API DOC](http://htmlpreview.github.io/?https://raw.github.com/marksteele/interruptus/refactoring/generated/strapdown.html)
