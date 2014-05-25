@@ -63,7 +63,7 @@ public class FlowResource
     @POST
     @ApiOperation(
         value = "Save a flow configuration",
-        notes = "Save a flow configuration, if the flow already exists will be overrited",
+        notes = "Save a flow configuration, if the flow already exists will be overwritten",
         response = Boolean.class
     )
     public Boolean save(Flow entity)

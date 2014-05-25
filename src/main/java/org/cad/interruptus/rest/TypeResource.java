@@ -1,5 +1,10 @@
 package org.cad.interruptus.rest;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +29,7 @@ import org.cad.interruptus.repository.TypeRepository;
 @Path("/type")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Api(value = "/type", description = "Event type operations")
 public class TypeResource
 {
     @Inject
@@ -35,6 +41,12 @@ public class TypeResource
     Log logger = LogFactory.getLog(getClass());
 
     @GET
+    @ApiOperation(
+        value = "List all types",
+        notes = "List all event types available",
+        response = Type.class,
+        responseContainer = "List"
+    )
     public List<Type> list()
     {
         try {
@@ -46,6 +58,11 @@ public class TypeResource
     }
 
     @POST
+    @ApiOperation(
+        value = "Save a type configuration",
+        notes = "Save a type configuration, if the flow already exists will be overwritten",
+        response = Boolean.class
+    )
     public Boolean save(Type entity)
     {
         try {
@@ -62,7 +79,15 @@ public class TypeResource
 
     @GET
     @Path("/{name}")
-    public Type show(@PathParam("name") String name)
+    @ApiOperation(
+        value = "Retreives a type configuration",
+        notes = "Retreives a type configuration, throws exception if does not exists",
+        response = Type.class
+    )
+    @ApiResponses({
+        @ApiResponse(code = 404, message = "Type doesn't exists")
+    })
+    public Type show(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
             return repository.findById(name);
@@ -76,7 +101,15 @@ public class TypeResource
 
     @DELETE
     @Path("/{name}")
-    public Boolean remove(@PathParam("name") String name)
+    @ApiOperation(
+        value = "Removes a type configuration",
+        notes = "Removes a type configuration, throws exception if does not exists",
+        response = Type.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Type doesn't exists")
+    })
+    public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
 

@@ -12,7 +12,7 @@ public class TypeProperty
     @ApiModelProperty(value = "Property name", required = true)
     protected String name;
 
-    @ApiModelProperty(value = "Property type (string/integer/long/etc..)", required = true)
+    @ApiModelProperty(value = "Property type (string/integer/etc..)", required = true)
     protected String type;
 
     public TypeProperty()
