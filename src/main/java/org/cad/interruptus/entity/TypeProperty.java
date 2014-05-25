@@ -1,12 +1,18 @@
 package org.cad.interruptus.entity;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@ApiModel(value = "TypeProperty", description = "TypeProperty resource representation")
 public class TypeProperty
 {
+    @ApiModelProperty(value = "Property name", required = true)
     protected String name;
+
+    @ApiModelProperty(value = "Property type (string/integer/long/etc..)", required = true)
     protected String type;
 
     public TypeProperty()

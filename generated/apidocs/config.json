@@ -1,0 +1,36 @@
+{
+  "apiVersion" : "v1",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080/api",
+  "resourcePath" : "/config",
+  "produces" : [ "application/json" ],
+  "consumes" : [ "application/json" ],
+  "apis" : [ {
+    "path" : "/config",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "Get configuration",
+      "notes" : "Show the corrent configuration",
+      "type" : "Configuration",
+      "nickname" : "getConfig",
+      "authorizations" : { },
+      "parameters" : [ ]
+    } ]
+  } ],
+  "models" : {
+    "Configuration" : {
+      "id" : "Configuration",
+      "properties" : {
+        "statements" : {
+          "$ref" : "Map[string,Statement]"
+        },
+        "types" : {
+          "$ref" : "Map[string,Type]"
+        },
+        "flows" : {
+          "$ref" : "Map[string,Flow]"
+        }
+      }
+    }
+  }
+}

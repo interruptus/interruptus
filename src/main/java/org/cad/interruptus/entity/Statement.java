@@ -1,14 +1,21 @@
 package org.cad.interruptus.entity;
 
-import com.google.common.hash.Hashing;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@ApiModel(value = "Statement", description = "Statement resource representation")
 public class Statement implements Entity
 {
+    @ApiModelProperty(value = "Statement epl query", required = true)
     protected String query;
+    
+    @ApiModelProperty(value = "Statement unique name", required = true)
     protected String name;
+    
+    @ApiModelProperty(value = "Statement debug flag", required = false)
     protected boolean debug;
 
     public Statement()

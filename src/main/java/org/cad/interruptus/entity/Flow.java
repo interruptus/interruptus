@@ -1,13 +1,21 @@
 package org.cad.interruptus.entity;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@ApiModel( value = "Flow", description = "Flow resource representation")
 public class Flow implements Entity
 {
+    @ApiModelProperty(value = "Flow epl query", required = true)
     protected String query;
+    
+    @ApiModelProperty(value = "Flow unique name", required = true)
     protected String name;
+
+    @ApiModelProperty(value = "Flow runs only on master node or not", required = false)
     protected boolean masterOnly = true;
 
     public Flow()

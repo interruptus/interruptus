@@ -1,6 +1,11 @@
 package org.cad.interruptus.rest;
 
 import com.espertech.esper.client.EPStatementState;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +32,7 @@ import org.cad.interruptus.repository.FlowRepository;
 @Path("/flow")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Api(value = "/flow", description = "Flow operations")
 public class FlowResource
 {
     @Inject
@@ -38,6 +44,12 @@ public class FlowResource
     Log logger = LogFactory.getLog(getClass());
 
     @GET
+    @ApiOperation(
+        value = "List all flows",
+        notes = "List all flows, whether is runnig or not",
+        response = Flow.class,
+        responseContainer = "List"
+    )
     public List<Flow> list()
     {
         try {
@@ -49,6 +61,11 @@ public class FlowResource
     }
 
     @POST
+    @ApiOperation(
+        value = "Save a flow configuration",
+        notes = "Save a flow configuration, if the flow already exists will be overrited",
+        response = Boolean.class
+    )
     public Boolean save(Flow entity)
     {
         try {
@@ -65,7 +82,15 @@ public class FlowResource
 
     @GET
     @Path("/{name}")
-    public Flow show(@PathParam("name") String name)
+    @ApiOperation(
+        value = "Retreives a flow configuration",
+        notes = "Retreives a flow configuration, throws exception if does not exists",
+        response = Flow.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Flow doesn't exists")
+    })
+    public Flow show(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
             return repository.findById(name);
@@ -79,7 +104,15 @@ public class FlowResource
 
     @DELETE
     @Path("/{name}")
-    public Boolean remove(@PathParam("name") String name)
+    @ApiOperation(
+        value = "Removes a flow configuration",
+        notes = "Removes a flow configuration, throws exception if does not exists",
+        response = Flow.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Flow doesn't exists")
+    })
+    public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
 
@@ -97,21 +130,45 @@ public class FlowResource
 
     @POST
     @Path("/{name}/start")
-    public Boolean start(@PathParam("name") String name) throws Exception
+    @ApiOperation(
+        value = "Start a flow in esper",
+        notes = "Stop a existing in esper, throws exception if does not exists",
+        response = Flow.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Flow doesn't exists")
+    })
+    public Boolean start(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         return configuration.start(name);
     }
 
     @POST
     @Path("/{name}/stop")
-    public Boolean stop(@PathParam("name") String name) throws Exception
+    @ApiOperation(
+        value = "Stop a flow in esper",
+        notes = "Stop a existing flow in esper, throws exception if does not exists",
+        response = Flow.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Flow doesn't exists")
+    })
+    public Boolean stop(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         return configuration.stop(name);
     }
 
     @GET
     @Path("/{name}/state")
-    public Map<String, String> state(@PathParam("name") String name) throws Exception
+    @ApiOperation(
+        value = "Retrives the state for a flow",
+        notes = "Retrives the state for a flow, throws exception if does not exists",
+        response = Flow.class
+    )
+    @ApiResponses( {
+        @ApiResponse(code = 404, message = "Flow doesn't exists")
+    })
+    public Map<String, String> state(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         final Map<String, String> map = new HashMap<>();
         final EPStatementState state  = configuration.getFlowState(name);

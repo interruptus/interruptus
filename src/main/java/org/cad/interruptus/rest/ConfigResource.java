@@ -1,5 +1,7 @@
 package org.cad.interruptus.rest;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import javax.inject.Inject;
 
 import javax.ws.rs.GET;
@@ -17,12 +19,14 @@ import org.cad.interruptus.repository.zookeeper.ConfigurationManager;
 @Path("/config")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Api(value = "/config", description = "Config information")
 public class ConfigResource
 {
     @Inject
     ConfigurationManager configuration;
 
     @GET
+    @ApiOperation(value = "Get configuration", notes = "Show the corrent configuration", response = Configuration.class)
     public Configuration getConfig() throws Exception
     {
 	return configuration.get();

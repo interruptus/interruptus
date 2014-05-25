@@ -1,14 +1,19 @@
 package org.cad.interruptus.entity;
 
-import com.google.common.hash.Hashing;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@ApiModel(value = "Type", description = "Type resource representation")
 public class Type implements Entity
 {
+    @ApiModelProperty(value = "List of properties", required = true)
     protected List<TypeProperty> properties;
+    
+    @ApiModelProperty(value = "Type unique name", required = true)
     protected String name;
 
     public Type()

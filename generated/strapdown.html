@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<title>API Document</title>
+
+<xmp theme="united" style="display:none;">
+#API Document
+
+
+## BasePath: http://localhost:8080/api
+
+## Api Version: v1
+
+## Resources
+### 0. /flow
+#### Overview
+
+
+#### 0. `/flow/{name}`
+##### 0..0 remove
+**DELETE** `/flow/{name}`
+
+Removes a flow configuration
+Removes a flow configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+##### 0..0 show
+**GET** `/flow/{name}`
+
+Retreives a flow configuration
+Retreives a flow configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 0. `/flow/{name}/start`
+##### 0..0 start
+**POST** `/flow/{name}/start`
+
+Start a flow in esper
+Stop a existing in esper, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}/start
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 0. `/flow/{name}/stop`
+##### 0..0 stop
+**POST** `/flow/{name}/stop`
+
+Stop a flow in esper
+Stop a existing flow in esper, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}/stop
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 0. `/flow`
+##### 0..0 list
+**GET** `/flow`
+
+List all flows
+List all flows, whether is runnig or not
+
+###### URL
+    http://localhost:8080/api/flow
+###### Parameters
+
+###### Response
+[List[Flow]](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+##### 0..0 save
+**POST** `/flow`
+
+Save a flow configuration
+Save a flow configuration, if the flow already exists will be overrited
+
+###### URL
+    http://localhost:8080/api/flow
+###### Parameters
+- body
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>body</th>
+            <td>false</td>
+            <td></td>
+            <td><a href="#Flow">Flow</a></td>
+        </tr>
+    </table>
+
+###### Response
+[boolean](#)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+#### 0. `/flow/{name}/state`
+##### 0..0 state
+**GET** `/flow/{name}/state`
+
+Retrives the state for a flow
+Retrives the state for a flow, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}/state
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+### 1. /config
+#### Overview
+
+
+#### 1. `/config`
+##### 1..0 getConfig
+**GET** `/config`
+
+Get configuration
+Show the corrent configuration
+
+###### URL
+    http://localhost:8080/api/config
+###### Parameters
+
+###### Response
+[Configuration](#Configuration)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+
+## Data Types
+
+
+## <a name="Configuration">Configuration</a>
+
+<table border="1">
+    <tr>
+        <th>type</th>
+        <th>required</th>
+        <th>access</th>
+        <th>description</th>
+        <th>notes</th>
+    </tr>
+        <tr>
+            <td><a href="#Map[string,Flow]">Map[string,Flow]</a></td>
+            <td>optional</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td><a href="#Map[string,Type]">Map[string,Type]</a></td>
+            <td>optional</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td><a href="#Map[string,Statement]">Map[string,Statement]</a></td>
+            <td>optional</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+</table>
+
+
+
+## <a name="Flow">Flow</a>
+
+<table border="1">
+    <tr>
+        <th>type</th>
+        <th>required</th>
+        <th>access</th>
+        <th>description</th>
+        <th>notes</th>
+    </tr>
+        <tr>
+            <td>boolean</td>
+            <td>optional</td>
+            <td>-</td>
+            <td>Flow runs only on master node or not</td>
+            <td>Flow runs only on master node or not</td>
+        </tr>
+        <tr>
+            <td>string</td>
+            <td>required</td>
+            <td>-</td>
+            <td>Flow unique name</td>
+            <td>Flow unique name</td>
+        </tr>
+        <tr>
+            <td>string</td>
+            <td>required</td>
+            <td>-</td>
+            <td>Flow epl query</td>
+            <td>Flow epl query</td>
+        </tr>
+        <tr>
+            <td>string</td>
+            <td>optional</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+</table>
+
+
+
+</xmp>
+
+<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>
+</html>
