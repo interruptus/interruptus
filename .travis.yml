@@ -1,6 +1,9 @@
 language: java
 
-install: mvn -DskipTests=true -B -V clean
+before_install:
+    - apt-get update
+    - apt-get install zookeeper
+
 script: ./bin/cucumber
 # coveralls
 # after_success: mvn clean cobertura:cobertura coveralls:cobertura
