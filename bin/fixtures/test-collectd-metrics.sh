@@ -18,7 +18,7 @@ EOF
 # {"type":"CollectdMetric","body":{"plugin":"disk","plugin_instance":"disk_sdd1","datacenter":"east_coast","time":"1399577466","host":"mq01.ss","name":"usage","value":"1234591"}}
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/statement <<EOF | python -m json.tool
-{"name": "eventlogdebug", "query":"SELECT * FROM CollectdMetric WHERE host = 'mq01.ss'", "debug": true}
+{"name": "eventlogdebug", "query":"SELECT * FROM CollectdMetric WHERE host = 'mq01.ss'", "debug": true, "started": true}
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool

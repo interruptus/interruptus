@@ -7,16 +7,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @ApiModel( value = "Flow", description = "Flow resource representation")
-public class Flow implements Entity
+public class Flow implements RunnableEntity
 {
     @ApiModelProperty(value = "Flow epl query", required = true)
     protected String query;
-    
+
     @ApiModelProperty(value = "Flow unique name", required = true)
     protected String name;
 
     @ApiModelProperty(value = "Flow runs only on master node or not", required = false)
     protected boolean masterOnly = true;
+
+    @ApiModelProperty(value = "Whether or not the flow is running in esper", required = false)
+    protected boolean started = true;
 
     public Flow()
     {
@@ -38,6 +41,12 @@ public class Flow implements Entity
     public String getId()
     {
         return name;
+    }
+
+    @Override
+    public boolean isRunning()
+    {
+        return this.started;
     }
 
     public String getQuery()
@@ -70,10 +79,20 @@ public class Flow implements Entity
         return masterOnly;
     }
 
+    public boolean isStarted()
+    {
+        return started;
+    }
+
+    public void setStarted(boolean started)
+    {
+        this.started = started;
+    }
+
     @Override
     public String toString()
     {
-        return String.format("{name:'%s', query:'%s'}", name, query);
+        return String.format("{name:'%s', query:'%s', started:%s}", name, query, started);
     }
 
     @Override
@@ -83,6 +102,7 @@ public class Flow implements Entity
         hash     = 97 * hash + Objects.hashCode(this.query);
         hash     = 97 * hash + Objects.hashCode(this.name);
         hash     = 97 * hash + (this.masterOnly ? 1 : 0);
+        hash     = 97 * hash + (this.started ? 1 : 0);
 
         return hash;
     }
@@ -108,6 +128,6 @@ public class Flow implements Entity
             return false;
         }
 
-        return (this.masterOnly == other.masterOnly);
+        return (this.masterOnly == other.masterOnly) && (this.started == other.started);
     }
 }

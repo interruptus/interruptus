@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @ApiModel(value = "Statement", description = "Statement resource representation")
-public class Statement implements Entity
+public class Statement implements RunnableEntity
 {
     @ApiModelProperty(value = "Statement epl query", required = true)
     protected String query;
@@ -18,6 +18,9 @@ public class Statement implements Entity
     @ApiModelProperty(value = "Statement debug flag", required = false)
     protected boolean debug;
 
+    @ApiModelProperty(value = "Whether or not the statement is running in esper", required = false)
+    protected boolean started = true;
+
     public Statement()
     {
 
@@ -25,7 +28,7 @@ public class Statement implements Entity
 
     public Statement(String name, String query, boolean debug)
     {
-        this.name = name;
+        this.name  = name;
         this.query = query;
         this.debug = debug;
     }
@@ -34,6 +37,12 @@ public class Statement implements Entity
     public String getId()
     {
         return name;
+    }
+
+    @Override
+    public boolean isRunning()
+    {
+        return this.started;
     }
     
     public String getName()
@@ -66,10 +75,20 @@ public class Statement implements Entity
         this.debug = debug;
     }
 
+    public boolean isStarted()
+    {
+        return started;
+    }
+
+    public void setStarted(boolean started)
+    {
+        this.started = started;
+    }
+    
     @Override
     public String toString()
     {
-        return String.format("{name:'%s', query:'%s'}", name, query);
+        return String.format("{name:'%s', query:'%s', started:%s}", name, query, started);
     }
 
     @Override
@@ -78,6 +97,7 @@ public class Statement implements Entity
         int hash = 3;
         hash     = 79 * hash + Objects.hashCode(this.query);
         hash     = 79 * hash + Objects.hashCode(this.name);
+        hash     = 79 * hash + (this.started ? 1 : 0);
         hash     = 79 * hash + (this.debug ? 1 : 0);
 
         return hash;
@@ -104,6 +124,6 @@ public class Statement implements Entity
             return false;
         }
 
-        return (this.debug == other.debug);
+        return (this.debug == other.debug) && (this.started == other.started);
     }
 }

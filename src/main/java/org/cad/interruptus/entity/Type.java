@@ -31,7 +31,7 @@ public class Type implements Entity
     {
         return name;
     }
- 
+
     public String getName()
     {
         return name;

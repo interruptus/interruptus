@@ -67,7 +67,7 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
 
         return config.removeEventType(name, true);
     }
-    
+
     @Override
     public Boolean remove(final Type e)
     {
@@ -82,5 +82,11 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
         final EventType eventType                   = configuration.getEventType(name);
 
         return eventType != null;
+    }
+
+    @Override
+    public Boolean start(String id)
+    {
+        return false;
     }
 }

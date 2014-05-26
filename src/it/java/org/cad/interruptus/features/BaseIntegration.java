@@ -32,7 +32,7 @@ public abstract class BaseIntegration
         return getUrl("api/" + path);
     }
 
-    public ClientResponse getHtml(final String path) throws Throwable
+    public ClientResponse getHtml(final String path)
     {
         final String url                = getUrl(path);
         final Client client             = Client.create();
@@ -47,7 +47,7 @@ public abstract class BaseIntegration
         return response;
     }
 
-    public ClientResponse postResource(final String path, final String body) throws Throwable
+    public ClientResponse postResource(final String path, final String body)
     {
         final Client client             = Client.create();
         final String url                = getResourceUrl(path);
@@ -63,7 +63,7 @@ public abstract class BaseIntegration
         return response;
     }
 
-    public ClientResponse getResource(final String path) throws Throwable
+    public ClientResponse getResource(final String path)
     {
         final Client client           = Client.create();
         final String url              = getResourceUrl(path);
@@ -79,7 +79,7 @@ public abstract class BaseIntegration
         return response;
     }
 
-    public ClientResponse deleteResource(final String path) throws Throwable
+    public ClientResponse deleteResource(final String path)
     {
         final Client client           = Client.create();
         final String url              = getResourceUrl(path);

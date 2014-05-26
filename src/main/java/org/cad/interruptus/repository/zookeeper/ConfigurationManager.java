@@ -66,7 +66,7 @@ public class ConfigurationManager
             {
                 final String json = serializer.toJson(get());
                 final Stat status = client.checkExists().forPath(path);
-
+                
                 if (status != null) {
                     client.setData()
                         .compressed()

@@ -1,7 +1,7 @@
 Feature: Configure flows
 
 Background:
-    Given I clear all data in zookeeper
+    Given I clear the zookeeper configuration
     And I have the amqp exchange "test_collectd_metrics"
     And the following types exist:
         | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
@@ -17,7 +17,7 @@ Scenario Outline: Configure a simple flow
 
     When I check the flow status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STARTED"}
+        {"name": "<name>", "status":"STOPPED"}
         """
 
     Examples:

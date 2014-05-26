@@ -47,24 +47,28 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         final String name      = flow.getName();
         final String query     = flow.getQuery();
         final EPStatement sttm = epAdministrator.getStatement(name);
-        
+
         if (sttm != null) {
             remove(name);
         }
 
-        epAdministrator.createEPL(query, name);
+        final EPStatement sttmCreated = epAdministrator.createEPL(query, name);
+
+        if ( ! sttmCreated.isStopped()) {
+            sttmCreated.stop();
+        }
     }
 
     public Boolean start(final String name)
     {
         final EPRuntime epRuntime             = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.instantiate(name);
+        final EPDataFlowInstance instance     = flowRuntime.getSavedInstance(name);
 
         if (instance == null) {
             return false;
         }
-        
+
         if (instance.getState() == EPDataFlowState.RUNNING) {
             return true;
         }
@@ -73,7 +77,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
 
         return true;
     }
-    
+
     public Boolean stop(final String name)
     {
         final EPRuntime epRuntime           = epService.getEPRuntime();
@@ -88,18 +92,18 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
 
         return true;
     }
-    
+
     public EPStatementState getFlowState(final String name)
     {
-        final EPRuntime epRuntime            = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime  = epRuntime.getDataFlowRuntime();
-        final EPDataFlowDescriptor descripto = flowRuntime.getDataFlow(name);
+        final EPRuntime epRuntime             = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
+        final EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
 
-        if (descripto == null) {
+        if (descriptor == null) {
             return null;
         }
 
-        return descripto.getStatementState();
+        return descriptor.getStatementState();
     }
 
     @Override
@@ -128,7 +132,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     {
         return remove(e.getName());
     }
-    
+
     @Override
     public Boolean exists(final String name)
     {

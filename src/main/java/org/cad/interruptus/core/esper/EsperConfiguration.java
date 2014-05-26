@@ -14,4 +14,6 @@ public interface EsperConfiguration<ID extends Serializable, T>
     public Boolean remove(T e);
 
     public Boolean exists(ID id);
+    
+    public Boolean start(ID id);
 }

@@ -1,7 +1,7 @@
 Feature: Configure statements
 
 Background:
-    Given I clear all data in zookeeper
+    Given I clear the zookeeper configuration
 
 Scenario Outline: Configure a simple statement
 
@@ -15,10 +15,10 @@ Scenario Outline: Configure a simple statement
 
     When I check the statement status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STARTED"}
+        {"name": "<name>", "status":"STOPPED"}
         """
 
     Examples:
-        | name  		| json 																			|
-        | eventlog 		| {"name": "eventlog", "query":"SELECT * FROM EventLog", "debug": false} 		|
-        | eventlogdebug | {"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true}  	|
+        | name          | json 	                                                                     |
+        | eventlog      | {"name": "eventlog", "query":"SELECT * FROM EventLog", "debug": false}     |
+        | eventlogdebug | {"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true} |
