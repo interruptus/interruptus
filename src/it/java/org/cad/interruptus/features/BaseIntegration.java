@@ -3,6 +3,7 @@ package org.cad.interruptus.features;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.rabbitmq.client.Connection;
 import javax.inject.Inject;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +13,9 @@ public abstract class BaseIntegration
 {
     @Inject
     protected CuratorFramework curator;
+
+    @Inject
+    protected Connection amqpConnection;
 
     protected String getBaseUrl()
     {

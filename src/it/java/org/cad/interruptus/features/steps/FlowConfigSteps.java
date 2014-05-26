@@ -15,7 +15,7 @@ public class FlowConfigSteps extends BaseResourceSteps
 {
     ClientResponse listResponse;
     ClientResponse getResponse;
-    
+
     @Given("^the following flows exist:$")
     public void the_following_flows_exist(DataTable table) throws Throwable 
     {

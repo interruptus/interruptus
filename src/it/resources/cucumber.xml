@@ -10,4 +10,12 @@
 
     <import resource="classpath:applicationContext.xml"/>
 
+    <bean id="amqpConnectionFactory" class="com.rabbitmq.client.ConnectionFactory">
+        <property name="host"     value="localhost" />
+        <property name="username" value="guest" />
+        <property name="password" value="guest" />
+    </bean>
+
+    <bean id="amqpConnection" class="com.rabbitmq.client.Connection" factory-bean="amqpConnectionFactory" factory-method="newConnection"/>
+
 </beans>
