@@ -2,4 +2,4 @@
 
 DIR=`dirname $0`/..
 
-mvn -f $DIR verify -Pit -Dcucumber.options="$@"
+mvn -f $DIR clean verify -Pit -Dcucumber.options="$@"

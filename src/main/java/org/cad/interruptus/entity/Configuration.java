@@ -70,6 +70,46 @@ public class Configuration
         throw new RuntimeException("Unknow class : " + clazz);
     }
 
+    public void put(final Entity entity)
+    {
+        if (entity instanceof Statement) {
+            this.statements.put(entity.getId(), (Statement) entity);
+
+            return;
+        }
+
+        if (entity instanceof Flow) {
+            this.flows.put(entity.getId(), (Flow) entity);
+
+            return;
+        }
+
+        if (entity instanceof Type) {
+            this.types.put(entity.getId(), (Type) entity);
+
+            return;
+        }
+
+        throw new RuntimeException("Unknow entity : " + entity.getClass());
+    }
+    
+    public void remove(final Class<? extends Entity> clazz, final String id)
+    {
+        if (Statement.class.equals(clazz)) {
+            this.statements.remove(id);
+        }
+
+        if (Flow.class.equals(clazz)) {
+            this.flows.remove(id);
+        }
+
+        if (Type.class.equals(clazz)) {
+            this.types.remove(id);
+        }
+
+        throw new RuntimeException("Unknow class : " + clazz);
+    }
+
     @Override
     public String toString()
     {

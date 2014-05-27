@@ -59,6 +59,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         }
     }
 
+    @Override
     public Boolean start(final String name)
     {
         final EPRuntime epRuntime             = epService.getEPRuntime();

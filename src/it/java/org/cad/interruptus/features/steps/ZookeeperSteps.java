@@ -20,7 +20,7 @@ public class ZookeeperSteps extends BaseIntegration
             .forPath(path);
     }
     
-    @Given("^the following configuration exist in zookeeper:$")
+    @Given("^the following configuration put in zookeeper:$")
     public void the_following_configuration_exist_in_zookeeper(String json) throws Exception
     {
         final byte[] data = json.getBytes();

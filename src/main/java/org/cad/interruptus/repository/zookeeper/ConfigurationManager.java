@@ -54,7 +54,7 @@ public class ConfigurationManager
 
     protected <R> R mutex(final Callable<R> callable) throws Exception
     {
-        return mutex(callable, new InterProcessMutex(client, "/lock"));
+        return mutex(callable, new InterProcessMutex(client, this.path + ".lock"));
     }
 
     protected void flush() throws Exception
@@ -91,40 +91,16 @@ public class ConfigurationManager
             throw new NullPointerException("Entity cannot be null");
         }
 
-        if (entity instanceof Type) {
-            get().getTypes().put(entity.getId(), (Type) entity);
-
-            return;
-        }
-        
-        if (entity instanceof Flow) {
-            get().getFlows().put(entity.getId(), (Flow) entity);
-
-            return;
-        }
-        
-        if (entity instanceof Statement) {
-            get().getStatements().put(entity.getId(), (Statement) entity);
-
-            return;
-        }
-
-        throw new RuntimeException("Unknown entity type :" + entity.getClass());
+        get().put(entity);
     }
 
     public synchronized void remove(final Class<? extends Entity> clazz, final String id) throws Exception
     {
-        if (Type.class.equals(clazz)) {
-            get().getTypes().remove(id);
+        if (id == null) {
+            throw new NullPointerException("Entity identifier cannot be null");
         }
 
-        if (Flow.class.equals(clazz)) {
-            get().getFlows().remove(id);
-        }
-
-        if (Statement.class.equals(clazz)) {
-            get().getStatements().remove(id);
-        }
+        get().remove(clazz, id);
     }
 
     public Configuration get() throws Exception
