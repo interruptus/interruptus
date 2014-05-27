@@ -15,10 +15,10 @@ Scenario Outline: Configure a simple statement
 
     When I check the statement status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STOPPED"}
+        {"name": "<name>", "status":"<status>"}
         """
 
     Examples:
-        | name          | json 	                                                                     |
-        | eventlog      | {"name": "eventlog", "query":"SELECT * FROM EventLog", "debug": false}     |
-        | eventlogdebug | {"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true} |
+        | name          | status  | json                                                                                        |
+        | eventlog      | STOPPED | {"name": "eventlog", "query":"SELECT * FROM EventLog", "debug": false, "started":false}     |
+        | eventlogdebug | STARTED | {"name": "eventlogdebug", "query":"SELECT * FROM EventLog", "debug": true, "started":true}  |

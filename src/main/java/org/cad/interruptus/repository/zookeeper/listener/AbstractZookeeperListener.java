@@ -19,7 +19,7 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
 
     protected void startIfRunning(final RunnableEntity e)
     {
-        if (e.isRunning()) {
+        if ( ! e.isRunning()) {
             return;
         }
 
@@ -28,7 +28,7 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
     }
 
     @Override
-    public void onInsert(final E e)
+    public void onSave(final E e)
     {
         configuration.save(e);
 
@@ -41,15 +41,5 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
     public void onDelete(final E e)
     {
         configuration.remove(e.getId());
-    }
-
-    @Override
-    public void onUpdate(final E e)
-    {
-        configuration.save(e);
-
-        if (e instanceof RunnableEntity) {
-            startIfRunning((RunnableEntity) e);
-        }
     }
 }

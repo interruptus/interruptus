@@ -17,9 +17,9 @@ Scenario Outline: Configure a simple flow
 
     When I check the flow status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STOPPED"}
+        {"name": "<name>", "status":"<status>"}
         """
 
     Examples:
-        | name  | json                                                                                             |
-        | EventsIn | {"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'test_collectd_metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"} |
+        | name      | status  | json                                                                                                                                                                                                                                                                                                                            |
+        | EventsIn  | STOPPED | {"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<EventLog> {  host: 'localhost',  exchange: 'test_collectd_metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"} |

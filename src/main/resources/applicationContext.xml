@@ -87,11 +87,15 @@
             </set>
         </entry>
     </util:map>
+    
+    <bean id="configurationEventDispatcher" class="org.cad.interruptus.repository.zookeeper.listener.ConfigurationEventDispatcher">
+        <constructor-arg ref="entityConfigurationListenerMap" />
+    </bean>
 
     <!-- zookeeper configuration -->
     <bean id="configurationZookeeperListener" class="org.cad.interruptus.repository.zookeeper.listener.ConfigurationZookeeperListener">
         <constructor-arg index="0" ref="configReference" />
-        <constructor-arg index="1" ref="entityConfigurationListenerMap" />
+        <constructor-arg index="1" ref="configurationEventDispatcher" />
         <constructor-arg index="2" ref="gson" />
     </bean>
 

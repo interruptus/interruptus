@@ -22,7 +22,7 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d 
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool
-{"name": "EventsOut", "query":"create dataflow EventsOut EventBusSource -> outstream<CollectdMetric> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
+{"name": "EventsOut", "masterOnly":true, "query":"create dataflow EventsOut EventBusSource -> outstream<CollectdMetric> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool

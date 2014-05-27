@@ -24,6 +24,7 @@ import org.cad.interruptus.core.EntityNotFoundException;
 import org.cad.interruptus.core.esper.TypeConfiguration;
 import org.cad.interruptus.entity.Type;
 import org.cad.interruptus.repository.TypeRepository;
+import org.cad.interruptus.repository.zookeeper.listener.ConfigurationEventDispatcher;
 
 @Singleton
 @Path("/type")
@@ -37,6 +38,9 @@ public class TypeResource
     
     @Inject
     TypeConfiguration configuration;
+    
+    @Inject
+    ConfigurationEventDispatcher dispatcher;
 
     Log logger = LogFactory.getLog(getClass());
 
@@ -69,6 +73,7 @@ public class TypeResource
 
             configuration.save(entity);
             repository.save(entity);
+            dispatcher.dispatchSave(entity);
 
             return Boolean.TRUE;
         } catch (Exception ex) {
@@ -113,8 +118,10 @@ public class TypeResource
     {
         try {
 
-            configuration.remove(name);
+            final Type entity = repository.findById(name);
+
             repository.remove(name);
+            dispatcher.dispatchDelete(entity);
 
             return true;
         } catch (EntityNotFoundException ex) {

@@ -14,3 +14,4 @@ Scenario Outline: Configure types
         | name  | json                                                                                              |
         | type1 | {"name":"type1","properties":[{"name":"name","type":"string"},{"name":"value","type":"double"}]}  |
         | type2 | {"name":"type2","properties":[{"name":"key","type":"string"},{"name":"value","type":"string"}]}   |
+        | type1 | {"name":"type1","properties":[{"name":"key","type":"string"}]}                                    |

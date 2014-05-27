@@ -27,6 +27,7 @@ import org.cad.interruptus.core.EntityNotFoundException;
 import org.cad.interruptus.core.esper.FlowConfiguration;
 import org.cad.interruptus.entity.Flow;
 import org.cad.interruptus.repository.FlowRepository;
+import org.cad.interruptus.repository.zookeeper.listener.ConfigurationEventDispatcher;
 
 @Singleton
 @Path("/flow")
@@ -40,6 +41,9 @@ public class FlowResource
 
     @Inject
     FlowConfiguration configuration;
+
+    @Inject
+    ConfigurationEventDispatcher dispatcher;
 
     Log logger = LogFactory.getLog(getClass());
 
@@ -72,6 +76,7 @@ public class FlowResource
 
             configuration.save(entity);
             repository.save(entity);
+            dispatcher.dispatchSave(entity);
 
             return Boolean.TRUE;
         } catch (Exception ex) {
@@ -116,8 +121,11 @@ public class FlowResource
     {
         try {
 
+            final Flow entity = repository.findById(name);
+
             configuration.stop(name);
             repository.remove(name);
+            dispatcher.dispatchDelete(entity);
 
             return true;
         } catch (EntityNotFoundException ex) {

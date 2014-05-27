@@ -19,7 +19,7 @@ public class Flow implements RunnableEntity
     protected boolean masterOnly = true;
 
     @ApiModelProperty(value = "Whether or not the flow is running in esper", required = false)
-    protected boolean started = true;
+    protected boolean started = false;
 
     public Flow()
     {

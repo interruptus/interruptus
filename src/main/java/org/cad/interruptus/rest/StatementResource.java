@@ -27,6 +27,7 @@ import org.cad.interruptus.core.EntityNotFoundException;
 import org.cad.interruptus.core.esper.StatementConfiguration;
 import org.cad.interruptus.entity.Statement;
 import org.cad.interruptus.repository.StatementRepository;
+import org.cad.interruptus.repository.zookeeper.listener.ConfigurationEventDispatcher;
 
 @Singleton
 @Path("/statement")
@@ -40,6 +41,9 @@ public class StatementResource
 
     @Inject
     StatementConfiguration configuration;
+    
+    @Inject
+    ConfigurationEventDispatcher dispatcher;
 
     Log logger = LogFactory.getLog(getClass());
 
@@ -72,6 +76,7 @@ public class StatementResource
 
             configuration.save(entity);
             repository.save(entity);
+            dispatcher.dispatchSave(entity);
 
             return Boolean.TRUE;
         } catch (Exception ex) {
@@ -116,8 +121,11 @@ public class StatementResource
     {
         try {
 
+            final Statement entity = repository.findById(name);
+
             configuration.stop(name);
             repository.remove(name);
+            dispatcher.dispatchDelete(entity);
 
             return true;
         } catch (EntityNotFoundException ex) {

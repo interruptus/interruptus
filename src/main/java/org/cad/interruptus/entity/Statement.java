@@ -19,7 +19,7 @@ public class Statement implements RunnableEntity
     protected boolean debug;
 
     @ApiModelProperty(value = "Whether or not the statement is running in esper", required = false)
-    protected boolean started = true;
+    protected boolean started = false;
 
     public Statement()
     {
