@@ -22,17 +22,16 @@ curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d 
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool
-{"name": "EventsOut", "masterOnly":true, "query":"create dataflow EventsOut EventBusSource -> outstream<CollectdMetric> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
+{"name": "EventsOut", "started": true, "masterOnly":true, "query":"create dataflow EventsOut EventBusSource -> outstream<CollectdMetric> {} AMQPSink(outstream) { host: 'localhost', exchange: 'alerts', queueName: 'alerts', username: 'guest', password: 'guest', routingKey: '#', declareAutoDelete: false, declareDurable: true, collector: {class: 'org.cad.interruptus.EventToAMQP'},logMessages: true}"}
 EOF
 
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/flow <<EOF | python -m json.tool
-{"name": "EventsIn", "query":"create dataflow EventsIn AMQPSource -> EventsIn<CollectdMetric> {  host: 'localhost',  exchange: 'collectd_metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
+{"name": "EventsIn", "started": true, "query":"create dataflow EventsIn AMQPSource -> EventsIn<CollectdMetric> {  host: 'localhost',  exchange: 'collectd_metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(EventsIn){}"}
 EOF
 
-
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsIn/start | python -m json.tool
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsOut/start | python -m json.tool
-curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/start | python -m json.tool
+# curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsIn/start | python -m json.tool
+# curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsOut/start | python -m json.tool
+# curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/statement/eventlogdebug/start | python -m json.tool
 
 
 curl -X GET -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8080/api/flow/EventsIn/state | python -m json.tool

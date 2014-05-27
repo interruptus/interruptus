@@ -54,7 +54,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
 
         final EPStatement sttmCreated = epAdministrator.createEPL(query, name);
 
-        if ( ! sttmCreated.isStopped()) {
+        if ( ! flow.isRunning() && ! sttmCreated.isStopped()) {
             sttmCreated.stop();
         }
     }
@@ -103,7 +103,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         if (descriptor == null) {
             return null;
         }
-
+        
         return descriptor.getStatementState();
     }
 

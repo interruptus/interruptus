@@ -42,7 +42,7 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
     {
         final EPStatement sttm = epAdministrator.createEPL(statement.getQuery(), statement.getName());
 
-        if ( ! sttm.isStopped()) {
+        if ( ! statement.isRunning() && ! sttm.isStopped()) {
             sttm.stop();
         }
 
