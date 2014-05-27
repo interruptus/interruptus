@@ -52,16 +52,19 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     {
         final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
         final Map<String, Object> map         = new HashMap<>();
-
-        if (config.isEventTypeExists(type.getName())) {
-            config.removeEventType(type.getName(), true);
-        }
+        final String name                     = type.getName();
 
         for (TypeProperty property : type.getProperties()) {
             map.put(property.getName(), property.getType());
         }
 
-        config.addEventType(type.getName(), map);
+        if (config.isEventTypeExists(name)) {
+            config.updateMapEventType(name, map);
+
+            return;
+        }
+
+        config.addEventType(name, map);
     }
 
     @Override

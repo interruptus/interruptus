@@ -106,6 +106,8 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
         
         if (cache.getCurrentData() == null) {
             logger.warn("Empty config data ..");
+            reference.set(null);
+
             return;
         }
 
