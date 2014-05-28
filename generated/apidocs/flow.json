@@ -152,6 +152,13 @@
           "type" : "string",
           "description" : "Flow epl query"
         },
+        "running" : {
+          "type" : "boolean"
+        },
+        "started" : {
+          "type" : "boolean",
+          "description" : "Whether or not the flow is running in esper"
+        },
         "masterOnly" : {
           "type" : "boolean",
           "description" : "Flow runs only on master node or not"

@@ -1,17 +1,17 @@
 curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" -d @- http://localhost:8080/api/type <<EOF | python -m json.tool
 {
   "name":"CollectdMetric",
-  "properties":[
-    {"name":"plugin","type":"string"},
-    {"name":"plugin_instance","type":"string"},
-    {"name":"type","type":"string"},
-    {"name":"type_instance","type":"string"},
-    {"name":"datacenter","type":"string"},
-    {"name":"time","type":"long"},
-    {"name":"value","type":"double"},
-    {"name":"name","type":"string"},
-    {"name":"host","type":"string"}
-  ]
+  "properties":{
+    "plugin":"string",
+    "plugin_instance":"string",
+    "type":"string",
+    "type_instance":"string",
+    "datacenter":"string",
+    "time":"long",
+    "value":"double",
+    "name":"string",
+    "host":"string"
+  }
 }
 EOF
 

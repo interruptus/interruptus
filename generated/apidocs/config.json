@@ -21,14 +21,14 @@
     "Configuration" : {
       "id" : "Configuration",
       "properties" : {
+        "statements" : {
+          "$ref" : "Map[string,Statement]"
+        },
         "types" : {
           "$ref" : "Map[string,Type]"
         },
         "flows" : {
           "$ref" : "Map[string,Flow]"
-        },
-        "statements" : {
-          "$ref" : "Map[string,Statement]"
         }
       }
     }

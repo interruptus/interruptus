@@ -83,29 +83,11 @@
           "description" : "Type unique name"
         },
         "properties" : {
-          "type" : "array",
-          "description" : "List of properties",
-          "items" : {
-            "$ref" : "TypeProperty"
-          }
+          "$ref" : "Map[string,string]",
+          "description" : "List of properties"
         },
         "id" : {
           "type" : "string"
-        }
-      }
-    },
-    "TypeProperty" : {
-      "id" : "TypeProperty",
-      "description" : "TypeProperty resource representation",
-      "required" : [ "name", "type" ],
-      "properties" : {
-        "name" : {
-          "type" : "string",
-          "description" : "Property name"
-        },
-        "type" : {
-          "type" : "string",
-          "description" : "Property type (string/integer/etc..)"
         }
       }
     }
