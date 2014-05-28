@@ -74,6 +74,7 @@ public class Flow implements RunnableEntity
         this.masterOnly = masterOnly;
     }
 
+    @Override
     public boolean isMasterOnly()
     {
         return masterOnly;

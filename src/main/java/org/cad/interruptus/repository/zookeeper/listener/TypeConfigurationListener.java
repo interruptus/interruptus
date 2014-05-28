@@ -1,12 +1,13 @@
 package org.cad.interruptus.repository.zookeeper.listener;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.cad.interruptus.core.esper.EsperConfiguration;
 import org.cad.interruptus.entity.Type;
 
 public class TypeConfigurationListener extends AbstractZookeeperListener<String, Type>
 {
-    public TypeConfigurationListener(final EsperConfiguration<String, Type> configuration)
+    public TypeConfigurationListener(final EsperConfiguration<String, Type> configuration, final AtomicBoolean isLeader)
     {
-        super(configuration);
+        super(configuration, isLeader);
     }
 }

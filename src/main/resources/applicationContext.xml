@@ -63,26 +63,29 @@
         <property name="staticMethod"   value="org.cad.interruptus.AMQPJsonToMap.setEPServiceProvider"/>
         <property name="arguments"      ref="esperDefaultProvider"/>
     </bean>
-    
+
     <util:map id="entityConfigurationListenerMap">
         <entry key="type">
             <set>
                 <bean class="org.cad.interruptus.repository.zookeeper.listener.TypeConfigurationListener">
-                    <constructor-arg ref="typeConfiguration" />
+                    <constructor-arg index="0" ref="typeConfiguration" />
+                    <constructor-arg index="1" ref="isLeaderReference" />
                 </bean>
             </set>
         </entry>
         <entry key="flow">
             <set>
                 <bean class="org.cad.interruptus.repository.zookeeper.listener.FlowConfigurationListener">
-                    <constructor-arg ref="flowConfiguration" />
+                    <constructor-arg index="0" ref="flowConfiguration" />
+                    <constructor-arg index="1" ref="isLeaderReference" />
                 </bean>
             </set>
         </entry>
         <entry key="statement">
             <set>
                 <bean class="org.cad.interruptus.repository.zookeeper.listener.StatementConfigurationListener">
-                    <constructor-arg ref="statementConfiguration" />
+                    <constructor-arg index="0" ref="statementConfiguration" />
+                    <constructor-arg index="1" ref="isLeaderReference" />
                 </bean>
             </set>
         </entry>

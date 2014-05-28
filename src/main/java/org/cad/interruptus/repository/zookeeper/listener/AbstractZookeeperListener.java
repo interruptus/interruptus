@@ -1,6 +1,7 @@
 package org.cad.interruptus.repository.zookeeper.listener;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cad.interruptus.entity.Entity;
@@ -11,15 +12,21 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
 {
     final EsperConfiguration<String, E> configuration;
     final Log logger = LogFactory.getLog(getClass());
+    final AtomicBoolean isLeader;
 
-    public AbstractZookeeperListener(final EsperConfiguration<String, E> configuration)
+    public AbstractZookeeperListener(final EsperConfiguration<String, E> configuration, final AtomicBoolean isLeader)
     {
         this.configuration = configuration;
+        this.isLeader      = isLeader;
     }
 
     protected void startIfRunning(final RunnableEntity e)
     {
         if ( ! e.isRunning()) {
+            return;
+        }
+
+        if (e.isMasterOnly() && ! isLeader.get()) {
             return;
         }
 
