@@ -10,7 +10,6 @@ import com.espertech.esper.client.EPStatementState;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
-import com.espertech.esper.client.dataflow.EPDataFlowState;
 import org.cad.interruptus.entity.Flow;
 
 public class FlowConfiguration implements EsperConfiguration<String, Flow>
@@ -62,49 +61,47 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     @Override
     public Boolean start(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance     = flowRuntime.getSavedInstance(name);
+        final EPStatement sttm = epAdministrator.getStatement(name);
 
-        if (instance == null) {
+        if (sttm == null) {
             return false;
         }
 
-        if (instance.getState() == EPDataFlowState.RUNNING) {
+        if (sttm.isStarted()) {
             return true;
         }
 
-        instance.start();
+        sttm.start();
 
         return true;
     }
 
     public Boolean stop(final String name)
     {
-        final EPRuntime epRuntime           = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
-        final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
+        final EPStatement sttm = epAdministrator.getStatement(name);
 
-        if (instance == null) {
+        if (sttm == null) {
             return false;
         }
 
-        instance.cancel();
+        if ( ! sttm.isStarted()) {
+            return true;
+        }
+
+        sttm.stop();
 
         return true;
     }
 
     public EPStatementState getFlowState(final String name)
     {
-        final EPRuntime epRuntime             = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime   = epRuntime.getDataFlowRuntime();
-        final EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
+        final EPStatement sttm = epAdministrator.getStatement(name);
 
-        if (descriptor == null) {
+        if (sttm == null) {
             return null;
         }
-        
-        return descriptor.getStatementState();
+
+        return sttm.getState();
     }
 
     @Override
