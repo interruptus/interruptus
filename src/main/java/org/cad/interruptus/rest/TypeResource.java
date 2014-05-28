@@ -111,7 +111,7 @@ public class TypeResource
         notes = "Removes a type configuration, throws exception if does not exists",
         response = Type.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Type doesn't exists")
     })
     public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)

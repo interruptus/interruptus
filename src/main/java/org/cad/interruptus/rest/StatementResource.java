@@ -92,7 +92,7 @@ public class StatementResource
         notes = "Retreives a statement configuration, throws exception if does not exists",
         response = Statement.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Statement show(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
@@ -114,7 +114,7 @@ public class StatementResource
         notes = "Removes a statement configuration, throws exception if does not exists",
         response = Statement.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
@@ -143,7 +143,7 @@ public class StatementResource
         notes = "Stop a existing in esper, throws exception if does not exists",
         response = Statement.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean startStatement(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
@@ -158,7 +158,7 @@ public class StatementResource
         notes = "Stop a existing statement in esper, throws exception if does not exists",
         response = Statement.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean stopStatement(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
@@ -173,7 +173,7 @@ public class StatementResource
         notes = "Retrives the state for a statement, throws exception if does not exists",
         response = Statement.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Map<String, String> getStatementState(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception

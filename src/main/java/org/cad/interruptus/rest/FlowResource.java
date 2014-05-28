@@ -92,7 +92,7 @@ public class FlowResource
         notes = "Retreives a flow configuration, throws exception if does not exists",
         response = Flow.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Flow show(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
@@ -114,7 +114,7 @@ public class FlowResource
         notes = "Removes a flow configuration, throws exception if does not exists",
         response = Flow.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
@@ -143,7 +143,7 @@ public class FlowResource
         notes = "Stop a existing in esper, throws exception if does not exists",
         response = Flow.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean start(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
@@ -158,7 +158,7 @@ public class FlowResource
         notes = "Stop a existing flow in esper, throws exception if does not exists",
         response = Flow.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Boolean stop(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
@@ -173,7 +173,7 @@ public class FlowResource
         notes = "Retrives the state for a flow, throws exception if does not exists",
         response = Flow.class
     )
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
     public Map<String, String> state(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
