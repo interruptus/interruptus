@@ -11,7 +11,7 @@ Scenario Outline: Configure types
     When I get the type configuration for "<name>" the response should be "<json>"
 
     Examples:
-        | name  | json                                                                                              |
-        | type1 | {"name":"type1","properties":[{"name":"name","type":"string"},{"name":"value","type":"double"}]}  |
-        | type2 | {"name":"type2","properties":[{"name":"key","type":"string"},{"name":"value","type":"string"}]}   |
-        | type1 | {"name":"type1","properties":[{"name":"key","type":"string"}]}                                    |
+        | name  | json                                                             |
+        | type1 | {"name":"type1","properties":{"name":"string","value":"double"}} |
+        | type2 | {"name":"type2","properties":{"key":"string","value":"string"}}  |
+        | type1 | {"name":"type1","properties":{"key":"string"}}                   |

@@ -4,7 +4,7 @@ Background:
     Given I clear the zookeeper configuration
     And I have the amqp exchange "test_collectd_metrics"
     And the following types exist:
-        | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
+        | {"name":"EventLog","properties":{"timestamp":"long","message":"string","eventType":"string"}} |
     And the following statements exist:
         | {"name": "eventlog", "query":"SELECT * FROM EventLog", "debug": false} |
 

@@ -6,7 +6,7 @@ Background:
 Scenario Outline: Start and Stop flows
 
     Given the following types exist:
-        | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
+        | {"name":"EventLog","properties":{"timestamp":"long","message":"string","eventType":"string"}} |
 
     And I have the flow "<json>" configured
     When I check the flow status for "<name>" the response should be:

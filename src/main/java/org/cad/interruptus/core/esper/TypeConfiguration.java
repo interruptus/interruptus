@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cad.interruptus.entity.Type;
-import org.cad.interruptus.entity.TypeProperty;
 
 public class TypeConfiguration implements EsperConfiguration<String, Type>
 {
@@ -32,12 +31,12 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
 
             final String eventName    = eventType.getName();
             final String[] properties = eventType.getPropertyNames();
-            final Type type           = new Type(eventName, new ArrayList<TypeProperty>());
+            final Type type           = new Type(eventName, new HashMap<String, String>());
 
             for (String propertyName : properties) {
                 String propertyType = eventType.getPropertyType(propertyName).getName();
 
-                type.addProperties(new TypeProperty(propertyName, propertyType));
+                type.setProperty(propertyName, propertyType);
             }
 
             list.add(type);
@@ -51,12 +50,8 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     public void save(final Type type)
     {
         final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
-        final Map<String, Object> map         = new HashMap<>();
+        final Map<String, Object> map         = new HashMap<String, Object>(type.getProperties());
         final String name                     = type.getName();
-
-        for (TypeProperty property : type.getProperties()) {
-            map.put(property.getName(), property.getType());
-        }
 
         if (config.isEventTypeExists(name)) {
             config.updateMapEventType(name, map);

@@ -2,7 +2,7 @@ package org.cad.interruptus.entity;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Type implements Entity
 {
     @ApiModelProperty(value = "List of properties", required = true)
-    protected List<TypeProperty> properties;
+    protected Map<String, String> properties;
     
     @ApiModelProperty(value = "Type unique name", required = true)
     protected String name;
@@ -20,7 +20,7 @@ public class Type implements Entity
     {
     }
 
-    public Type(String name, List<TypeProperty> properties)
+    public Type(final String name, final Map<String, String> properties)
     {
         this.name       = name;
         this.properties = properties;
@@ -42,19 +42,19 @@ public class Type implements Entity
         this.name = name;
     }
 
-    public List<TypeProperty> getProperties()
+    public Map<String, String> getProperties()
     {
         return properties;
     }
 
-    public void setProperties(List<TypeProperty> properties)
+    public void setProperties(Map<String, String> properties)
     {
         this.properties = properties;
     }
 
-    public void addProperties(TypeProperty property)
+    public void setProperty(final String propertyName, final String propertyType)
     {
-        this.properties.add(property);
+        this.properties.put(propertyName, propertyType);
     }
 
     @Override

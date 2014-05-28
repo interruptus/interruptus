@@ -6,7 +6,7 @@ Background:
 Scenario Outline: Start and Stop statements
 
     Given the following types exist:
-        | {"name":"EventLog","properties":[{"name":"timestamp","type":"long"},{"name":"message","type":"string"},{"name":"eventType","type":"string"}]} |
+        | {"name":"EventLog","properties":{"timestamp":"long","message":"string","eventType":"string"}} |
 
     And I have the statement "<json>" configured
     When I check the statement status for "<name>" the response should be:
