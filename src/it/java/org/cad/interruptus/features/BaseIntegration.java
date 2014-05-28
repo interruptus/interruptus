@@ -46,6 +46,11 @@ public abstract class BaseIntegration
 
         return response;
     }
+    
+    public ClientResponse postResource(final String path)
+    {
+        return postResource(path, null);
+    }
 
     public ClientResponse postResource(final String path, final String body)
     {

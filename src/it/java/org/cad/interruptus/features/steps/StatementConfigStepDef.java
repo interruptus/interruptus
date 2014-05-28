@@ -6,7 +6,9 @@ import cucumber.api.java.en.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import static org.junit.Assert.fail;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -84,5 +86,23 @@ public class StatementConfigStepDef extends BaseResourceSteps
         final JSONObject actualJson   = new JSONObject(actualResponse);
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+    }
+
+    @When("^I start the statement \"(.*?)\" the response should be \"(.*?)\"$")
+    public void i_start_the_statement_the_response_should_be(String name, String expectedResponse) throws JSONException
+    {
+        final ClientResponse response = this.postResource("statement/" + name + "/start");
+        final String actualResponse   = response.getEntity(String.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @When("^I stop the statement \"(.*?)\" the response should be \"(.*?)\"$")
+    public void i_stop_the_statement_the_response_should_be(String name, String expectedResponse) throws JSONException
+    {
+        final ClientResponse response = this.postResource("statement/" + name + "/stop");
+        final String actualResponse   = response.getEntity(String.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
     }
 }
