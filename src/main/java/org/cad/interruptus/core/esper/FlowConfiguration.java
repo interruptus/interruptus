@@ -99,7 +99,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
             instance.cancel();
             flowRuntime.removeSavedInstance(name);
         }
-
+        
         if (sttm == null) {
             return false;
         }
@@ -134,6 +134,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
 
         if (instance != null) {
             instance.cancel();
+            flowRuntime.removeSavedInstance(name);
         }
 
         if (sttm == null) {

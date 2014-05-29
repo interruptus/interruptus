@@ -90,24 +90,30 @@ public class Configuration
             return;
         }
 
-        throw new RuntimeException("Unknow entity : " + entity.getClass());
+        throw new RuntimeException("Unknow configuration entity : " + entity.getClass());
     }
     
     public void remove(final Class<? extends Entity> clazz, final String id)
     {
         if (Statement.class.equals(clazz)) {
             this.statements.remove(id);
+
+            return;
         }
 
         if (Flow.class.equals(clazz)) {
             this.flows.remove(id);
+
+            return;
         }
 
         if (Type.class.equals(clazz)) {
             this.types.remove(id);
+
+            return;
         }
 
-        throw new RuntimeException("Unknow class : " + clazz);
+        throw new RuntimeException("Unknow configuration entity : " + clazz);
     }
 
     @Override
