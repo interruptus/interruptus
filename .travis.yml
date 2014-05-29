@@ -4,8 +4,7 @@ services:
   - rabbitmq
 
 before_install:
-    - apt-get update
-    - apt-get install zookeeper
+    - sudo apt-get install zookeeper
 
 script: ./bin/cucumber
 # coveralls
