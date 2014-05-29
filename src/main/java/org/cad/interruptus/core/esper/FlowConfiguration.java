@@ -10,6 +10,7 @@ import com.espertech.esper.client.EPStatementState;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
+import com.espertech.esper.client.dataflow.EPDataFlowState;
 import org.cad.interruptus.entity.Flow;
 
 public class FlowConfiguration implements EsperConfiguration<String, Flow>
@@ -61,24 +62,43 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     @Override
     public Boolean start(final String name)
     {
-        final EPStatement sttm = epAdministrator.getStatement(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPStatement sttm              = epAdministrator.getStatement(name);
 
         if (sttm == null) {
             return false;
         }
 
-        if (sttm.isStarted()) {
+        if ( ! sttm.isStarted()) {
+            sttm.start();
+        }
+
+        final EPDataFlowInstance instance = flowRuntime.getSavedInstance(name) != null
+            ? flowRuntime.getSavedInstance(name)
+            : flowRuntime.instantiate(name);
+
+        if (instance.getState() == EPDataFlowState.RUNNING) {
             return true;
         }
 
-        sttm.start();
+        instance.start();
 
         return true;
     }
 
+    @Override
     public Boolean stop(final String name)
     {
-        final EPStatement sttm = epAdministrator.getStatement(name);
+        final EPStatement sttm              = epAdministrator.getStatement(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
+
+        if (instance != null) {
+            instance.cancel();
+            flowRuntime.removeSavedInstance(name);
+        }
 
         if (sttm == null) {
             return false;

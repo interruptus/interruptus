@@ -30,8 +30,18 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
             return;
         }
 
-        logger.debug("Starting entity : " + e);
+        logger.debug(String.format("Starting %s %s", e.getClass().getSimpleName(), e.getId()));
         configuration.start(e.getId());
+    }
+
+    protected void stopIfNotRunning(final RunnableEntity e)
+    {
+        if (e.isRunning()) {
+            return;
+        }
+
+        logger.debug(String.format("Stopping %s %s", e.getClass().getSimpleName(), e.getId()));
+        configuration.stop(e.getId());
     }
 
     @Override
@@ -41,6 +51,7 @@ abstract public class AbstractZookeeperListener<ID extends Serializable, E exten
 
         if (e instanceof RunnableEntity) {
             startIfRunning((RunnableEntity) e);
+            stopIfNotRunning((RunnableEntity) e);
         }
     }
 

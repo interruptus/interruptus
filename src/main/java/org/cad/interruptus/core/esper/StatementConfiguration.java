@@ -94,14 +94,21 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
         }
     }
 
+    @Override
     public Boolean stop(final String name)
     {
         try {
-            EPStatement epStatement = epAdministrator.getStatement(name);
+            final EPStatement epStatement = epAdministrator.getStatement(name);
 
-            if (epStatement != null) {
-                epStatement.stop();
+            if (epStatement == null) {
+                return false;
             }
+
+            if (epStatement.isStopped()) {
+                return true;
+            }
+
+            epStatement.stop();
 
             return true;
         } catch (EPStatementException e) {

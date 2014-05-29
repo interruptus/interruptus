@@ -19,7 +19,7 @@ public class Statement implements RunnableEntity
     protected boolean debug;
 
     @ApiModelProperty(value = "Statement runs only on master node or not", required = false)
-    protected boolean masterOnly = true;
+    protected boolean masterOnly = false;
 
     @ApiModelProperty(value = "Whether or not the statement is running in esper", required = false)
     protected boolean started = false;

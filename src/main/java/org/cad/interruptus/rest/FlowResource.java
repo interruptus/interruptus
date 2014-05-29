@@ -148,7 +148,17 @@ public class FlowResource
     })
     public Boolean start(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
-        return configuration.start(name);
+        final Flow entity = repository.findById(name);
+
+        if ( ! configuration.start(name)) {
+            return false;
+        }
+
+        entity.setStarted(true);
+        repository.save(entity);
+        dispatcher.dispatchSave(entity);
+
+        return true;
     }
 
     @POST
@@ -163,7 +173,17 @@ public class FlowResource
     })
     public Boolean stop(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
-        return configuration.stop(name);
+        final Flow entity = repository.findById(name);
+
+        if ( ! configuration.stop(name)) {
+            return false;
+        }
+
+        entity.setStarted(false);
+        repository.save(entity);
+        dispatcher.dispatchSave(entity);
+
+        return true;
     }
 
     @GET

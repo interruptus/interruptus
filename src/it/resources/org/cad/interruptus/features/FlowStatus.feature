@@ -2,6 +2,7 @@ Feature: Configure flows
 
 Background:
     Given I clear the zookeeper configuration
+    And I have the amqp exchange "test_collectd_metrics"
 
 Scenario Outline: Start and Stop flows
 
