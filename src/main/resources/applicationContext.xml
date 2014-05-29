@@ -105,6 +105,7 @@
     <bean id="zookeeperLeaderListener" class="org.cad.interruptus.core.zookeeper.ZookeeperLeaderListener">
         <constructor-arg index="0" ref="isLeaderReference"/>
         <constructor-arg index="1" ref="flowConfiguration"/>
+        <constructor-arg index="2" ref="statementConfiguration"/>
     </bean>
 
     <bean id="attachLeaderSelectorListener" class="org.cad.interruptus.core.zookeeper.AttachLeaderSelectorListener">

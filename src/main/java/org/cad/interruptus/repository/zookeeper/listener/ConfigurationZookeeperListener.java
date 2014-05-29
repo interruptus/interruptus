@@ -58,7 +58,7 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
             return;
         }
 
-        logger.debug("Storing entity : " + newConfig);
+        logger.debug("Apply configuration : " + newConfig);
 
         reference.set(newConfig);
         dispatcher.dispatchEvents(newConfig, oldConfig);

@@ -91,4 +91,10 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     {
         return false;
     }
+
+    @Override
+    public Boolean stop(String id)
+    {
+        return false;
+    }
 }

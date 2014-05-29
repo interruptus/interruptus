@@ -22,7 +22,7 @@ public class ConfigurationEventDispatcher
         this.listeners = listeners;
     }
 
-    protected String classType(Class clazz)
+    protected String classType(final Class clazz)
     {
         return clazz.getSimpleName().toLowerCase();
     }
@@ -35,9 +35,9 @@ public class ConfigurationEventDispatcher
             return;
         }
 
-        logger.debug("onSave : " + entity);
+        logger.debug(String.format("onSave : %s@%s", entity.getClass().getSimpleName(), entity.getId()));
 
-        for (EntityConfigurationListener listener : listeners.get(type)) {
+        for (final EntityConfigurationListener listener : listeners.get(type)) {
             listener.onSave(entity);
         }
     }
@@ -50,9 +50,9 @@ public class ConfigurationEventDispatcher
             return;
         }
 
-        logger.debug("onDelete : " + entity);
+        logger.debug(String.format("onDelete : %s@%s", entity.getClass().getSimpleName(), entity.getId()));
 
-        for (EntityConfigurationListener listener : listeners.get(type)) {
+        for (final EntityConfigurationListener listener : listeners.get(type)) {
             listener.onDelete(entity);
         }
     }
