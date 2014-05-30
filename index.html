@@ -143,23 +143,21 @@
 
 <p>Here's an example payload:</p>
 
-<pre lang='javascript'>
-    <code>
-        {"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
-        {"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_unacknolwedged","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
-        {"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_unacknowledged_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
-        {"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":2022,"name":"messages_ready","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
-        {"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":219589727,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_octets"}}
-        {"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":18433612,"name":"tx","host":"darkstar","type_instance":"eth0","type":"if_octets"}}
-        {"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":281652,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_packets"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":539471872,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":1653339136,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":20687,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":78754,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":13,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_time"}}
-        {"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":231,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_time"}}
-    </code>
-</pre>
+<pre lang='javascript'><code>
+{"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
+{"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_unacknolwedged","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
+{"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":0,"name":"messages_unacknowledged_rate","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
+{"type":"CollectdMetric","body":{{"plugin":"rabbitmq","datacenter":"datacenter","time":1381216257,"value":2022,"name":"messages_ready","host":"darkstar","type_instance":"metrics","plugin_instance":"_","type":"rabbitmq"}}
+{"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":219589727,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_octets"}}
+{"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":18433612,"name":"tx","host":"darkstar","type_instance":"eth0","type":"if_octets"}}
+{"type":"CollectdMetric","body":{{"plugin":"interface","datacenter":"datacenter","time":1381216257,"value":281652,"name":"rx","host":"darkstar","type_instance":"eth0","type":"if_packets"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":539471872,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":1653339136,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_octets"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":20687,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":78754,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_ops"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":13,"name":"read","host":"darkstar","plugin_instance":"sda","type":"disk_time"}}
+{"type":"CollectdMetric","body":{{"plugin":"disk","datacenter":"datacenter","time":1381216257,"value":231,"name":"write","host":"darkstar","plugin_instance":"sda","type":"disk_time"}}
+</code></pre>
 
 <p>Each input line in the AMQP payload is parsed as a JSON object, and an EventBean is automatically created to represent the object in the CEP stream processing engine. The event type is specified in the "event_type" property of the JSON object, and MUST be defined before you start submitting events to the engine. This can be accomplished via the REST API.</p>
 
@@ -168,9 +166,7 @@
 
 <p>The following example configures an event type in Interruptus and uses an AMQP inbound data flow to read AMQP messages.</p>
 
-<pre>
-<code>
-
+<pre><code>
 curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
     "name":"CollectdMetric",
     "properties":{
@@ -185,8 +181,6 @@ curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json"
       "host":"string"
     }
 }'
-
-# {"type":"CollectdMetric","body":{"plugin":"disk","plugin_instance":"disk_sdd1","datacenter":"east_coast","time":"1399577466","host":"mq01.ss","name":"usage","value":"1234591"}}
 
 curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
     "name":"eventlogdebug",
@@ -237,9 +231,7 @@ curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json"
     }
   "
 }'
-
-</code>
-</pre>
+</code></pre>
 
 <p>I have written some <a href="http://www.collectd.org">Collectd</a> plugins to send data to RabbitMQ. <a href="https://github.com/marksteele/collectd-plugins">Plugins here</a>. My plugin is using a UDP transport to push messages into RabbitMQ using the <a href="https://github.com/tonyg/udp-exchange">RabbitMQ UDP exchange plugin</a> (Poke tonyg to update his binary plugin build to latest RabbitMQ version, and maybe add some links for previous versions).</p>
 
