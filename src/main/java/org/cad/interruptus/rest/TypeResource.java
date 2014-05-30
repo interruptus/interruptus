@@ -67,7 +67,7 @@ public class TypeResource
         notes = "Save a type configuration, if the flow already exists will be overwritten",
         response = Boolean.class
     )
-    public Boolean save(Type entity)
+    public Boolean save(final Type entity)
     {
         try {
 
