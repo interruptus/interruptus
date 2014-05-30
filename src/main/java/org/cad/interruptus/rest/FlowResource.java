@@ -1,6 +1,6 @@
 package org.cad.interruptus.rest;
 
-import com.espertech.esper.client.EPStatementState;
+import com.espertech.esper.client.dataflow.EPDataFlowState;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -150,13 +150,10 @@ public class FlowResource
     {
         final Flow entity = repository.findById(name);
 
-        if ( ! configuration.start(name)) {
-            return false;
-        }
-
         entity.setStarted(true);
-        repository.save(entity);
+
         dispatcher.dispatchSave(entity);
+        repository.save(entity);
 
         return true;
     }
@@ -199,17 +196,17 @@ public class FlowResource
     public Map<String, String> state(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         final Map<String, String> map = new HashMap<>();
-        final EPStatementState state  = configuration.getFlowState(name);
+        final EPDataFlowState state   = configuration.getFlowState(name);
 
         map.put("name", name);
-        map.put("status", EPStatementState.STOPPED.toString());
+        map.put("status", "STOPPED");
+
+        if (repository.findById(name) == null) {
+            throw new EntityNotFoundException(Flow.class, name);
+        }
 
         if (state != null) {
             map.put("status", state.toString());
-        }
-
-        if (repository.findById(name) == null) {
-            throw new EntityNotFoundException(name);
         }
 
         return map;

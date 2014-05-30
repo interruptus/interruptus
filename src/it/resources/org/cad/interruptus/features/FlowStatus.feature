@@ -18,7 +18,7 @@ Scenario Outline: Start and Stop flows
     When I start the flow "<name>" the response should be "true"
     When I check the flow status for "<name>" the response should be:
         """
-        {"name": "<name>", "status":"STARTED"}
+        {"name": "<name>", "status":"RUNNING"}
         """
 
     When I stop the flow "<name>" the response should be "true"
@@ -28,5 +28,5 @@ Scenario Outline: Start and Stop flows
         """
 
     Examples:
-        | name      | json                                                                                                                                                                                                                                                                                                                             |
+        | name      | json                                                                                                                                                                                                                                                                                                                        |
         | FlowIn1  | {"name": "FlowIn1", "query":"create dataflow FlowIn1 AMQPSource -> FlowIn1<EventLog> {  host: 'localhost',  exchange: 'test_collectd_metrics', port: 5672, username: 'guest',  password: 'guest',  routingKey: '#', collector: {class: 'org.cad.interruptus.AMQPJsonToMap'}, logMessages: true  } EventBusSink(FlowIn1){}"}  |

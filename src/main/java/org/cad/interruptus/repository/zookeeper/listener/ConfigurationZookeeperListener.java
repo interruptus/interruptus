@@ -36,14 +36,11 @@ public class ConfigurationZookeeperListener implements ZookeeperConfigurationLis
 
         if (cache.getCurrentData() == null) {
             logger.warn("Empty config data ..");
-            reference.set(null);
-
-            return;
         }
 
         final ChildData eData         = cache.getCurrentData();
-        final String data             = new String(eData.getData());
-        final Configuration newConfig = serializer.fromJson(data);
+        final String data             = eData != null ? new String(eData.getData()) : null;
+        final Configuration newConfig = data != null ? serializer.fromJson(data) : new Configuration();
         final Configuration oldConfig = reference.get() != null ? reference.get() : new Configuration();
 
         if (newConfig == null) {

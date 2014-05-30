@@ -6,7 +6,6 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EPStatementState;
 import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
@@ -31,7 +30,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         final String[] dataFlowsNames       = flowRuntime.getDataFlows();
         final List<Flow> list               = new ArrayList<>();
 
-        for (String name : dataFlowsNames) {
+        for (final String name : dataFlowsNames) {
             final EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
             final Flow flow                       = new Flow(name, descriptor.getStatementName());
 
@@ -52,11 +51,7 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
             remove(name);
         }
 
-        final EPStatement sttmCreated = epAdministrator.createEPL(query, name);
-
-        if ( ! flow.isRunning() && ! sttmCreated.isStopped()) {
-            sttmCreated.stop();
-        }
+        epAdministrator.createEPL(query, name);
     }
 
     @Override
@@ -64,19 +59,13 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     {
         final EPRuntime epRuntime           = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
-        final EPStatement sttm              = epAdministrator.getStatement(name);
+        EPDataFlowInstance instance         = flowRuntime.getSavedInstance(name);
 
-        if (sttm == null) {
-            return false;
+        if (instance == null) {
+            instance = flowRuntime.instantiate(name);
+
+            flowRuntime.saveInstance(name, instance);
         }
-
-        if ( ! sttm.isStarted()) {
-            sttm.start();
-        }
-
-        final EPDataFlowInstance instance = flowRuntime.getSavedInstance(name) != null
-            ? flowRuntime.getSavedInstance(name)
-            : flowRuntime.instantiate(name);
 
         if (instance.getState() == EPDataFlowState.RUNNING) {
             return true;
@@ -90,38 +79,28 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     @Override
     public Boolean stop(final String name)
     {
-        final EPStatement sttm              = epAdministrator.getStatement(name);
         final EPRuntime epRuntime           = epService.getEPRuntime();
         final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
         final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
 
         if (instance != null) {
             instance.cancel();
-            flowRuntime.removeSavedInstance(name);
         }
-        
-        if (sttm == null) {
-            return false;
-        }
-
-        if ( ! sttm.isStarted()) {
-            return true;
-        }
-
-        sttm.stop();
 
         return true;
     }
 
-    public EPStatementState getFlowState(final String name)
+    public EPDataFlowState getFlowState(final String name)
     {
-        final EPStatement sttm = epAdministrator.getStatement(name);
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
+        final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
 
-        if (sttm == null) {
+        if (instance == null) {
             return null;
         }
 
-        return sttm.getState();
+        return instance.getState();
     }
 
     @Override

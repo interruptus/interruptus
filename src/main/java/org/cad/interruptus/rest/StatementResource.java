@@ -149,14 +149,10 @@ public class StatementResource
     public Boolean startStatement(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         final Statement entity = repository.findById(name);
-        
-        if ( ! configuration.start(name)) {
-            return false;
-        }
 
         entity.setStarted(true);
-        repository.save(entity);
         dispatcher.dispatchSave(entity);
+        repository.save(entity);
 
         return true;
     }
