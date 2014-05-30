@@ -1,0 +1,95 @@
+{
+  "apiVersion" : "v1",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080/api",
+  "resourcePath" : "/type",
+  "produces" : [ "application/json" ],
+  "consumes" : [ "application/json" ],
+  "apis" : [ {
+    "path" : "/type/{name}",
+    "operations" : [ {
+      "method" : "DELETE",
+      "summary" : "Removes a type configuration",
+      "notes" : "Removes a type configuration, throws exception if does not exists",
+      "type" : "Type",
+      "nickname" : "remove",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Type doesn't exists"
+      } ]
+    }, {
+      "method" : "GET",
+      "summary" : "Retreives a type configuration",
+      "notes" : "Retreives a type configuration, throws exception if does not exists",
+      "type" : "Type",
+      "nickname" : "show",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Type doesn't exists"
+      } ]
+    } ]
+  }, {
+    "path" : "/type",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "List all types",
+      "notes" : "List all event types available",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Type"
+      },
+      "nickname" : "list",
+      "authorizations" : { },
+      "parameters" : [ ]
+    }, {
+      "method" : "POST",
+      "summary" : "Save a type configuration",
+      "notes" : "Save a type configuration, if the flow already exists will be overwritten",
+      "type" : "boolean",
+      "nickname" : "save",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "body",
+        "required" : false,
+        "type" : "Type",
+        "paramType" : "body"
+      } ]
+    } ]
+  } ],
+  "models" : {
+    "Type" : {
+      "id" : "Type",
+      "description" : "Type resource representation",
+      "required" : [ "name", "properties" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Type unique name"
+        },
+        "properties" : {
+          "$ref" : "Map[string,string]",
+          "description" : "List of properties"
+        },
+        "id" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

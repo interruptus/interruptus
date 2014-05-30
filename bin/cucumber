@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DIR=`dirname $0`/..
+
+mvn -f $DIR clean verify -Pit -Dcucumber.options="$@"

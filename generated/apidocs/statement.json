@@ -1,0 +1,173 @@
+{
+  "apiVersion" : "v1",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080/api",
+  "resourcePath" : "/statement",
+  "produces" : [ "application/json" ],
+  "consumes" : [ "application/json" ],
+  "apis" : [ {
+    "path" : "/statement/{name}",
+    "operations" : [ {
+      "method" : "DELETE",
+      "summary" : "Removes a statement configuration",
+      "notes" : "Removes a statement configuration, throws exception if does not exists",
+      "type" : "Statement",
+      "nickname" : "remove",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    }, {
+      "method" : "GET",
+      "summary" : "Retreives a statement configuration",
+      "notes" : "Retreives a statement configuration, throws exception if does not exists",
+      "type" : "Statement",
+      "nickname" : "show",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    } ]
+  }, {
+    "path" : "/statement",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "List all statements",
+      "notes" : "List all statements, whether is runnig or not",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Statement"
+      },
+      "nickname" : "list",
+      "authorizations" : { },
+      "parameters" : [ ]
+    }, {
+      "method" : "POST",
+      "summary" : "Save a statement configuration",
+      "notes" : "Save a statement configuration, if the statement already exists will be overwritten",
+      "type" : "boolean",
+      "nickname" : "save",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "body",
+        "required" : false,
+        "type" : "Statement",
+        "paramType" : "body"
+      } ]
+    } ]
+  }, {
+    "path" : "/statement/{name}/start",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "Start a statement in esper",
+      "notes" : "Stop a existing in esper, throws exception if does not exists",
+      "type" : "Statement",
+      "nickname" : "startStatement",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    } ]
+  }, {
+    "path" : "/statement/{name}/stop",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "Stop a statement in esper",
+      "notes" : "Stop a existing statement in esper, throws exception if does not exists",
+      "type" : "Statement",
+      "nickname" : "stopStatement",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    } ]
+  }, {
+    "path" : "/statement/{name}/state",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "Retrives the state for a statement",
+      "notes" : "Retrives the state for a statement, throws exception if does not exists",
+      "type" : "Statement",
+      "nickname" : "getStatementState",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    } ]
+  } ],
+  "models" : {
+    "Statement" : {
+      "id" : "Statement",
+      "description" : "Statement resource representation",
+      "required" : [ "name", "query" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Statement unique name"
+        },
+        "debug" : {
+          "type" : "boolean",
+          "description" : "Statement debug flag"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "query" : {
+          "type" : "string",
+          "description" : "Statement epl query"
+        },
+        "running" : {
+          "type" : "boolean"
+        },
+        "started" : {
+          "type" : "boolean",
+          "description" : "Whether or not the statement is running in esper"
+        },
+        "masterOnly" : {
+          "type" : "boolean",
+          "description" : "Statement runs only on master node or not"
+        }
+      }
+    }
+  }
+}
