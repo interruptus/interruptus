@@ -5,8 +5,7 @@ services:
 
 before_install:
     - sudo apt-get install zookeeper
-    - sudo apt-get install zookeeper-server
-    - sudo service zookeeper-server start
+    - sudo /usr/share/zookeeper/bin/zkServer.sh start
 
 script: ./bin/cucumber
 # coveralls
