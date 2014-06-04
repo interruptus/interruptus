@@ -16,6 +16,9 @@ public class Type implements Entity
     @ApiModelProperty(value = "Type unique name", required = true)
     protected String name;
 
+    @ApiModelProperty(value = "Type inventory hierarchy", required = false)
+    protected String hierarchy;
+
     public Type()
     {
     }
@@ -57,10 +60,20 @@ public class Type implements Entity
         this.properties.put(propertyName, propertyType);
     }
 
+    public String getHierarchy()
+    {
+        return hierarchy;
+    }
+
+    public void setHierarchy(final String hierarchy)
+    {
+        this.hierarchy = hierarchy;
+    }
+
     @Override
     public String toString()
     {
-        return String.format("{name:'%s', properties:%s}", name, properties);
+        return String.format("{name:'%s', hierarchy:'%s', properties:%s}", name, hierarchy, properties);
     }
 
     @Override
@@ -68,6 +81,7 @@ public class Type implements Entity
     {
         int hash = 7;
         hash     = 13 * hash + Objects.hashCode(this.properties);
+        hash     = 13 * hash + Objects.hashCode(this.hierarchy);
         hash     = 13 * hash + Objects.hashCode(this.name);
 
         return hash;
@@ -87,6 +101,10 @@ public class Type implements Entity
         final Type other = (Type) obj;
 
         if ( ! Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        
+        if ( ! Objects.equals(this.hierarchy, other.hierarchy)) {
             return false;
         }
 
