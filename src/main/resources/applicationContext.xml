@@ -23,45 +23,31 @@
 
     <bean id="gson" class="com.google.gson.Gson" factory-bean="gsonBuilder" factory-method="create"/>
 
-    <bean id="esperConfiguration"   class="com.espertech.esper.client.Configuration" scope="singleton" />
-
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
-        <property name="targetMethod"   value="addImport"/>
-        <property name="targetObject"   ref="esperConfiguration"/>
-        <property name="arguments"      value="com.espertech.esperio.amqp.*"/>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
-        <property name="targetMethod"   value="addImport"/>
-        <property name="targetObject"   ref="esperConfiguration"/>
-        <property name="arguments"      value="com.espertech.esperio.amqp.*"/>
-    </bean>
-
-    <bean id="esperDefaultProvider" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
-        <property name="staticMethod"   value="com.espertech.esper.client.EPServiceProviderManager.getDefaultProvider"/>
-        <property name="arguments"      ref="esperConfiguration"/>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="singleton">
-        <property name="targetMethod"   value="initialize"/>
-        <property name="targetObject"   ref="esperDefaultProvider"/>
-    </bean>
+    <bean id="esperDefaultProvider" class="org.cad.interruptus.core.EsperServiceProviderFactoryBean" lazy-init="false"/>
 
     <bean id="esperDefaultProviderAdministrator"
           class="com.espertech.esper.client.EPAdministrator"
           factory-bean="esperDefaultProvider"
-          factory-method="getEPAdministrator"
-          scope="singleton"/>
+          factory-method="getEPAdministrator"/>
 
     <bean id="esperepEPRuntimeImpl"
           class="com.espertech.esper.core.service.EPRuntimeImpl"
           factory-bean="esperDefaultProvider"
-          factory-method="getEPRuntime"
-          scope="singleton"/>
+          factory-method="getEPRuntime"/>
+
+    <bean id="esperConfigurationOperations"
+          class="com.espertech.esper.client.ConfigurationOperations"
+          factory-bean="esperDefaultProviderAdministrator"
+          factory-method="getConfiguration"/>
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" lazy-init="false" scope="singleton">
-        <property name="staticMethod"   value="org.cad.interruptus.AMQPJsonToMap.setEPServiceProvider"/>
-        <property name="arguments"      ref="esperDefaultProvider"/>
+        <property name="staticMethod"   value="org.cad.interruptus.AMQPJsonToMap.setMessageCollectorService"/>
+        <property name="arguments"      ref="messageCollectorService"/>
+    </bean>
+
+    <bean id="inventoryExecutorService" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"   value="java.util.concurrent.Executors.newScheduledThreadPool"/>
+        <property name="arguments"      value="1"/>
     </bean>
 
     <util:map id="entityConfigurationListenerMap">
@@ -169,5 +155,25 @@
     <bean id="statementConfigurationRepository" class="org.cad.interruptus.repository.zookeeper.StatementConfigurationRepository">
         <constructor-arg index="0" ref="configurationManager"/>
     </bean>
-    
+
+    <!-- Services -->
+    <bean id="messageCollectorService" class="org.cad.interruptus.service.MessageCollectorService">
+        <constructor-arg index="0" ref="esperConfigurationOperations"/>
+        <constructor-arg index="1" ref="messageService"/>
+        <constructor-arg index="2" ref="inventoryService"/>
+    </bean>
+
+    <bean id="inventoryService" class="org.cad.interruptus.service.InventoryService" init-method="start" destroy-method="stop">
+        <constructor-arg index="0" ref="typeConfigurationRepository"/>
+        <constructor-arg index="1" ref="zookeeperClient"/>
+        <constructor-arg index="2" ref="inventoryExecutorService"/>
+        <constructor-arg index="3" ref="isLeaderReference"/>
+        <constructor-arg index="4" value="${zookeeper.inventory.path}"/>
+
+        <property name="interval" value="${inventory.interval}"/>
+    </bean>
+
+    <bean id="messageService" class="org.cad.interruptus.service.MessageService">
+        <constructor-arg ref="gson"/>
+    </bean>
 </beans>

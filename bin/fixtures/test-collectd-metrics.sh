@@ -1,4 +1,5 @@
 curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
+    "hierarchy":"datacenter.host.plugin.plugin_instance.type.type_instance.name.value",
     "name":"CollectdMetric",
     "properties":{
       "plugin":"string",
@@ -13,11 +14,13 @@ curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json"
     }
 }'
 
-# {"type":"CollectdMetric","body":{"plugin":"disk","plugin_instance":"disk_sdd1","datacenter":"east_coast","time":"1399577466","host":"mq01.ss","name":"usage","value":"1234591"}}
+# {"type":"CollectdMetric","body":{"plugin":"disk","plugin_instance":"disk_sdd1","datacenter":"east_coast","type":"disk_ops","type_instance":"read","time":"1399577466","host":"mq01.ss","name":"usage","value":"1234591"}}
+
 
 curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
     "name":"eventlogdebug",
     "query":"SELECT * FROM CollectdMetric WHERE host = \"mq01.ss\"",
+    "masterOnly":false,
     "debug":true,
     "started":true
 }'
@@ -25,6 +28,7 @@ curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/
 curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json" -d '{
   "name":"EventsIn",
   "started":true,
+  "masterOnly":false,
   "query":"
     create dataflow EventsIn AMQPSource -> EventsIn<CollectdMetric>
     {

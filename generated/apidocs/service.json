@@ -2,17 +2,20 @@
   "apiVersion" : "v1",
   "swaggerVersion" : "1.2",
   "apis" : [ {
-    "path" : "/config.{format}",
-    "description" : "Config information"
-  }, {
     "path" : "/statement.{format}",
     "description" : "Statement operations"
+  }, {
+    "path" : "/flow.{format}",
+    "description" : "Flow operations"
   }, {
     "path" : "/type.{format}",
     "description" : "Event type operations"
   }, {
-    "path" : "/flow.{format}",
-    "description" : "Flow operations"
+    "path" : "/inventory.{format}",
+    "description" : "Auto-inventory a endpoint could then serve queries to known events/values"
+  }, {
+    "path" : "/config.{format}",
+    "description" : "Config information"
   } ],
   "basePath" : "http://localhost:8080/api"
 }
