@@ -54,7 +54,7 @@ public class FlowResource
         response = Flow.class,
         responseContainer = "List"
     )
-    public List<Flow> list()
+    public List<Flow> listFlows()
     {
         try {
             return repository.findAll();
@@ -70,7 +70,7 @@ public class FlowResource
         notes = "Save a flow configuration, if the flow already exists will be overwritten",
         response = Boolean.class
     )
-    public Boolean save(Flow entity)
+    public Boolean saveFlow(Flow entity)
     {
         try {
 
@@ -95,7 +95,7 @@ public class FlowResource
     @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
-    public Flow show(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
+    public Flow showFlow(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
             return repository.findById(name);
@@ -117,7 +117,7 @@ public class FlowResource
     @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
-    public Boolean remove(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
+    public Boolean removeFlow(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name)
     {
         try {
 
@@ -146,12 +146,11 @@ public class FlowResource
     @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
-    public Boolean start(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
+    public Boolean startFlow(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         final Flow entity = repository.findById(name);
 
         entity.setStarted(true);
-
         dispatcher.dispatchSave(entity);
         repository.save(entity);
 
@@ -168,7 +167,7 @@ public class FlowResource
     @ApiResponses({
         @ApiResponse(code = 404, message = "Flow doesn't exists")
     })
-    public Boolean stop(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
+    public Boolean stopFlow(@ApiParam(value = "Flow name to lookup for", required = true) @PathParam("name") String name) throws Exception
     {
         final Flow entity = repository.findById(name);
 

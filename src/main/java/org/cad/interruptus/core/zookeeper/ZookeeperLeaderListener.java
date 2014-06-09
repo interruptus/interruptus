@@ -28,7 +28,7 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
     private void startMasterOnly(EsperConfiguration configuration , final List<RunnableEntity> list)
     {
         for (final RunnableEntity item : list) {
-            if ( ! item.isMasterOnly()) {
+            if (item.isMasterOnly() && ! isLeader.get()) {
                 continue;
             }
 
@@ -36,16 +36,16 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
             configuration.start(item.getId());
         }
     }
-    
+
     private void stopMasterOnly(EsperConfiguration configuration , final List<RunnableEntity> list)
     {
         for (final RunnableEntity item : list) {
-            if ( ! item.isMasterOnly()) {
+            if ( ! item.isMasterOnly() || isLeader.get()) {
                 continue;
             }
 
             logger.info(String.format("Stoping %s : %s" , item.getClass().getSimpleName(), item.getId()));
-            configuration.start(item.getId());
+            configuration.stop(item.getId());
         }
     }
 

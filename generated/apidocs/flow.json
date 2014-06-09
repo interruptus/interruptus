@@ -6,31 +6,13 @@
   "produces" : [ "application/json" ],
   "consumes" : [ "application/json" ],
   "apis" : [ {
-    "path" : "/flow/{name}",
+    "path" : "/flow/{name}/state",
     "operations" : [ {
-      "method" : "DELETE",
-      "summary" : "Removes a flow configuration",
-      "notes" : "Removes a flow configuration, throws exception if does not exists",
-      "type" : "Flow",
-      "nickname" : "remove",
-      "authorizations" : { },
-      "parameters" : [ {
-        "name" : "name",
-        "description" : "Flow name to lookup for",
-        "required" : true,
-        "type" : "string",
-        "paramType" : "path"
-      } ],
-      "responseMessages" : [ {
-        "code" : 404,
-        "message" : "Flow doesn't exists"
-      } ]
-    }, {
       "method" : "GET",
-      "summary" : "Retreives a flow configuration",
-      "notes" : "Retreives a flow configuration, throws exception if does not exists",
+      "summary" : "Retrives the state for a flow",
+      "notes" : "Retrives the state for a flow, throws exception if does not exists",
       "type" : "Flow",
-      "nickname" : "show",
+      "nickname" : "state",
       "authorizations" : { },
       "parameters" : [ {
         "name" : "name",
@@ -45,13 +27,79 @@
       } ]
     } ]
   }, {
+    "path" : "/flow/{name}",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "Retreives a flow configuration",
+      "notes" : "Retreives a flow configuration, throws exception if does not exists",
+      "type" : "Flow",
+      "nickname" : "showFlow",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    }, {
+      "method" : "DELETE",
+      "summary" : "Removes a flow configuration",
+      "notes" : "Removes a flow configuration, throws exception if does not exists",
+      "type" : "Flow",
+      "nickname" : "removeFlow",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "name",
+        "description" : "Flow name to lookup for",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "path"
+      } ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "Flow doesn't exists"
+      } ]
+    } ]
+  }, {
+    "path" : "/flow",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "Save a flow configuration",
+      "notes" : "Save a flow configuration, if the flow already exists will be overwritten",
+      "type" : "boolean",
+      "nickname" : "saveFlow",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "body",
+        "required" : false,
+        "type" : "Flow",
+        "paramType" : "body"
+      } ]
+    }, {
+      "method" : "GET",
+      "summary" : "List all flows",
+      "notes" : "List all flows, whether is runnig or not",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Flow"
+      },
+      "nickname" : "listFlows",
+      "authorizations" : { },
+      "parameters" : [ ]
+    } ]
+  }, {
     "path" : "/flow/{name}/start",
     "operations" : [ {
       "method" : "POST",
       "summary" : "Start a flow in esper",
       "notes" : "Stop a existing in esper, throws exception if does not exists",
       "type" : "Flow",
-      "nickname" : "start",
+      "nickname" : "startFlow",
       "authorizations" : { },
       "parameters" : [ {
         "name" : "name",
@@ -72,55 +120,7 @@
       "summary" : "Stop a flow in esper",
       "notes" : "Stop a existing flow in esper, throws exception if does not exists",
       "type" : "Flow",
-      "nickname" : "stop",
-      "authorizations" : { },
-      "parameters" : [ {
-        "name" : "name",
-        "description" : "Flow name to lookup for",
-        "required" : true,
-        "type" : "string",
-        "paramType" : "path"
-      } ],
-      "responseMessages" : [ {
-        "code" : 404,
-        "message" : "Flow doesn't exists"
-      } ]
-    } ]
-  }, {
-    "path" : "/flow",
-    "operations" : [ {
-      "method" : "GET",
-      "summary" : "List all flows",
-      "notes" : "List all flows, whether is runnig or not",
-      "type" : "array",
-      "items" : {
-        "$ref" : "Flow"
-      },
-      "nickname" : "list",
-      "authorizations" : { },
-      "parameters" : [ ]
-    }, {
-      "method" : "POST",
-      "summary" : "Save a flow configuration",
-      "notes" : "Save a flow configuration, if the flow already exists will be overwritten",
-      "type" : "boolean",
-      "nickname" : "save",
-      "authorizations" : { },
-      "parameters" : [ {
-        "name" : "body",
-        "required" : false,
-        "type" : "Flow",
-        "paramType" : "body"
-      } ]
-    } ]
-  }, {
-    "path" : "/flow/{name}/state",
-    "operations" : [ {
-      "method" : "GET",
-      "summary" : "Retrives the state for a flow",
-      "notes" : "Retrives the state for a flow, throws exception if does not exists",
-      "type" : "Flow",
-      "nickname" : "state",
+      "nickname" : "stopFlow",
       "authorizations" : { },
       "parameters" : [ {
         "name" : "name",
@@ -152,9 +152,6 @@
           "type" : "string",
           "description" : "Flow epl query"
         },
-        "running" : {
-          "type" : "boolean"
-        },
         "started" : {
           "type" : "boolean",
           "description" : "Whether or not the flow is running in esper"
@@ -162,6 +159,9 @@
         "masterOnly" : {
           "type" : "boolean",
           "description" : "Flow runs only on master node or not"
+        },
+        "running" : {
+          "type" : "boolean"
         }
       }
     }

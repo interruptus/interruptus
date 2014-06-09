@@ -17,7 +17,7 @@ public class ConfigurationEventDispatcher
     final Log logger = LogFactory.getLog(getClass());
     final Map<String, List<EntityConfigurationListener>> listeners;
 
-    public ConfigurationEventDispatcher(Map<String, List<EntityConfigurationListener>> listeners)
+    public ConfigurationEventDispatcher(final Map<String, List<EntityConfigurationListener>> listeners)
     {
         this.listeners = listeners;
     }
