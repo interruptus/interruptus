@@ -17,7 +17,7 @@ abstract class AbstractConfigurationRepository<E extends Entity> implements Enti
         this.manager     = manager;
         this.targetClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
-    
+
     @Override
     public List<E> findAll() throws Exception
     {
@@ -32,7 +32,7 @@ abstract class AbstractConfigurationRepository<E extends Entity> implements Enti
         if ( ! map.containsKey(name)) {
             throw new EntityNotFoundException(name);
         }
-        
+
         return map.get(name);
     }
 

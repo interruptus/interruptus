@@ -32,7 +32,7 @@ public class ConfigurationManager
     {
         this(client, reference, new GsonSerializer(Configuration.class, gson), path);
     }
-    
+
     public ConfigurationManager(final CuratorFramework client, final AtomicReference<Configuration> reference, final GsonSerializer<Configuration> serializer, final String path)
     {
         this.client      = client;
@@ -66,7 +66,7 @@ public class ConfigurationManager
             {
                 final String json = serializer.toJson(get());
                 final Stat status = client.checkExists().forPath(path);
-                
+
                 if (status != null) {
                     client.setData()
                         .compressed()
@@ -115,7 +115,7 @@ public class ConfigurationManager
     protected synchronized Configuration load() throws Exception
     {
         logger.debug("Loading configuration");
-        
+
         if (reference.get() != null) {
             return reference.get();
         }
@@ -147,7 +147,7 @@ public class ConfigurationManager
     {
         return new ArrayList<>(map(clazz).values());
     }
-    
+
     public <T> Map<String, T> map(Class<? extends T> clazz) throws Exception
     {
         final Map<String, T> result = new HashMap<>();
