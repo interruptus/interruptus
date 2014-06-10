@@ -77,7 +77,7 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
 
             final RunnableEntity entity = getRunnableEntity(name, clazz);
 
-            if (entity == null || (entity.isMasterOnly() || ! isLeader.get())) {
+            if (entity == null || (entity.isMasterOnly() && ! isLeader.get())) {
                 configuration.stop(name);
             }
         }

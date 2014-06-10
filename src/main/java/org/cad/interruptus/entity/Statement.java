@@ -29,11 +29,11 @@ public class Statement implements RunnableEntity
 
     }
 
-    public Statement(String name, String query, boolean debug)
+    public Statement(final String name, final String query, final boolean masterOnly)
     {
-        this.name  = name;
-        this.query = query;
-        this.debug = debug;
+        this.name       = name;
+        this.query      = query;
+        this.masterOnly = masterOnly;
     }
 
     @Override

@@ -7,4 +7,6 @@ before_install:
     - sudo apt-get install zookeeper
     - sudo /usr/share/zookeeper/bin/zkServer.sh start
 
-script: ./bin/cucumber
+script:
+    - mvn clean test
+    - ./bin/cucumber
