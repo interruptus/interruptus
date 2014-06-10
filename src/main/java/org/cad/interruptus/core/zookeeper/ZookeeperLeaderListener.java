@@ -65,7 +65,6 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
                 continue;
             }
 
-            logger.info(String.format("Starting %s : %s", clazz.getSimpleName(), name));
             configuration.start(name);
         }
     }
@@ -79,7 +78,6 @@ public class ZookeeperLeaderListener implements LeaderLatchListener
             final RunnableEntity entity = getRunnableEntity(name, clazz);
 
             if (entity == null || (entity.isMasterOnly() || ! isLeader.get())) {
-                logger.info(String.format("Stoping %s : %s", clazz.getSimpleName(), name));
                 configuration.stop(name);
             }
         }

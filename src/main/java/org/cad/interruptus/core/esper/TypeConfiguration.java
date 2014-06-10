@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cad.interruptus.entity.Type;
 
 public class TypeConfiguration implements EsperConfiguration<Type>
 {
-    private final EPServiceProvider epService;
+    final EPServiceProvider epService;
+    final Log logger = LogFactory.getLog(getClass());
 
     public TypeConfiguration(final EPServiceProvider epService)
     {
@@ -40,6 +43,8 @@ public class TypeConfiguration implements EsperConfiguration<Type>
         final Map<String, Object> map         = new HashMap<String, Object>(type.getProperties());
         final String name                     = type.getName();
 
+        logger.info("Saving type : " + name);
+
         if (config.isEventTypeExists(name)) {
             config.updateMapEventType(name, map);
 
@@ -52,7 +57,14 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     @Override
     public Boolean remove(final String name)
     {
-        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
+        final EPAdministrator administrator   = epService.getEPAdministrator();
+        final ConfigurationOperations config  = administrator.getConfiguration();
+        
+        if ( ! config.isEventTypeExists(name)) {
+            return true;
+        }
+
+        logger.info("Removing type : " + name);
 
         return config.removeEventType(name, true);
     }

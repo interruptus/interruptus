@@ -14,8 +14,8 @@ import org.apache.commons.logging.Log;
 
 public class StatementConfiguration implements EsperConfiguration<Statement>
 {
-    final private static Log log = LogFactory.getLog(StatementConfiguration.class);
-    private final EPAdministrator epAdministrator;
+    final Log logger = LogFactory.getLog(getClass());
+    final EPAdministrator epAdministrator;
 
     public StatementConfiguration(final EPAdministrator epAdministrator)
     {
@@ -34,7 +34,18 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
     @Override
     public void save(final Statement statement) throws EPStatementException
     {
-        final EPStatement sttm = epAdministrator.createEPL(statement.getQuery(), statement.getName());
+        final String name          = statement.getName();
+        final String query         = statement.getQuery();
+        final EPStatement existing = epAdministrator.getStatement(name);
+
+        if (existing != null) {
+            logger.info("Existing statement detected for : " + name);
+            remove(name);
+        }
+
+        logger.info("Saving statement : " + name);
+
+        final EPStatement sttm = epAdministrator.createEPL(query, name);
 
         if ( ! statement.isRunning() && ! sttm.isStopped()) {
             sttm.stop();
@@ -49,7 +60,7 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             public void update(EventBean[] newEvents, EventBean[] oldEvents)
             {
                 for (EventBean newEvent : newEvents) {
-                    log.info(newEvent.getUnderlying());
+                    logger.info(newEvent.getUnderlying());
                 }
             }
         });
@@ -62,12 +73,13 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             final EPStatement epStatement = epAdministrator.getStatement(name);
 
             if (epStatement != null) {
+                logger.info("Starting statement : " + name);
                 epStatement.start();
             }
 
             return true;
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
+            logger.info(e.getMessage());
             return false;
         }
     }
@@ -86,11 +98,12 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
                 return true;
             }
 
+            logger.info("Stoping statement : " + name);
             epStatement.stop();
 
             return true;
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
+            logger.info(e.getMessage());
             return false;
         }
     }
@@ -105,10 +118,8 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             }
 
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
+            logger.info(e.getMessage());
         }
-
-        log.info("Statement: " + statementName + " not found");
 
         return null;
     }
@@ -120,13 +131,14 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             final EPStatement epStatement = epAdministrator.getStatement(name);
 
             if (epStatement != null) {
+                logger.info("Removing statement : " + name);
                 epStatement.destroy();
             }
 
             return true;
 
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
+            logger.info(e.getMessage());
             return false;
         }
     }

@@ -10,12 +10,15 @@ import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esper.client.dataflow.EPDataFlowState;
 import com.google.common.collect.Lists;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cad.interruptus.entity.Flow;
 
 public class FlowConfiguration implements EsperConfiguration<Flow>
 {
-    private final EPServiceProvider epService;
-    private final EPAdministrator epAdministrator;
+    final EPServiceProvider epService;
+    final EPAdministrator epAdministrator;
+    final Log logger = LogFactory.getLog(getClass());
 
     public FlowConfiguration(final EPServiceProvider epService, final EPAdministrator epAdministrator)
     {
@@ -40,8 +43,11 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
         final EPStatement sttm = epAdministrator.getStatement(name);
 
         if (sttm != null) {
+            logger.info("Existing flow detected for : " + name);
             remove(name);
         }
+        
+        logger.info("Saving flow : " + name);
 
         epAdministrator.createEPL(query, name);
     }
@@ -63,6 +69,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
             return true;
         }
 
+        logger.info("Starting flow : " + name);
         instance.start();
 
         return true;
@@ -76,6 +83,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
         final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
 
         if (instance != null) {
+            logger.info("Stoping flow : " + name);
             instance.cancel();
         }
 
@@ -112,6 +120,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
             return false;
         }
 
+        logger.info("Removing flow : " + name);
         sttm.destroy();
 
         return true;
