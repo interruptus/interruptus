@@ -4,16 +4,15 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPStatementException;
 import com.espertech.esper.client.EPStatementState;
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
 import java.util.List;
 import org.cad.interruptus.entity.Statement;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
-public class StatementConfiguration implements EsperConfiguration<String, Statement>
+public class StatementConfiguration implements EsperConfiguration<Statement>
 {
     final private static Log log = LogFactory.getLog(StatementConfiguration.class);
     private final EPAdministrator epAdministrator;
@@ -24,15 +23,10 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
     }
 
     @Override
-    public List<Statement> list()
+    public List<String> list()
     {
-        String[] statementNames    = epAdministrator.getStatementNames();
-        List<Statement> statements = new ArrayList<>();
-
-        for (String name : statementNames) {
-            EPStatement epStatement = epAdministrator.getStatement(name);
-            statements.add(new Statement(name, epStatement.getText(), false));
-        }
+        final String[] statementNames = epAdministrator.getStatementNames();
+        final List<String> statements = Lists.newArrayList(statementNames);
 
         return statements;
     }
@@ -61,11 +55,6 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
         });
     }
 
-    public Boolean start(final Statement statement)
-    {
-        return start(statement.getName());
-    }
-
     @Override
     public Boolean start(final String name)
     {
@@ -78,17 +67,6 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
 
             return true;
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
-            return false;
-        }
-    }
-
-    public Boolean startAll()
-    {
-        try {
-            epAdministrator.startAllStatements();
-            return true;
-        } catch (EPException e) {
             log.info(e.getMessage());
             return false;
         }
@@ -112,33 +90,6 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
 
             return true;
         } catch (EPStatementException e) {
-            log.info(e.getMessage());
-            return false;
-        }
-    }
-
-    public Boolean stop(final Statement statement)
-    {
-        return stop(statement.getName());
-    }
-
-    public Boolean stopAll()
-    {
-        try {
-            epAdministrator.stopAllStatements();
-            return true;
-        } catch (EPException e) {
-            log.info(e.getMessage());
-            return false;
-        }
-    }
-
-    public Boolean destroyAll() throws EPException
-    {
-        try {
-            epAdministrator.destroyAllStatements();
-            return true;
-        } catch (EPException e) {
             log.info(e.getMessage());
             return false;
         }
@@ -178,12 +129,6 @@ public class StatementConfiguration implements EsperConfiguration<String, Statem
             log.info(e.getMessage());
             return false;
         }
-    }
-
-    @Override
-    public Boolean remove(final Statement e)
-    {
-        return this.remove(e.getName());
     }
 
     @Override

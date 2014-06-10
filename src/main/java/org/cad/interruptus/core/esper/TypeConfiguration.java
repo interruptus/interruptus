@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.cad.interruptus.entity.Type;
 
-public class TypeConfiguration implements EsperConfiguration<String, Type>
+public class TypeConfiguration implements EsperConfiguration<Type>
 {
     private final EPServiceProvider epService;
 
@@ -20,27 +20,14 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     }
 
     @Override
-    public List<Type> list()
+    public List<String> list()
     {
         final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
-        final List<Type> list                 = new ArrayList<>();
         final EventType[] eventTypes          = config.getEventTypes();
+        final List<String> list               = new ArrayList<>();
 
-
-        for (EventType eventType : eventTypes) {
-
-            final String eventName    = eventType.getName();
-            final String[] properties = eventType.getPropertyNames();
-            final Type type           = new Type(eventName, new HashMap<String, String>());
-
-            for (String propertyName : properties) {
-                String propertyType = eventType.getPropertyType(propertyName).getName();
-
-                type.setProperty(propertyName, propertyType);
-            }
-
-            list.add(type);
-
+        for (final EventType type : eventTypes) {
+            list.add(type.getName());
         }
 
         return list;
@@ -71,12 +58,6 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     }
 
     @Override
-    public Boolean remove(final Type e)
-    {
-        return remove(e.getName());
-    }
-
-    @Override
     public Boolean exists(final String name)
     {
         final EPAdministrator administrator         = epService.getEPAdministrator();
@@ -87,13 +68,13 @@ public class TypeConfiguration implements EsperConfiguration<String, Type>
     }
 
     @Override
-    public Boolean start(String id)
+    public Boolean start(String name)
     {
         return false;
     }
 
     @Override
-    public Boolean stop(String id)
+    public Boolean stop(String name)
     {
         return false;
     }

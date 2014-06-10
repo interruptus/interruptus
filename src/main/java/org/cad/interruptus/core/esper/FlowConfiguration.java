@@ -1,7 +1,6 @@
 package org.cad.interruptus.core.esper;
 
 import java.util.List;
-import java.util.ArrayList;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
@@ -10,9 +9,10 @@ import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esper.client.dataflow.EPDataFlowState;
+import com.google.common.collect.Lists;
 import org.cad.interruptus.entity.Flow;
 
-public class FlowConfiguration implements EsperConfiguration<String, Flow>
+public class FlowConfiguration implements EsperConfiguration<Flow>
 {
     private final EPServiceProvider epService;
     private final EPAdministrator epAdministrator;
@@ -24,20 +24,12 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
     }
 
     @Override
-    public List<Flow> list()
+    public List<String> list()
     {
         final EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
         final String[] dataFlowsNames       = flowRuntime.getDataFlows();
-        final List<Flow> list               = new ArrayList<>();
 
-        for (final String name : dataFlowsNames) {
-            final EPDataFlowDescriptor descriptor = flowRuntime.getDataFlow(name);
-            final Flow flow                       = new Flow(name, descriptor.getStatementName());
-
-            list.add(flow);
-        }
-
-        return list;
+        return Lists.newArrayList(dataFlowsNames);
     }
 
     @Override
@@ -123,12 +115,6 @@ public class FlowConfiguration implements EsperConfiguration<String, Flow>
         sttm.destroy();
 
         return true;
-    }
-
-    @Override
-    public Boolean remove(final Flow e)
-    {
-        return remove(e.getName());
     }
 
     @Override
