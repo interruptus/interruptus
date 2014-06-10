@@ -125,14 +125,4 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
 
         return true;
     }
-
-    @Override
-    public Boolean exists(final String name)
-    {
-        final EPRuntime epRuntime           = epService.getEPRuntime();
-        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
-        final EPDataFlowDescriptor dataFlow = flowRuntime.getDataFlow(name);
-
-        return dataFlow != null;
-    }
 }

@@ -1,4 +1,4 @@
-curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
     "name":"StockTick",
     "properties":{
       "symbol":"string",
@@ -8,7 +8,7 @@ curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json"
     }
 }'
 
-curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
     "name":"AvgDataStream",
     "properties":{
       "symbol":"string",
@@ -18,7 +18,7 @@ curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json"
     }
 }'
 
-curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json" -d '{
     "name":"Bollinger",
     "properties":{
       "symbol":"string",
@@ -30,7 +30,7 @@ curl -X POST 'http://localhost:8080/api/type' -H "Content-Type:application/json"
     }
 }'
 
-curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
     "name":"PopulateAvgDataStream",
     "masterOnly":false,
     "started":true,
@@ -51,7 +51,7 @@ curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/
     "
 }'
 
-curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/json" -d '{
     "name":"PopulateBollinger",
     "masterOnly":false,
     "started":true,
@@ -71,7 +71,7 @@ curl -X POST 'http://localhost:8080/api/statement' -H "Content-Type:application/
     "
 }'
 
-curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json" -d '{
   "name":"StockTickIn",
   "started":true,
   "masterOnly":false,
@@ -89,7 +89,7 @@ curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json"
     } EventBusSink(StockTickIn){}"
 }'
 
-curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json" -d '{
+curl -w "\n" -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json" -d '{
   "name":"BollingerOut",
   "masterOnly":true,
   "started":true,
@@ -121,7 +121,7 @@ curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json"
 # {"type":"StockTick","body":{"symbol":"KO","ask":40.95,"bid":40.94,"price":40.94}}
 # {"type":"StockTick","body":{"symbol":"AMZN","ask":327.72,"bid":327.57,"price":327.66}}
 
-curl -X GET http://localhost:8080/api/flow/StockTickIn/state | python -m json.tool
-curl -X GET http://localhost:8080/api/flow/BollingerOut/state | python -m json.tool
-curl -X GET http://localhost:8080/api/statement/PopulateBollinger/state | python -m json.tool
-curl -X GET http://localhost:8080/api/statement/PopulateAvgDataStream/state | python -m json.tool
+curl -w "\n" -X GET http://localhost:8080/api/flow/StockTickIn/state
+curl -w "\n" -X GET http://localhost:8080/api/flow/BollingerOut/state
+curl -w "\n" -X GET http://localhost:8080/api/statement/PopulateBollinger/state
+curl -w "\n" -X GET http://localhost:8080/api/statement/PopulateAvgDataStream/state

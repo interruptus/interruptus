@@ -142,10 +142,4 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
             return false;
         }
     }
-
-    @Override
-    public Boolean exists(final String name)
-    {
-        return epAdministrator.getStatement(name) != null;
-    }
 }

@@ -10,8 +10,6 @@ public interface EsperConfiguration<T>
 
     public Boolean remove(String name);
 
-    public Boolean exists(String name);
-    
     public Boolean start(String name);
 
     public Boolean stop(String name);

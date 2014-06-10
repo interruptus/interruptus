@@ -70,16 +70,6 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     }
 
     @Override
-    public Boolean exists(final String name)
-    {
-        final EPAdministrator administrator         = epService.getEPAdministrator();
-        final ConfigurationOperations configuration = administrator.getConfiguration();
-        final EventType eventType                   = configuration.getEventType(name);
-
-        return eventType != null;
-    }
-
-    @Override
     public Boolean start(String name)
     {
         return false;
