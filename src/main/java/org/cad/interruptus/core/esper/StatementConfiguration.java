@@ -70,12 +70,18 @@ public class StatementConfiguration implements EsperConfiguration<Statement>
     public Boolean start(final String name)
     {
         try {
-            final EPStatement epStatement = epAdministrator.getStatement(name);
+            final EPStatement sttm = epAdministrator.getStatement(name);
 
-            if (epStatement != null) {
-                logger.info("Starting statement : " + name);
-                epStatement.start();
+            if (sttm == null) {
+                return false;
             }
+
+            if (sttm.isStarted()) {
+                return true;
+            }
+
+            logger.info("Starting statement : " + name);
+            sttm.start();
 
             return true;
         } catch (EPStatementException e) {
