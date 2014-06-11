@@ -4,7 +4,7 @@ Interruptus
 A framework for scalable monitoring.
 
 
-[![Build Status](https://travis-ci.org/marksteele/interruptus.svg?branch=master)](https://travis-ci.org/marksteele/interruptus)
+[![Build Status](https://travis-ci.org/interruptus/interruptus.svg?branch=master)](https://travis-ci.org/interruptus/interruptus)
 
 <pre>
             _.---._
@@ -97,4 +97,4 @@ curl -X POST 'http://localhost:8080/api/flow' -H "Content-Type:application/json"
 API USAGE
 =========
 
-[View the HTML rest API DOC](http://htmlpreview.github.io/?https://raw.github.com/marksteele/interruptus/master/generated/strapdown.html)
+[View the HTML rest API DOC](http://htmlpreview.github.io/?https://raw.github.com/interruptus/interruptus/master/generated/strapdown.html)
