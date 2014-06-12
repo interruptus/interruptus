@@ -5,7 +5,6 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.dataflow.EPDataFlowDescriptor;
 import com.espertech.esper.client.dataflow.EPDataFlowInstance;
 import com.espertech.esper.client.dataflow.EPDataFlowRuntime;
 import com.espertech.esper.client.dataflow.EPDataFlowState;
@@ -29,7 +28,8 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
     @Override
     public List<String> list()
     {
-        final EPDataFlowRuntime flowRuntime = epService.getEPRuntime().getDataFlowRuntime();
+        final EPRuntime epRuntime           = epService.getEPRuntime();
+        final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
         final String[] dataFlowsNames       = flowRuntime.getDataFlows();
 
         return Lists.newArrayList(dataFlowsNames);
@@ -117,7 +117,7 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
         }
 
         if (sttm == null) {
-            return false;
+            return true;
         }
 
         logger.info("Removing flow : " + name);

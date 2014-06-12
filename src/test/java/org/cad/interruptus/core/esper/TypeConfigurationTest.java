@@ -24,7 +24,7 @@ public class TypeConfigurationTest
     }
 
     @Test
-    public void testList()
+    public void testListTypes()
     {
         final TypeConfiguration instance      = new TypeConfiguration(epService);
         final ConfigurationOperations config  = mock(ConfigurationOperations.class);
@@ -119,7 +119,7 @@ public class TypeConfigurationTest
     }
 
     @Test
-    public void testRemoveUnexistingType()
+    public void testRemoveNotExistingType()
     {
         final TypeConfiguration instance      = new TypeConfiguration(epService);
         final ConfigurationOperations config  = mock(ConfigurationOperations.class);
@@ -137,7 +137,7 @@ public class TypeConfigurationTest
     }
     
     @Test
-    public void testStart()
+    public void testStartType()
     {
         final TypeConfiguration instance = new TypeConfiguration(epService);
 
@@ -146,7 +146,7 @@ public class TypeConfigurationTest
     }
 
     @Test
-    public void testStop()
+    public void testStopType()
     {
         final TypeConfiguration instance = new TypeConfiguration(epService);
 
