@@ -25,7 +25,8 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     @Override
     public List<String> list()
     {
-        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
+        final EPAdministrator admin           = epService.getEPAdministrator();
+        final ConfigurationOperations config  = admin.getConfiguration();
         final EventType[] eventTypes          = config.getEventTypes();
         final List<String> list               = new ArrayList<>();
 
@@ -39,8 +40,9 @@ public class TypeConfiguration implements EsperConfiguration<Type>
     @Override
     public void save(final Type type)
     {
-        final ConfigurationOperations config  = epService.getEPAdministrator().getConfiguration();
         final Map<String, Object> map         = new HashMap<String, Object>(type.getProperties());
+        final EPAdministrator admin           = epService.getEPAdministrator();
+        final ConfigurationOperations config  = admin.getConfiguration();
         final String name                     = type.getName();
 
         logger.info("Saving type : " + name);
