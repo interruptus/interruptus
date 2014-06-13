@@ -10,9 +10,9 @@ import org.cad.interruptus.repository.EntityRepository;
 abstract class AbstractConfigurationRepository<E extends Entity> implements EntityRepository<String, E>
 {
     final ConfigurationManager manager;
-    protected Class<E> targetClass;
+    final Class<E> targetClass;
 
-    public AbstractConfigurationRepository(ConfigurationManager manager)
+    public AbstractConfigurationRepository(final ConfigurationManager manager)
     {
         this.manager     = manager;
         this.targetClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -30,7 +30,7 @@ abstract class AbstractConfigurationRepository<E extends Entity> implements Enti
         final Map<String, E> map = manager.map(targetClass);
 
         if ( ! map.containsKey(name)) {
-            throw new EntityNotFoundException(name);
+            throw new EntityNotFoundException(targetClass, name);
         }
 
         return map.get(name);
@@ -44,7 +44,7 @@ abstract class AbstractConfigurationRepository<E extends Entity> implements Enti
     }
 
     @Override
-    public void remove(String name) throws Exception
+    public void remove(final String name) throws Exception
     {
         manager.remove(targetClass, name);
         manager.flush();
