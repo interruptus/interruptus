@@ -82,10 +82,16 @@ public class FlowConfiguration implements EsperConfiguration<Flow>
         final EPDataFlowRuntime flowRuntime = epRuntime.getDataFlowRuntime();
         final EPDataFlowInstance instance   = flowRuntime.getSavedInstance(name);
 
-        if (instance != null) {
-            logger.info("Stoping flow : " + name);
-            instance.cancel();
+        if (instance == null) {
+            return true;
         }
+
+        if (instance.getState() == EPDataFlowState.CANCELLED) {
+            return true;
+        }
+
+        logger.info("Stoping flow : " + name);
+        instance.cancel();
 
         return true;
     }

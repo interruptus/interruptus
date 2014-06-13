@@ -190,4 +190,56 @@ public class FlowConfigurationTest
         verify(flowRuntime, never()).instantiate(eq(name));
         verify(flowRuntime, never()).saveInstance(eq(name), eq(flowInstance));
     }
+
+    @Test
+    public void testStopFlow()
+    {
+        final String name                     = "flowX";
+        final FlowConfiguration instance      = new FlowConfiguration(epService, epAdministrator);
+        final EPDataFlowRuntime flowRuntime   = mock(EPDataFlowRuntime.class);
+        final EPDataFlowInstance flowInstance = mock(EPDataFlowInstance.class);
+        final EPRuntime epRuntime             = mock(EPRuntime.class);
+
+        when(flowRuntime.getSavedInstance(eq(name))).thenReturn(flowInstance);
+        when(epRuntime.getDataFlowRuntime()).thenReturn(flowRuntime);
+        when(epService.getEPRuntime()).thenReturn(epRuntime);
+
+        assertTrue(instance.stop(name));
+        verify(flowInstance).cancel();
+    }
+
+    @Test
+    public void testStopExistingFlow()
+    {
+        final String name                     = "flowX";
+        final FlowConfiguration instance      = new FlowConfiguration(epService, epAdministrator);
+        final EPDataFlowRuntime flowRuntime   = mock(EPDataFlowRuntime.class);
+        final EPDataFlowInstance flowInstance = mock(EPDataFlowInstance.class);
+        final EPRuntime epRuntime             = mock(EPRuntime.class);
+
+        when(flowRuntime.getSavedInstance(eq(name))).thenReturn(flowInstance);
+        when(epRuntime.getDataFlowRuntime()).thenReturn(flowRuntime);
+        when(epService.getEPRuntime()).thenReturn(epRuntime);
+
+        assertTrue(instance.stop(name));
+        verify(flowInstance).cancel();
+    }
+
+    @Test
+    public void testStopCanceledFlow()
+    {
+        final String name                     = "flowX";
+        final FlowConfiguration instance      = new FlowConfiguration(epService, epAdministrator);
+        final EPDataFlowRuntime flowRuntime   = mock(EPDataFlowRuntime.class);
+        final EPDataFlowInstance flowInstance = mock(EPDataFlowInstance.class);
+        final EPRuntime epRuntime             = mock(EPRuntime.class);
+
+        when(flowRuntime.getSavedInstance(eq(name))).thenReturn(flowInstance);
+        when(flowInstance.getState()).thenReturn(EPDataFlowState.CANCELLED);
+        when(epRuntime.getDataFlowRuntime()).thenReturn(flowRuntime);
+        when(epService.getEPRuntime()).thenReturn(epRuntime);
+
+        assertTrue(instance.stop(name));
+        verify(flowInstance, never()).cancel();
+    }
 }
