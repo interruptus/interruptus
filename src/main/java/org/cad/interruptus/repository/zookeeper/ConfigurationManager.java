@@ -2,7 +2,6 @@ package org.cad.interruptus.repository.zookeeper;
 
 import com.google.gson.Gson;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -16,9 +15,6 @@ import org.apache.zookeeper.data.Stat;
 import org.cad.interruptus.core.GsonSerializer;
 import org.cad.interruptus.entity.Configuration;
 import org.cad.interruptus.entity.Entity;
-import org.cad.interruptus.entity.Flow;
-import org.cad.interruptus.entity.Statement;
-import org.cad.interruptus.entity.Type;
 
 public class ConfigurationManager
 {
@@ -150,20 +146,8 @@ public class ConfigurationManager
 
     public <T> Map<String, T> map(Class<? extends T> clazz) throws Exception
     {
-        final Map<String, T> result = new HashMap<>();
         final Configuration config  = get();
-
-        if (Type.class.equals(clazz)) {
-            result.putAll((Map<? extends String, ? extends T>) config.getTypes());
-        }
-
-        if (Flow.class.equals(clazz)) {
-            result.putAll((Map<? extends String, ? extends T>) config.getFlows());
-        }
-
-        if (Statement.class.equals(clazz)) {
-            result.putAll((Map<? extends String, ? extends T>) config.getStatements());
-        }
+        final Map<String, T> result = (Map<String, T>) config.mapOf((Class<? extends Entity>) clazz);
 
         return result;
     }
