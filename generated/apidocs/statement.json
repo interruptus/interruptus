@@ -156,6 +156,9 @@
           "type" : "string",
           "description" : "Statement epl query"
         },
+        "running" : {
+          "type" : "boolean"
+        },
         "started" : {
           "type" : "boolean",
           "description" : "Whether or not the statement is running in esper"
@@ -163,9 +166,6 @@
         "masterOnly" : {
           "type" : "boolean",
           "description" : "Statement runs only on master node or not"
-        },
-        "running" : {
-          "type" : "boolean"
         }
       }
     }

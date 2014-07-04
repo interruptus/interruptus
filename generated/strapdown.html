@@ -11,112 +11,23 @@
 ## Api Version: v1
 
 ## Resources
-### 0. /type
+### 0. /config
 #### Overview
 
 
-#### 0. `/type/{name}`
-##### 0..0 remove
-**DELETE** `/type/{name}`
+#### 0. `/config`
+##### 0..0 getConfig
+**GET** `/config`
 
-Removes a type configuration
-Removes a type configuration, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/type/{name}
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Type](#Type)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Type doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-##### 0..0 show
-**GET** `/type/{name}`
-
-Retreives a type configuration
-Retreives a type configuration, throws exception if does not exists
+Get configuration
+Show the corrent configuration
 
 ###### URL
-    http://localhost:8080/api/type/{name}
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Type](#Type)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Type doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-#### 0. `/type`
-##### 0..0 list
-**GET** `/type`
-
-List all types
-List all event types available
-
-###### URL
-    http://localhost:8080/api/type
+    http://localhost:8080/api/config
 ###### Parameters
 
 ###### Response
-[List[Type]](#Type)
+[Configuration](#Configuration)
 
 
 ###### Errors
@@ -129,213 +40,19 @@ List all event types available
 
 
 - - -
-##### 0..0 save
-**POST** `/type`
-
-Save a type configuration
-Save a type configuration, if the flow already exists will be overwritten
-
-###### URL
-    http://localhost:8080/api/type
-###### Parameters
-- body
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>body</th>
-            <td>false</td>
-            <td></td>
-            <td><a href="#Type">Type</a></td>
-        </tr>
-    </table>
-
-###### Response
-[boolean](#)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-</table>
-
-
-- - -
-### 1. /statement
+### 1. /inventory
 #### Overview
 
 
-#### 1. `/statement/{name}`
-##### 1..0 remove
-**DELETE** `/statement/{name}`
-
-Removes a statement configuration
-Removes a statement configuration, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/statement/{name}
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Statement](#Statement)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-##### 1..0 show
-**GET** `/statement/{name}`
-
-Retreives a statement configuration
-Retreives a statement configuration, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/statement/{name}
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Statement](#Statement)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-#### 1. `/statement`
+#### 1. `/inventory/{typeName}/{path:.*}`
 ##### 1..0 list
-**GET** `/statement`
+**GET** `/inventory/{typeName}/{path:.*}`
 
-List all statements
-List all statements, whether is runnig or not
-
-###### URL
-    http://localhost:8080/api/statement
-###### Parameters
-
-###### Response
-[List[Statement]](#Statement)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-</table>
-
-
-- - -
-##### 1..0 save
-**POST** `/statement`
-
-Save a statement configuration
-Save a statement configuration, if the statement already exists will be overwritten
+List known inventory values for a given event type
+List known inventory values for a given event type
 
 ###### URL
-    http://localhost:8080/api/statement
-###### Parameters
-- body
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>body</th>
-            <td>false</td>
-            <td></td>
-            <td><a href="#Statement">Statement</a></td>
-        </tr>
-    </table>
-
-###### Response
-[boolean](#)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-</table>
-
-
-- - -
-#### 1. `/statement/{name}/start`
-##### 1..0 startStatement
-**POST** `/statement/{name}/start`
-
-Start a statement in esper
-Stop a existing in esper, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/statement/{name}/start
+    http://localhost:8080/api/inventory/{typeName}/{path:.*}
 ###### Parameters
 - path
 
@@ -347,15 +64,21 @@ Stop a existing in esper, throws exception if does not exists
             <th>Data Type</th>
         </tr>
         <tr>
-            <th>name</th>
+            <th>typeName</th>
             <td>true</td>
-            <td>Flow name to lookup for</td>
+            <td>Type name to lookup for</td>
+            <td>string</td>
+        </tr>
+        <tr>
+            <th>path</th>
+            <td>true</td>
+            <td>Path hierarchy</td>
             <td>string</td>
         </tr>
     </table>
 
 ###### Response
-[Statement](#Statement)
+[List[string]](#)
 
 
 ###### Errors
@@ -364,100 +87,6 @@ Stop a existing in esper, throws exception if does not exists
         <th>Status Code</th>
         <th>Reason</th>
     </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-#### 1. `/statement/{name}/stop`
-##### 1..0 stopStatement
-**POST** `/statement/{name}/stop`
-
-Stop a statement in esper
-Stop a existing statement in esper, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/statement/{name}/stop
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Statement](#Statement)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-#### 1. `/statement/{name}/state`
-##### 1..0 getStatementState
-**GET** `/statement/{name}/state`
-
-Retrives the state for a statement
-Retrives the state for a statement, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/statement/{name}/state
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Statement](#Statement)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
 </table>
 
 
@@ -475,95 +104,6 @@ Retrives the state for a flow, throws exception if does not exists
 
 ###### URL
     http://localhost:8080/api/flow/{name}/state
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Flow](#Flow)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-#### 2. `/flow/{name}`
-##### 2..0 showFlow
-**GET** `/flow/{name}`
-
-Retreives a flow configuration
-Retreives a flow configuration, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/flow/{name}
-###### Parameters
-- path
-
-    <table border="1">
-        <tr>
-            <th>Parameter</th>
-            <th>Required</th>
-            <th>Description</th>
-            <th>Data Type</th>
-        </tr>
-        <tr>
-            <th>name</th>
-            <td>true</td>
-            <td>Flow name to lookup for</td>
-            <td>string</td>
-        </tr>
-    </table>
-
-###### Response
-[Flow](#Flow)
-
-
-###### Errors
-<table border="1">
-    <tr>
-        <th>Status Code</th>
-        <th>Reason</th>
-    </tr>
-        <tr>
-            <td>404</td>
-            <td>Flow doesn&#39;t exists</td>
-        </tr>
-</table>
-
-
-- - -
-##### 2..0 removeFlow
-**DELETE** `/flow/{name}`
-
-Removes a flow configuration
-Removes a flow configuration, throws exception if does not exists
-
-###### URL
-    http://localhost:8080/api/flow/{name}
 ###### Parameters
 - path
 
@@ -665,6 +205,95 @@ List all flows, whether is runnig or not
 
 
 - - -
+#### 2. `/flow/{name}`
+##### 2..0 showFlow
+**GET** `/flow/{name}`
+
+Retreives a flow configuration
+Retreives a flow configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+##### 2..0 removeFlow
+**DELETE** `/flow/{name}`
+
+Removes a flow configuration
+Removes a flow configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/flow/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Flow](#Flow)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
 #### 2. `/flow/{name}/start`
 ##### 2..0 startFlow
 **POST** `/flow/{name}/start`
@@ -755,23 +384,112 @@ Stop a existing flow in esper, throws exception if does not exists
 
 
 - - -
-### 3. /config
+### 3. /type
 #### Overview
 
 
-#### 3. `/config`
-##### 3..0 getConfig
-**GET** `/config`
+#### 3. `/type/{name}`
+##### 3..0 remove
+**DELETE** `/type/{name}`
 
-Get configuration
-Show the corrent configuration
+Removes a type configuration
+Removes a type configuration, throws exception if does not exists
 
 ###### URL
-    http://localhost:8080/api/config
+    http://localhost:8080/api/type/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Type](#Type)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Type doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+##### 3..0 show
+**GET** `/type/{name}`
+
+Retreives a type configuration
+Retreives a type configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/type/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Type](#Type)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Type doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 3. `/type`
+##### 3..0 list
+**GET** `/type`
+
+List all types
+List all event types available
+
+###### URL
+    http://localhost:8080/api/type
 ###### Parameters
 
 ###### Response
-[Configuration](#Configuration)
+[List[Type]](#Type)
 
 
 ###### Errors
@@ -784,19 +502,59 @@ Show the corrent configuration
 
 
 - - -
-### 4. /inventory
+##### 3..0 save
+**POST** `/type`
+
+Save a type configuration
+Save a type configuration, if the flow already exists will be overwritten
+
+###### URL
+    http://localhost:8080/api/type
+###### Parameters
+- body
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>body</th>
+            <td>false</td>
+            <td></td>
+            <td><a href="#Type">Type</a></td>
+        </tr>
+    </table>
+
+###### Response
+[boolean](#)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+### 4. /statement
 #### Overview
 
 
-#### 4. `/inventory/{typeName}/{path:.*}`
-##### 4..0 list
-**GET** `/inventory/{typeName}/{path:.*}`
+#### 4. `/statement/{name}`
+##### 4..0 remove
+**DELETE** `/statement/{name}`
 
-List known inventory values for a given event type
-List known inventory values for a given event type
+Removes a statement configuration
+Removes a statement configuration, throws exception if does not exists
 
 ###### URL
-    http://localhost:8080/api/inventory/{typeName}/{path:.*}
+    http://localhost:8080/api/statement/{name}
 ###### Parameters
 - path
 
@@ -808,21 +566,15 @@ List known inventory values for a given event type
             <th>Data Type</th>
         </tr>
         <tr>
-            <th>typeName</th>
+            <th>name</th>
             <td>true</td>
-            <td>Type name to lookup for</td>
-            <td>string</td>
-        </tr>
-        <tr>
-            <th>path</th>
-            <td>true</td>
-            <td>Path hierarchy</td>
+            <td>Flow name to lookup for</td>
             <td>string</td>
         </tr>
     </table>
 
 ###### Response
-[List[string]](#)
+[Statement](#Statement)
 
 
 ###### Errors
@@ -831,6 +583,254 @@ List known inventory values for a given event type
         <th>Status Code</th>
         <th>Reason</th>
     </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+##### 4..0 show
+**GET** `/statement/{name}`
+
+Retreives a statement configuration
+Retreives a statement configuration, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/statement/{name}
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Statement](#Statement)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 4. `/statement`
+##### 4..0 list
+**GET** `/statement`
+
+List all statements
+List all statements, whether is runnig or not
+
+###### URL
+    http://localhost:8080/api/statement
+###### Parameters
+
+###### Response
+[List[Statement]](#Statement)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+##### 4..0 save
+**POST** `/statement`
+
+Save a statement configuration
+Save a statement configuration, if the statement already exists will be overwritten
+
+###### URL
+    http://localhost:8080/api/statement
+###### Parameters
+- body
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>body</th>
+            <td>false</td>
+            <td></td>
+            <td><a href="#Statement">Statement</a></td>
+        </tr>
+    </table>
+
+###### Response
+[boolean](#)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+</table>
+
+
+- - -
+#### 4. `/statement/{name}/start`
+##### 4..0 startStatement
+**POST** `/statement/{name}/start`
+
+Start a statement in esper
+Stop a existing in esper, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/statement/{name}/start
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Statement](#Statement)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 4. `/statement/{name}/stop`
+##### 4..0 stopStatement
+**POST** `/statement/{name}/stop`
+
+Stop a statement in esper
+Stop a existing statement in esper, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/statement/{name}/stop
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Statement](#Statement)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
+</table>
+
+
+- - -
+#### 4. `/statement/{name}/state`
+##### 4..0 getStatementState
+**GET** `/statement/{name}/state`
+
+Retrives the state for a statement
+Retrives the state for a statement, throws exception if does not exists
+
+###### URL
+    http://localhost:8080/api/statement/{name}/state
+###### Parameters
+- path
+
+    <table border="1">
+        <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+            <th>Data Type</th>
+        </tr>
+        <tr>
+            <th>name</th>
+            <td>true</td>
+            <td>Flow name to lookup for</td>
+            <td>string</td>
+        </tr>
+    </table>
+
+###### Response
+[Statement](#Statement)
+
+
+###### Errors
+<table border="1">
+    <tr>
+        <th>Status Code</th>
+        <th>Reason</th>
+    </tr>
+        <tr>
+            <td>404</td>
+            <td>Flow doesn&#39;t exists</td>
+        </tr>
 </table>
 
 
@@ -843,31 +843,27 @@ List known inventory values for a given event type
 
 <table border="1">
     <tr>
+        <th>name</th>
         <th>type</th>
         <th>required</th>
-        <th>access</th>
         <th>description</th>
-        <th>notes</th>
     </tr>
         <tr>
+            <td>flows</td>
             <td><a href="#Map[string,Flow]">Map[string,Flow]</a></td>
             <td>optional</td>
             <td>-</td>
-            <td>-</td>
-            <td>-</td>
         </tr>
         <tr>
+            <td>types</td>
             <td><a href="#Map[string,Type]">Map[string,Type]</a></td>
             <td>optional</td>
             <td>-</td>
-            <td>-</td>
-            <td>-</td>
         </tr>
         <tr>
+            <td>statements</td>
             <td><a href="#Map[string,Statement]">Map[string,Statement]</a></td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
 </table>
@@ -878,52 +874,45 @@ List known inventory values for a given event type
 
 <table border="1">
     <tr>
+        <th>name</th>
         <th>type</th>
         <th>required</th>
-        <th>access</th>
         <th>description</th>
-        <th>notes</th>
     </tr>
         <tr>
+            <td>running</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
         <tr>
+            <td>masterOnly</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Flow runs only on master node or not</td>
             <td>Flow runs only on master node or not</td>
         </tr>
         <tr>
+            <td>name</td>
             <td>string</td>
             <td>required</td>
-            <td>-</td>
-            <td>Flow unique name</td>
             <td>Flow unique name</td>
         </tr>
         <tr>
+            <td>started</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Whether or not the flow is running in esper</td>
             <td>Whether or not the flow is running in esper</td>
         </tr>
         <tr>
+            <td>query</td>
             <td>string</td>
             <td>required</td>
-            <td>-</td>
-            <td>Flow epl query</td>
             <td>Flow epl query</td>
         </tr>
         <tr>
+            <td>id</td>
             <td>string</td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
 </table>
@@ -934,59 +923,51 @@ List known inventory values for a given event type
 
 <table border="1">
     <tr>
+        <th>name</th>
         <th>type</th>
         <th>required</th>
-        <th>access</th>
         <th>description</th>
-        <th>notes</th>
     </tr>
         <tr>
+            <td>running</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
         <tr>
+            <td>debug</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Statement debug flag</td>
             <td>Statement debug flag</td>
         </tr>
         <tr>
+            <td>masterOnly</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Statement runs only on master node or not</td>
             <td>Statement runs only on master node or not</td>
         </tr>
         <tr>
+            <td>name</td>
             <td>string</td>
             <td>required</td>
-            <td>-</td>
-            <td>Statement unique name</td>
             <td>Statement unique name</td>
         </tr>
         <tr>
+            <td>started</td>
             <td>boolean</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Whether or not the statement is running in esper</td>
             <td>Whether or not the statement is running in esper</td>
         </tr>
         <tr>
+            <td>query</td>
             <td>string</td>
             <td>required</td>
-            <td>-</td>
-            <td>Statement epl query</td>
             <td>Statement epl query</td>
         </tr>
         <tr>
+            <td>id</td>
             <td>string</td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
 </table>
@@ -997,38 +978,33 @@ List known inventory values for a given event type
 
 <table border="1">
     <tr>
+        <th>name</th>
         <th>type</th>
         <th>required</th>
-        <th>access</th>
         <th>description</th>
-        <th>notes</th>
     </tr>
         <tr>
+            <td>hierarchy</td>
             <td>string</td>
             <td>optional</td>
-            <td>-</td>
-            <td>Type inventory hierarchy</td>
             <td>Type inventory hierarchy</td>
         </tr>
         <tr>
+            <td>properties</td>
             <td><a href="#Map[string,string]">Map[string,string]</a></td>
             <td>required</td>
-            <td>-</td>
-            <td>List of properties</td>
             <td>List of properties</td>
         </tr>
         <tr>
+            <td>name</td>
             <td>string</td>
             <td>required</td>
-            <td>-</td>
-            <td>Type unique name</td>
             <td>Type unique name</td>
         </tr>
         <tr>
+            <td>id</td>
             <td>string</td>
             <td>optional</td>
-            <td>-</td>
-            <td>-</td>
             <td>-</td>
         </tr>
 </table>

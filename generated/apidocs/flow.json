@@ -27,6 +27,33 @@
       } ]
     } ]
   }, {
+    "path" : "/flow",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "Save a flow configuration",
+      "notes" : "Save a flow configuration, if the flow already exists will be overwritten",
+      "type" : "boolean",
+      "nickname" : "saveFlow",
+      "authorizations" : { },
+      "parameters" : [ {
+        "name" : "body",
+        "required" : false,
+        "type" : "Flow",
+        "paramType" : "body"
+      } ]
+    }, {
+      "method" : "GET",
+      "summary" : "List all flows",
+      "notes" : "List all flows, whether is runnig or not",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Flow"
+      },
+      "nickname" : "listFlows",
+      "authorizations" : { },
+      "parameters" : [ ]
+    } ]
+  }, {
     "path" : "/flow/{name}",
     "operations" : [ {
       "method" : "GET",
@@ -64,33 +91,6 @@
         "code" : 404,
         "message" : "Flow doesn't exists"
       } ]
-    } ]
-  }, {
-    "path" : "/flow",
-    "operations" : [ {
-      "method" : "POST",
-      "summary" : "Save a flow configuration",
-      "notes" : "Save a flow configuration, if the flow already exists will be overwritten",
-      "type" : "boolean",
-      "nickname" : "saveFlow",
-      "authorizations" : { },
-      "parameters" : [ {
-        "name" : "body",
-        "required" : false,
-        "type" : "Flow",
-        "paramType" : "body"
-      } ]
-    }, {
-      "method" : "GET",
-      "summary" : "List all flows",
-      "notes" : "List all flows, whether is runnig or not",
-      "type" : "array",
-      "items" : {
-        "$ref" : "Flow"
-      },
-      "nickname" : "listFlows",
-      "authorizations" : { },
-      "parameters" : [ ]
     } ]
   }, {
     "path" : "/flow/{name}/start",
@@ -152,6 +152,9 @@
           "type" : "string",
           "description" : "Flow epl query"
         },
+        "running" : {
+          "type" : "boolean"
+        },
         "started" : {
           "type" : "boolean",
           "description" : "Whether or not the flow is running in esper"
@@ -159,9 +162,6 @@
         "masterOnly" : {
           "type" : "boolean",
           "description" : "Flow runs only on master node or not"
-        },
-        "running" : {
-          "type" : "boolean"
         }
       }
     }

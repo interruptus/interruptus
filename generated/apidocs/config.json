@@ -24,11 +24,11 @@
         "statements" : {
           "$ref" : "Map[string,Statement]"
         },
-        "types" : {
-          "$ref" : "Map[string,Type]"
-        },
         "flows" : {
           "$ref" : "Map[string,Flow]"
+        },
+        "types" : {
+          "$ref" : "Map[string,Type]"
         }
       }
     }
