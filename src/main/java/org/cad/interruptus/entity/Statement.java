@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 @ApiModel(value = "Statement", description = "Statement resource representation")
@@ -37,6 +38,7 @@ public class Statement implements RunnableEntity
     }
 
     @Override
+    @XmlTransient
     public String getId()
     {
         return name;

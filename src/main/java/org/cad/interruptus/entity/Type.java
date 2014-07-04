@@ -5,6 +5,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Map;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 @ApiModel(value = "Type", description = "Type resource representation")
@@ -28,8 +29,9 @@ public class Type implements Entity
         this.name       = name;
         this.properties = properties;
     }
-    
+
     @Override
+    @XmlTransient
     public String getId()
     {
         return name;

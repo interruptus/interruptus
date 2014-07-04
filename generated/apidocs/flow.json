@@ -29,6 +29,17 @@
   }, {
     "path" : "/flow",
     "operations" : [ {
+      "method" : "GET",
+      "summary" : "List all flows",
+      "notes" : "List all flows, whether is runnig or not",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Flow"
+      },
+      "nickname" : "listFlows",
+      "authorizations" : { },
+      "parameters" : [ ]
+    }, {
       "method" : "POST",
       "summary" : "Save a flow configuration",
       "notes" : "Save a flow configuration, if the flow already exists will be overwritten",
@@ -41,17 +52,6 @@
         "type" : "Flow",
         "paramType" : "body"
       } ]
-    }, {
-      "method" : "GET",
-      "summary" : "List all flows",
-      "notes" : "List all flows, whether is runnig or not",
-      "type" : "array",
-      "items" : {
-        "$ref" : "Flow"
-      },
-      "nickname" : "listFlows",
-      "authorizations" : { },
-      "parameters" : [ ]
     } ]
   }, {
     "path" : "/flow/{name}",
@@ -145,19 +145,16 @@
           "type" : "string",
           "description" : "Flow unique name"
         },
-        "id" : {
-          "type" : "string"
-        },
         "query" : {
           "type" : "string",
           "description" : "Flow epl query"
         },
-        "running" : {
-          "type" : "boolean"
-        },
         "started" : {
           "type" : "boolean",
           "description" : "Whether or not the flow is running in esper"
+        },
+        "running" : {
+          "type" : "boolean"
         },
         "masterOnly" : {
           "type" : "boolean",

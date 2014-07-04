@@ -86,9 +86,6 @@
           "$ref" : "Map[string,string]",
           "description" : "List of properties"
         },
-        "id" : {
-          "type" : "string"
-        },
         "hierarchy" : {
           "type" : "string",
           "description" : "Type inventory hierarchy"

@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 @ApiModel( value = "Flow", description = "Flow resource representation")
@@ -38,6 +39,7 @@ public class Flow implements RunnableEntity
     }
 
     @Override
+    @XmlTransient
     public String getId()
     {
         return name;

@@ -149,19 +149,16 @@
           "type" : "boolean",
           "description" : "Statement debug flag"
         },
-        "id" : {
-          "type" : "string"
-        },
         "query" : {
           "type" : "string",
           "description" : "Statement epl query"
         },
-        "running" : {
-          "type" : "boolean"
-        },
         "started" : {
           "type" : "boolean",
           "description" : "Whether or not the statement is running in esper"
+        },
+        "running" : {
+          "type" : "boolean"
         },
         "masterOnly" : {
           "type" : "boolean",
