@@ -98,3 +98,76 @@ API USAGE
 =========
 
 [View the HTML rest API DOC](http://htmlpreview.github.io/?https://raw.github.com/interruptus/interruptus/master/generated/strapdown.html)
+
+
+
+
+Dependencies
+======
+- Maven 3
+- Java JDK
+- ZooKeeper
+
+Build
+======
+
+______
+
+Maven 3
+------
+
+```
+$ add-apt-repository ppa:natecarlson/maven3
+```
+
+```
+$ apt-get update && sudo apt-get install maven3
+```
+
+```
+$ ln -s /usr/bin/mvn3 /usr/bin/mvn
+```
+
+______
+
+Java JDK
+------
+
+```
+$ apt-get purge oracle-java7-installer*
+```
+
+```
+$ apt-get install ppa-purge
+```
+
+```
+$ ppa-purge ppa:eugenesan/java
+```
+
+```
+$ apt-get clean
+```
+
+```
+$ apt-get update
+```
+
+______
+
+ZooKeeper
+------
+
+```
+$ apt-get install zookeeper zookeeper-bin zookeeperd
+```
+
+______
+
+Build
+------
+
+```
+$ cd path/to/interruptus
+$ mvn jetty:run
+```
